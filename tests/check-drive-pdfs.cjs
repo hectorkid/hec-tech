@@ -23,7 +23,10 @@ async function run() {
     if (url.includes('/upload/drive/v3/files')) {
       const id = url.match(/\/files\/([^?]+)/)?.[1] || String(nextId++);
       const content = Buffer.from(await options.body.arrayBuffer());
-      remote.set(id,{name:'hec-tech-pdf-123.pdf',bytes:content});
+      const start=content.indexOf(Buffer.from('%PDF-'));
+      assert.ok(start>=0,'multipart body contains PDF');
+      const end=content.indexOf(Buffer.from('\\r\\n--hectechpdf'),start);
+      remote.set(id,{name:'hec-tech-pdf-123.pdf',bytes:content.subarray(start,end)});
       return {json:async()=>({id})};
     }
     if (url.includes('alt=media')) {
@@ -49,6 +52,7 @@ async function run() {
   saved.delete('123');
   await context.window.HECPdfDriveRestore(tool,request);
   assert.ok(saved.has('123'),'PDF restored to local storage');
+  assert.equal(await saved.get('123').text(),'%PDF-1.4 example','PDF contents survive upload and restore');
   await assert.rejects(context.window.HECPdfDriveRestore({id:999,name:'Unknown'},request),/No Drive PDF found/);
   console.log('Drive PDF upload and restore mock tests passed');
 }
