@@ -1,7 +1,7 @@
 /* PDF backup helpers. Each request must be authorized by the existing app. */
 window.HECPdfBackup = {
   fileName(toolId) {
-    return 'hec-tech-pdf-' + String(toolId) + '.pdf';
+    return 'hec-tech-PHONE-TEST-pdf-' + String(toolId) + '.pdf';
   },
   async localPdf(toolId) {
     const pdf = await HECManualStore.get(toolId);
