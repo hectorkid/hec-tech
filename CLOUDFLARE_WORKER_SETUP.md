@@ -6,7 +6,7 @@ This backend replaces browser-side Google OAuth. The static app continues to use
 
 - One Cloudflare Worker and one Workers KV namespace; no paid add-ons or custom domain are required.
 - The Worker uses OAuth authorization-code flow and requests only `drive.appdata` plus OpenID email to restrict access to the configured Google account.
-- The refresh token is AES-GCM encrypted before it is written to KV. The encryption key and Google OAuth client credentials are Cloudflare Worker secrets and must never be committed here.
+- The refresh token is AES-GCM encrypted before it is written to KV. The AES-GCM key is derived with HKDF-SHA-256 from the Google OAuth client secret, which is stored as a Cloudflare Worker secret and must never be committed here.
 - Browser sessions are random, time-limited bearer tokens. Only their SHA-256 hashes are stored in KV.
 - The Worker proxies only Google Drive v3 file operations and only to `www.googleapis.com` over HTTPS.
 
@@ -22,10 +22,9 @@ This repository includes a manual deployment workflow so you can authorize deplo
 | --- | --- |
 | `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare account ID |
 | `CLOUDFLARE_API_TOKEN` | An account-scoped API token with Workers Scripts edit/read and Workers KV Storage edit/read permissions |
-| `GOOGLE_CLIENT_ID` | The existing HEC TECH Google OAuth web client ID |
+| `GOOGLE_CLIENT_ID` | The HEC TECH Drive Worker Google OAuth web client ID |
 | `GOOGLE_CLIENT_SECRET` | The matching Google OAuth web client secret |
 | `ALLOWED_GOOGLE_EMAIL` | The Google account HEC TECH should be allowed to use |
-| `TOKEN_ENCRYPTION_KEY` | A base64-encoded random 32-byte key, generated locally with `openssl rand -base64 32` |
 
 Never paste these values into an issue, pull request, source file, or chat. GitHub Actions secrets are sent to the deployment job and installed as Cloudflare Worker secrets. The workflow finds or creates the KV namespace, deploys the Worker, detects its `workers.dev` URL, and commits that URL to the selected branch. It runs when Worker files change on `feature/cloudflare-drive-oauth` or `main`. The first run will stop before changing Cloudflare if any secrets are missing. After you add them in your regular browser, open **Actions**, select the failed **Deploy HEC TECH Drive Worker** run, and choose **Re-run failed jobs**. Future Worker code updates deploy automatically.
 
@@ -49,10 +48,9 @@ Copy the returned namespace `id` into `wrangler.toml` in place of `REPLACE_WITH_
 npx wrangler secret put GOOGLE_CLIENT_ID
 npx wrangler secret put GOOGLE_CLIENT_SECRET
 npx wrangler secret put ALLOWED_GOOGLE_EMAIL
-npx wrangler secret put TOKEN_ENCRYPTION_KEY
 ```
 
-Generate the encryption key locally with `openssl rand -base64 32` and paste it into the Wrangler prompt. Keep a private recovery copy. If this key is lost, the stored refresh token cannot be decrypted and Google Drive must be connected again. Do not put secrets in GitHub, `wrangler.toml`, or a public issue.
+The Worker derives its AES-GCM key from `GOOGLE_CLIENT_SECRET` using HKDF-SHA-256, so no separate encryption-key secret is needed. Keep the Google client secret stable. If you rotate it, reconnect Drive so the Worker can save a newly encrypted refresh token. Do not put secrets in `wrangler.toml` or a public issue.
 
 Deploy the Worker:
 
