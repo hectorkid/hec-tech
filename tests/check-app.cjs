@@ -8,12 +8,12 @@ for (const match of scripts) {
   if (/\bsrc=/.test(match[1])) continue;
   new vm.Script(match[2], {filename:'index.html inline script'});
 }
-for (const file of ['manual-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js','sw.js']) {
+for (const file of ['manual-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js','install-guide.js','sw.js']) {
   new vm.Script(fs.readFileSync(file,'utf8'),{filename:file});
   assert.ok(html.includes(file) || file==='sw.js', file+' is not loaded');
 }
 const worker = fs.readFileSync('sw.js','utf8');
-for (const file of ['manual-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js']) {
+for (const file of ['manual-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js','install-guide.js']) {
   assert.ok(worker.includes(file), file+' is missing from offline cache');
 }
 assert.match(html,/This inventory-only backup references PDF manuals/);
