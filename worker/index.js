@@ -29,7 +29,9 @@ export default {
 
 async function startAuth(request, env) {
   const state = randomToken();
-  await env.HEC_OAUTH_KV.put(`state:${state}`, '1', { expirationTtl: 600 });
+  const verifier = randomToken() + randomToken();
+  const challenge = bytesToBase64(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier)));
+  await env.HEC_OAUTH_KV.put(`state:${state}`, JSON.stringify({ verifier }), { expirationTtl: 600 });
   const redirectUri = `${new URL(request.url).origin}/oauth/callback`;
   const auth = new URL(GOOGLE_AUTHORIZE);
   auth.search = new URLSearchParams({
@@ -39,6 +41,8 @@ async function startAuth(request, env) {
     scope: 'openid email https://www.googleapis.com/auth/drive.appdata',
     access_type: 'offline',
     prompt: 'consent',
+    code_challenge: challenge,
+    code_challenge_method: 'S256',
     state
   }).toString();
   return Response.redirect(auth.toString(), 302);
@@ -47,17 +51,20 @@ async function startAuth(request, env) {
 async function callback(request, env) {
   const url = new URL(request.url);
   const state = url.searchParams.get('state') || '';
-  if (!state || !(await env.HEC_OAUTH_KV.get(`state:${state}`))) return new Response('Invalid or expired OAuth state.', { status: 400 });
+  const stateRecord = state ? await env.HEC_OAUTH_KV.get(`state:${state}`) : null;
+  if (!stateRecord) return new Response('Invalid or expired OAuth state.', { status: 400 });
   await env.HEC_OAUTH_KV.delete(`state:${state}`);
   if (url.searchParams.has('error')) return redirectToApp(env, `#hec-drive-error=${encodeURIComponent(url.searchParams.get('error'))}`);
   const code = url.searchParams.get('code');
   if (!code) return new Response('Missing OAuth authorization code.', { status: 400 });
+  const { verifier } = JSON.parse(stateRecord);
 
   const redirectUri = `${url.origin}/oauth/callback`;
   const tokens = await tokenRequest({
     client_id: required(env.GOOGLE_CLIENT_ID),
     client_secret: required(env.GOOGLE_CLIENT_SECRET),
     code,
+    code_verifier: verifier,
     grant_type: 'authorization_code',
     redirect_uri: redirectUri
   });
