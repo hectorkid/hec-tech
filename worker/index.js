@@ -127,7 +127,7 @@ async function driveProxy(request, env) {
   const contentType = request.headers.get('Content-Type');
   if (contentType) headers.set('Content-Type', contentType);
   headers.set('Authorization', `Bearer ${accessToken}`);
-  const upstream = await fetch(target, { method, headers, body: method === 'GET' ? undefined : request.body, redirect: 'error' });
+  const upstream = await fetch(target, { method, headers, body: method === 'GET' ? undefined : request.body, redirect: 'manual' });
   const responseHeaders = new Headers();
   for (const key of ['Content-Type', 'Content-Length']) {
     const value = upstream.headers.get(key);
