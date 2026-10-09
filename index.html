@@ -15,7 +15,7 @@ function detail(id){let x=items.find(y=>y.id===id);document.getElementById('moda
 (()=>{
 const CLIENT_ID='180031034190-nv76e5t9fhnukpq0aj9555oamccnt92s.apps.googleusercontent.com';
 const SCOPE='https://www.googleapis.com/auth/drive.appdata';
-const FILE_NAME='hec-tech-inventory.json';
+const FILE_NAME='hec-tech-PHONE-TEST-inventory.json';
 let tokenClient,accessToken='',tokenExpires=0,autoTimer=null,autoBusy=false,autoPending=false,driveConnected=false;
 const CONNECTED_KEY='hec-tech-drive-connected';
 const status=(s)=>{const el=document.getElementById('drive-status');el.textContent=s;const ok=/^✓ Backup successful/.test(s),bad=/unsuccessful|expired|error|canceled/i.test(s);el.style.color=ok?'#146c36':bad?'#a52a2a':'#374151';el.style.background=ok?'#e8f6ed':bad?'#fff0f0':'#f0f2f5'};
