@@ -30,7 +30,7 @@ Never paste these values into an issue, pull request, source file, or chat. GitH
 
 The API token needs only the HEC TECH Cloudflare account. Cloudflare's **Edit Cloudflare Workers** token template can be narrowed to that account; include Workers KV Storage edit access for the workflow's one namespace. If the account does not yet have a `workers.dev` subdomain, enable one in Cloudflare before running the workflow.
 
-After the workflow deploys, copy the callback URL printed in its summary (`https://hec-tech-drive.<account-subdomain>.workers.dev/oauth/callback`) into the existing Google OAuth Web client as an authorized redirect URI. Then enable the Google Drive API and authorize the account. The app update will publish to GitHub Pages after the pull request is merged.
+After the workflow deploys, copy the callback URL printed in its summary (`https://hec-tech-drive.<account-subdomain>.workers.dev/oauth/callback`) into the new HEC TECH Drive Worker Google OAuth Web client as an authorized redirect URI. Then enable the Google Drive API and authorize the account. The app update will publish to GitHub Pages after the pull request is merged.
 
 ### Deploy locally with Wrangler
 
@@ -62,7 +62,7 @@ Wrangler prints the Worker URL, normally `https://hec-tech-drive.<your-account-s
 
 ## Google OAuth client
 
-In Google Cloud Console, use a **Web application** OAuth client. Add the exact callback URL `https://hec-tech-drive.<your-account-subdomain>.workers.dev/oauth/callback` as an authorized redirect URI. The client ID and secret are entered into Wrangler secrets above, never source files. Enable the Google Drive API. The consent screen must allow the Google account entered as `ALLOWED_GOOGLE_EMAIL`.
+In Google Cloud Console, use the **HEC TECH Drive Worker** Web application OAuth client. Add the exact callback URL `https://hec-tech-drive.<your-account-subdomain>.workers.dev/oauth/callback` as an authorized redirect URI. The client ID and secret are entered into Wrangler secrets above, never source files. Enable the Google Drive API. The consent screen must allow the Google account entered as `ALLOWED_GOOGLE_EMAIL`.
 
 On the first tap of **Back up to Drive** or **Restore from Drive**, Google will ask you to authorize HEC TECH once. After that, the app saves the session on that device and the Worker silently refreshes Google access tokens. If Google OAuth consent is left in **Testing**, Google may expire refresh tokens after seven days; set the consent screen to **In production** for continuing personal use (verification may be required depending on Google's scope and account rules).
 
