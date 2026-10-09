@@ -1,7 +1,14 @@
 name: Deploy HEC TECH Drive Worker
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - feature/cloudflare-drive-oauth
+    paths:
+      - "worker/**"
+      - "wrangler.toml"
+      - ".github/workflows/deploy-drive-worker.yml"
 
 permissions:
   contents: write
