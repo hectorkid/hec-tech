@@ -43,28 +43,22 @@ async function upload(interactive=true){if(autoBusy){autoPending=true;return;}au
 async function download(){status('Connecting to Google…');await ensureAuthorized();let id=await findFile();if(!id){status('No Drive backup found yet.');return;}let r=await api('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(id)+'?alt=media');let data=await r.json();if(!Array.isArray(data)||!data.every(x=>x.name&&x.id))throw Error('Backup data is invalid');if(!confirm('Replace the '+items.length+' tools on this device with '+data.length+' tools from Google Drive? Export a local backup first if needed.')){status('Restore canceled');return;}for(const tool of data){if(tool.manualStored)await window.HECPdfDriveRestore(tool,api);}const previous=items;items=data;if(!save()){items=previous;throw Error('Inventory restore could not be saved.');}filter='All';render();status('Restored '+items.length+' tools and PDF manuals from Google Drive.');}
 function queueAutoBackup(){
  clearTimeout(autoTimer);
- autoTimer=setTimeout(async()=>{
-  if(!driveConnected||Date.now()>tokenExpires){
-   try{await ensureAuthorized(false)}catch(e){status('Google sign-in needed — changes saved on this phone. Tap Back up to Drive to reconnect.');return;}
+ autoTimer=setTimeout(()=>{
+  // Never initiate Google authorization without a user gesture.
+  // A valid in-memory token can be reused; otherwise manual reconnection is needed.
+  if(!accessToken||Date.now()>=tokenExpires){
+   status('Google Drive backup ready — tap Back up to Drive to reconnect.');
+   return;
   }
   upload(false).catch(e=>status('✕ Backup unsuccessful — '+(e.message||e)+'. Tap Back up to Drive to retry.'));
  },1800);
 }
 window.addEventListener('hec-inventory-updated',queueAutoBackup);
 if(localStorage.getItem(CONNECTED_KEY)==='yes'){
- status('Automatic Google Drive backup scheduled…');
- // Wait until the app has fully rendered before requesting a silent token.
- // This is an attempted backup; Google may still require a user gesture.
- window.addEventListener('load',()=>{
-  setTimeout(async()=>{
-   try{
-    await ensureAuthorized(false);
-    await upload(false);
-   }catch(e){
-    status(/sign.in|authorization|consent|interaction|popup/i.test(String(e.message||e))?'Automatic backup needs Google authorization — tap Back up to Drive to reconnect.':'✕ Automatic backup unsuccessful — '+(e.message||e)+'. Tap Back up to Drive to retry.');
-   }
-  },3500);
- },{once:true});
+ status('Google Drive backup ready — tap Back up to Drive to reconnect.');
+ // Do not request a Google token on page startup: even prompt:none can flash an OAuth window.
+ // If an existing in-memory token is available, background backups can proceed.
+ if(accessToken&&Date.now()<tokenExpires)window.addEventListener('load',()=>setTimeout(()=>upload(false).catch(e=>status('✕ Backup unsuccessful — '+(e.message||e))),3500),{once:true});
 }
 for(const [id,fn] of [['drive-save',upload],['drive-load',download]])document.getElementById(id).addEventListener('click',async()=>{let b=document.getElementById(id);b.disabled=true;try{await fn()}catch(e){status('✕ Backup unsuccessful — '+(e.message||'Something went wrong'));alert('Google Drive: '+(e.message||'Unable to complete'))}finally{b.disabled=false}});
 })();</script><script src="./portable-backup.js"></script><script src="./install-guide.js"></script></body></html>
