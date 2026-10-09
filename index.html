@@ -51,6 +51,20 @@ function queueAutoBackup(){
  },1800);
 }
 window.addEventListener('hec-inventory-updated',queueAutoBackup);
-if(localStorage.getItem(CONNECTED_KEY)==='yes'){status('Google Drive backup is set up. Tap Back up to Drive if Google needs to reconnect.');}
+if(localStorage.getItem(CONNECTED_KEY)==='yes'){
+ status('Automatic Google Drive backup scheduled…');
+ // Wait until the app has fully rendered before requesting a silent token.
+ // This is an attempted backup; Google may still require a user gesture.
+ window.addEventListener('load',()=>{
+  setTimeout(async()=>{
+   try{
+    await ensureAuthorized(false);
+    await upload();
+   }catch(e){
+    status('Automatic backup needs Google authorization — tap Back up to Drive to reconnect.');
+   }
+  },3500);
+ },{once:true});
+}
 for(const [id,fn] of [['drive-save',upload],['drive-load',download]])document.getElementById(id).addEventListener('click',async()=>{let b=document.getElementById(id);b.disabled=true;try{await fn()}catch(e){status('✕ Backup unsuccessful — '+(e.message||'Something went wrong'));alert('Google Drive: '+(e.message||'Unable to complete'))}finally{b.disabled=false}});
 })();</script><script src="./portable-backup.js"></script><script src="./install-guide.js"></script></body></html>
