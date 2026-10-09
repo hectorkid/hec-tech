@@ -78,7 +78,7 @@
     controls.append(exportButton,importButton,picker);
     const note=document.createElement('p');
     note.style.fontSize='13px';
-    note.textContent='Apple Files / iCloud Drive: manual complete backups. Google Drive automatic backup currently covers inventory only, not offline PDFs.';
+    note.textContent='Apple Files / iCloud Drive: manual complete backups. Google Drive backup includes attached offline PDFs when connected; check the Drive backup status to confirm success.';
     controls.after(note);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
