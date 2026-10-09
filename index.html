@@ -53,4 +53,4 @@ function queueAutoBackup(){
 window.addEventListener('hec-inventory-updated',queueAutoBackup);
 if(localStorage.getItem(CONNECTED_KEY)==='yes'){status('Checking Google Drive connection…');window.addEventListener('load',()=>{setTimeout(async()=>{try{await ensureAuthorized(false);status('Google Drive connected — your next inventory change will back up automatically.')}catch(e){status('Google sign-in needed — tap Back up to Drive once to reconnect.')}},700)});}
 for(const [id,fn] of [['drive-save',upload],['drive-load',download]])document.getElementById(id).addEventListener('click',async()=>{let b=document.getElementById(id);b.disabled=true;try{await fn()}catch(e){status('✕ Backup unsuccessful — '+(e.message||'Something went wrong'));alert('Google Drive: '+(e.message||'Unable to complete'))}finally{b.disabled=false}});
-})();</script></body></html>
+})();</script><script src="./portable-backup.js"></script></body></html>
