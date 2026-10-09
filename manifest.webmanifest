@@ -1,6 +1,6 @@
 {
   "name": "HEC TECH \u2014 My Tool Collection",
-  "short_name": "HEC TECH",
+  "short_name": "HEC TEST",
   "description": "Search and organize my personal tool inventory",
   "start_url": "./index.html",
   "scope": "./",
