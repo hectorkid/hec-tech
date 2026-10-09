@@ -8,6 +8,7 @@ async function run() {
   let nextId = 1;
   const context = {
     window: {},
+    URL,
     HECManualStore: {
       get: async key => saved.get(String(key)),
       put: async (key, value) => { saved.set(String(key), value); }
@@ -21,9 +22,7 @@ async function run() {
   const request = async (url, options) => {
     if (url.includes('/upload/drive/v3/files')) {
       const id = url.match(/\/files\/([^?]+)/)?.[1] || String(nextId++);
-      const chunks = [];
-      for (const part of options.body) chunks.push(typeof part === 'string' ? part : Buffer.from(await part.arrayBuffer()));
-      const content = Buffer.concat(chunks.map(v => typeof v === 'string' ? Buffer.from(v) : v));
+      const content = Buffer.from(await options.body.arrayBuffer());
       remote.set(id,{name:'hec-tech-pdf-123.pdf',bytes:content});
       return {json:async()=>({id})};
     }
