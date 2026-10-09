@@ -1,8 +1,8 @@
 /* HEC TECH offline-first app shell: avoid network-dependent blank startup. */
-const CACHE='hec-tech-v7';
+const CACHE='hec-tech-v8';
 const ASSETS=['./','./index.html','./manual-storage.js','./portable-backup.js','./drive-pdf-helpers.js','./drive-pdf-upload.js','./drive-pdf-restore.js','./install-guide.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
-self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()))});
-self.addEventListener('activate',event=>{event.waitUntil(Promise.all([caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('hec-tech-')&&key!==CACHE).map(key=>caches.delete(key)))),self.clients.claim()]))});
+self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)))});
+self.addEventListener('activate',event=>{event.waitUntil(Promise.all([caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('hec-tech-')&&key!==CACHE).map(key=>caches.delete(key))))]))});
 self.addEventListener('fetch',event=>{
  const request=event.request;
  if(request.method!=='GET'||new URL(request.url).origin!==self.location.origin)return;
