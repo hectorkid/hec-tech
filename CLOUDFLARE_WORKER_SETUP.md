@@ -14,6 +14,27 @@ Cloudflare currently lists 100,000 Worker requests/day on Free and 100,000 KV re
 
 ## Deploy
 
+### Deploy from GitHub Actions
+
+This repository includes a manual deployment workflow so you can authorize deployment using your regular browser without sharing account credentials in chat. In `hectorkid/hec-tech`, add these under **Settings → Secrets and variables → Actions → New repository secret**:
+
+| Secret name | Value |
+| --- | --- |
+| `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare account ID |
+| `CLOUDFLARE_API_TOKEN` | An account-scoped API token with Workers Scripts edit/read and Workers KV Storage edit/read permissions |
+| `GOOGLE_CLIENT_ID` | The existing HEC TECH Google OAuth web client ID |
+| `GOOGLE_CLIENT_SECRET` | The matching Google OAuth web client secret |
+| `ALLOWED_GOOGLE_EMAIL` | The Google account HEC TECH should be allowed to use |
+| `TOKEN_ENCRYPTION_KEY` | A base64-encoded random 32-byte key, generated locally with `openssl rand -base64 32` |
+
+Never paste these values into an issue, pull request, source file, or chat. GitHub Actions secrets are sent to the deployment job and installed as Cloudflare Worker secrets. The workflow finds or creates the KV namespace, deploys the Worker, detects its `workers.dev` URL, and commits that URL to the selected branch. It runs only when you manually start it from **Actions → Deploy HEC TECH Drive Worker → Run workflow**. Select `feature/cloudflare-drive-oauth` while PR #3 is still open.
+
+The API token needs only the HEC TECH Cloudflare account. Cloudflare's **Edit Cloudflare Workers** token template can be narrowed to that account; include Workers KV Storage edit access for the workflow's one namespace. If the account does not yet have a `workers.dev` subdomain, enable one in Cloudflare before running the workflow.
+
+After the workflow deploys, copy the callback URL printed in its summary (`https://hec-tech-drive.<account-subdomain>.workers.dev/oauth/callback`) into the existing Google OAuth Web client as an authorized redirect URI. Then enable the Google Drive API and authorize the account. The app update will publish to GitHub Pages after the pull request is merged.
+
+### Deploy locally with Wrangler
+
 Install Wrangler on a computer with Node.js, then from this repository:
 
 ```sh
