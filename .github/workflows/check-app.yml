@@ -13,4 +13,4 @@ jobs:
         with:
           node-version: '22'
       - name: Check app scripts and offline assets
-        run: node tests/check-app.cjs
+        run: node tests/check-app.cjs && node tests/check-drive-pdfs.cjs
