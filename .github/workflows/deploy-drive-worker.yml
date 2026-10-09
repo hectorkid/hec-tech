@@ -1,0 +1,152 @@
+name: Deploy HEC TECH Drive Worker
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hec-tech-drive-worker
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the selected branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate deployment secrets
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          ALLOWED_GOOGLE_EMAIL: ${{ secrets.ALLOWED_GOOGLE_EMAIL }}
+          TOKEN_ENCRYPTION_KEY: ${{ secrets.TOKEN_ENCRYPTION_KEY }}
+        run: |
+          set -euo pipefail
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET ALLOWED_GOOGLE_EMAIL TOKEN_ENCRYPTION_KEY; do
+            if [ -z "${!name:-}" ]; then
+              echo "Missing GitHub Actions secret: ${name}" >&2
+              exit 1
+            fi
+          done
+
+      - name: Find or create the Worker KV namespace
+        id: namespace
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          api="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/storage/kv/namespaces"
+          existing="$(curl --fail --silent --show-error "$api?per_page=100" \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" | \
+            jq -r '.result[]? | select(.title == "hec-tech-drive-oauth") | .id' | head -n 1)"
+          if [ -n "$existing" ]; then
+            namespace_id="$existing"
+          else
+            created="$(curl --fail --silent --show-error -X POST "$api" \
+              -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              -H "Content-Type: application/json" \
+              --data '{"title":"hec-tech-drive-oauth"}')"
+            namespace_id="$(jq -r '.result.id // empty' <<< "$created")"
+          fi
+          if [ -z "$namespace_id" ]; then
+            echo "Cloudflare did not return the HEC TECH KV namespace ID." >&2
+            exit 1
+          fi
+          echo "id=$namespace_id" >> "$GITHUB_OUTPUT"
+
+      - name: Configure Worker binding and endpoint
+        id: config
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          HEC_OAUTH_KV_ID: ${{ steps.namespace.outputs.id }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          path = Path("wrangler.toml")
+          data = path.read_text()
+          marker = "REPLACE_WITH_CLOUDFLARE_KV_NAMESPACE_ID"
+          if marker not in data:
+              raise SystemExit("KV namespace marker was not found in wrangler.toml")
+          path.write_text(data.replace(marker, os.environ["HEC_OAUTH_KV_ID"]))
+          PY
+          account_api="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/workers/subdomain"
+          response="$(curl --fail --silent --show-error "$account_api" \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}")"
+          subdomain="$(jq -r '.result.subdomain // empty' <<< "$response")"
+          if [ -z "$subdomain" ]; then
+            echo "Enable a workers.dev subdomain on the Cloudflare account, then rerun this workflow." >&2
+            exit 1
+          fi
+          echo "url=https://hec-tech-drive.${subdomain}.workers.dev" >> "$GITHUB_OUTPUT"
+
+      - name: Create temporary secrets file
+        env:
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          ALLOWED_GOOGLE_EMAIL: ${{ secrets.ALLOWED_GOOGLE_EMAIL }}
+          TOKEN_ENCRYPTION_KEY: ${{ secrets.TOKEN_ENCRYPTION_KEY }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os
+          required = ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "ALLOWED_GOOGLE_EMAIL", "TOKEN_ENCRYPTION_KEY"]
+          missing = [name for name in required if not os.environ.get(name)]
+          if missing:
+              raise SystemExit("Missing GitHub Actions secrets: " + ", ".join(missing))
+          path = os.path.join(os.environ["RUNNER_TEMP"], "hec-tech-worker-secrets.json")
+          with open(path, "w", encoding="utf-8") as output:
+              json.dump({name: os.environ[name] for name in required}, output)
+          PY
+
+      - name: Deploy Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          SECRETS_FILE: ${{ runner.temp }}/hec-tech-worker-secrets.json
+        run: |
+          set -euo pipefail
+          trap 'rm -f "$SECRETS_FILE"' EXIT
+          npx --yes wrangler@4 deploy --config wrangler.toml --secrets-file "$SECRETS_FILE"
+
+      - name: Set app endpoint and update this branch
+        env:
+          WORKER_URL: ${{ steps.config.outputs.url }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os, re
+          from pathlib import Path
+          path = Path("index.html")
+          data = path.read_text()
+          pattern = r'https://hec-tech-drive\.[A-Za-z0-9_-]+\.workers\.dev'
+          updated, count = re.subn(pattern, os.environ["WORKER_URL"], data, count=1)
+          if count != 1:
+              raise SystemExit("Could not find the HEC TECH Worker URL in index.html")
+          path.write_text(updated)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Configure HEC TECH Cloudflare Worker URL"
+            git push origin "HEAD:${BRANCH}"
+          fi
+          echo "Worker deployed: $WORKER_URL"
+          echo "Add this exact URI to the Google OAuth Web client: $WORKER_URL/oauth/callback" >> "$GITHUB_STEP_SUMMARY"
