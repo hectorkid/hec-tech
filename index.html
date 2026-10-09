@@ -39,7 +39,7 @@ async function ensureAuthorized(interactive=true){
 }
 async function api(url,opts={}){let r=await fetch(url,{...opts,headers:{Authorization:'Bearer '+accessToken,...(opts.headers||{})}});if(!r.ok)throw Error('Google Drive error '+r.status+': '+(await r.text()).slice(0,160));return r;}
 async function findFile(){let q=encodeURIComponent("name = '"+FILE_NAME+"' and trashed = false");let r=await api('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&fields=files(id,name),nextPageToken&q='+q);let data=await r.json();return data.files?.[0]?.id||null;}
-async function upload(){if(autoBusy){autoPending=true;return;}autoBusy=true;try{status('◌ Backing up…');await ensureAuthorized();status('◌ Backing up…');let pdfCount=0;for(const tool of items){if(tool.manualStored){await window.HECPdfDriveUpload(tool,api);pdfCount++;}}let id=await findFile();let data=JSON.stringify(items);let meta={name:FILE_NAME,parents:['appDataFolder'],mimeType:'application/json'};let boundary='hectech'+Date.now();let body='--'+boundary+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(id?{name:FILE_NAME}:meta)+'\r\n--'+boundary+'\r\nContent-Type: application/json\r\n\r\n'+data+'\r\n--'+boundary+'--';let url=id?'https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(id)+'?uploadType=multipart':'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';await api(url,{method:id?'PATCH':'POST',headers:{'Content-Type':'multipart/related; boundary='+boundary},body});status('✓ Backup successful — '+items.length+' tools, '+pdfCount+' PDFs · '+new Date().toLocaleString());}finally{autoBusy=false;if(autoPending){autoPending=false;queueAutoBackup();}}}
+async function upload(interactive=true){if(autoBusy){autoPending=true;return;}autoBusy=true;try{status('◌ Backing up…');await ensureAuthorized(interactive);status('◌ Backing up…');let pdfCount=0;for(const tool of items){if(tool.manualStored){await window.HECPdfDriveUpload(tool,api);pdfCount++;}}let id=await findFile();let data=JSON.stringify(items);let meta={name:FILE_NAME,parents:['appDataFolder'],mimeType:'application/json'};let boundary='hectech'+Date.now();let body='--'+boundary+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(id?{name:FILE_NAME}:meta)+'\r\n--'+boundary+'\r\nContent-Type: application/json\r\n\r\n'+data+'\r\n--'+boundary+'--';let url=id?'https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(id)+'?uploadType=multipart':'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';await api(url,{method:id?'PATCH':'POST',headers:{'Content-Type':'multipart/related; boundary='+boundary},body});status('✓ Backup successful — '+items.length+' tools, '+pdfCount+' PDFs · '+new Date().toLocaleString());}finally{autoBusy=false;if(autoPending){autoPending=false;queueAutoBackup();}}}
 async function download(){status('Connecting to Google…');await ensureAuthorized();let id=await findFile();if(!id){status('No Drive backup found yet.');return;}let r=await api('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(id)+'?alt=media');let data=await r.json();if(!Array.isArray(data)||!data.every(x=>x.name&&x.id))throw Error('Backup data is invalid');if(!confirm('Replace the '+items.length+' tools on this device with '+data.length+' tools from Google Drive? Export a local backup first if needed.')){status('Restore canceled');return;}for(const tool of data){if(tool.manualStored)await window.HECPdfDriveRestore(tool,api);}const previous=items;items=data;if(!save()){items=previous;throw Error('Inventory restore could not be saved.');}filter='All';render();status('Restored '+items.length+' tools and PDF manuals from Google Drive.');}
 function queueAutoBackup(){
  clearTimeout(autoTimer);
@@ -47,7 +47,7 @@ function queueAutoBackup(){
   if(!driveConnected||Date.now()>tokenExpires){
    try{await ensureAuthorized(false)}catch(e){status('Google sign-in needed — changes saved on this phone. Tap Back up to Drive to reconnect.');return;}
   }
-  upload().catch(e=>status('✕ Backup unsuccessful — '+(e.message||e)+'. Tap Back up to Drive to retry.'));
+  upload(false).catch(e=>status('✕ Backup unsuccessful — '+(e.message||e)+'. Tap Back up to Drive to retry.'));
  },1800);
 }
 window.addEventListener('hec-inventory-updated',queueAutoBackup);
@@ -59,9 +59,9 @@ if(localStorage.getItem(CONNECTED_KEY)==='yes'){
   setTimeout(async()=>{
    try{
     await ensureAuthorized(false);
-    await upload();
+    await upload(false);
    }catch(e){
-    status('Automatic backup needs Google authorization — tap Back up to Drive to reconnect.');
+    status(/sign.in|authorization|consent|interaction|popup/i.test(String(e.message||e))?'Automatic backup needs Google authorization — tap Back up to Drive to reconnect.':'✕ Automatic backup unsuccessful — '+(e.message||e)+'. Tap Back up to Drive to retry.');
    }
   },3500);
  },{once:true});
