@@ -78,7 +78,7 @@ async function callback(request, env) {
 
   const oldRefresh = await env.HEC_OAUTH_KV.get(REFRESH_KEY);
   if (tokens.refresh_token) {
-    await env.HEC_OAUTH_KV.put(REFRESH_KEY, await encryptSecret(tokens.refresh_token, required(env.TOKEN_ENCRYPTION_KEY)));
+    await env.HEC_OAUTH_KV.put(REFRESH_KEY, await encryptSecret(tokens.refresh_token, required(env.GOOGLE_CLIENT_SECRET)));
   } else if (!oldRefresh) {
     throw new Error('Google did not return offline access. Reconnect and approve Drive access.');
   }
@@ -246,9 +246,25 @@ function bytesToBase64(value) {
 }
 
 async function encryptionKey(secret) {
-  const raw = base64ToBytes(secret);
-  if (raw.byteLength !== 32) throw new Error('TOKEN_ENCRYPTION_KEY must be a base64-encoded 32-byte key.');
-  return crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt', 'decrypt']);
+  const material = await crypto.subtle.importKey(
+    'raw',
+    new TextEncoder().encode(secret),
+    'HKDF',
+    false,
+    ['deriveKey']
+  );
+  return crypto.subtle.deriveKey(
+    {
+      name: 'HKDF',
+      hash: 'SHA-256',
+      salt: new TextEncoder().encode('hec-tech-drive-refresh-v1'),
+      info: new TextEncoder().encode('hec-tech-worker-aes-gcm-v1')
+    },
+    material,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  );
 }
 
 async function encryptSecret(value, secret) {
