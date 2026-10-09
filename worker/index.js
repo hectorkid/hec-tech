@@ -141,7 +141,7 @@ async function getAccessToken(env) {
   if (cachedAccessToken && Date.now() < cachedAccessExpires) return cachedAccessToken;
   const encrypted = await env.HEC_OAUTH_KV.get(REFRESH_KEY);
   if (!encrypted) throw new Error('Google Drive is not connected. Tap Back up to Drive to reconnect.');
-  const refreshToken = await decryptSecret(encrypted, required(env.TOKEN_ENCRYPTION_KEY));
+  const refreshToken = await decryptSecret(encrypted, required(env.GOOGLE_CLIENT_SECRET));
   const tokens = await tokenRequest({
     client_id: required(env.GOOGLE_CLIENT_ID),
     client_secret: required(env.GOOGLE_CLIENT_SECRET),
