@@ -1,0 +1,12 @@
+name = "hec-tech-drive"
+main = "worker/index.js"
+compatibility_date = "2026-10-09"
+workers_dev = true
+
+[vars]
+APP_ORIGIN = "https://hectorkid.github.io"
+APP_RETURN_URL = "https://hectorkid.github.io/hec-tech/"
+
+[[kv_namespaces]]
+binding = "HEC_OAUTH_KV"
+id = "REPLACE_WITH_CLOUDFLARE_KV_NAMESPACE_ID"

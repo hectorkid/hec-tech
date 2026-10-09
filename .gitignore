@@ -1,0 +1,8 @@
+# Local development configuration and secrets
+.dev.vars
+.env
+.env.*
+!.env.example
+*.pem
+client_secret*.json
+token*.json

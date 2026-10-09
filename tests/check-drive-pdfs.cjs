@@ -25,7 +25,7 @@ async function run() {
       const content = Buffer.from(await options.body.arrayBuffer());
       const start=content.indexOf(Buffer.from('%PDF-'));
       assert.ok(start>=0,'multipart body contains PDF');
-      const end=content.indexOf(Buffer.from('\\r\\n--hectechpdf'),start);
+      const end=content.indexOf(Buffer.from('\r\n--hectechpdf'),start);
       remote.set(id,{name:'hec-tech-pdf-123.pdf',bytes:content.subarray(start,end)});
       return {json:async()=>({id})};
     }
