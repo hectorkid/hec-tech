@@ -87,6 +87,20 @@ function addDiablo220DiscsOnce(){
  }catch(e){console.warn('Could not add Diablo sanding discs:',e);}
 }
 addDiablo220DiscsOnce();
+function addMilwaukeeTrimmerLineOnce(){
+ const key='hec-added-milwaukee-49-16-2713-v1';
+ try{
+  if(localStorage.getItem(key)||!Array.isArray(items))return;
+  if(!items.some(x=>String(x.model||'').trim()==='49-16-2713')){
+   const previous=items;
+   items=[...items,{...{"name":".095-inch × 250-foot Twisted Trimmer Line (1 lb)","brand":"Milwaukee","category":"Outdoor Accessories","model":"49-16-2713","serial":"","location":"","purchaseDate":"","notes":"Quantity: 1 spool. Diameter: .095 inch (2.4 mm). Length: 250 feet (76 m). Weight: 1 lb. Red twisted line for all-purpose trimming. Use with a trimmer head rated for .095-inch line. No separate manual found for the line itself; the PDF is Milwaukee’s 2019 Outdoor Power Equipment catalog, which lists this line on page 10. Product: https://www.milwaukeetool.com/Products/49-16-2713","image":"https://www.milwaukeetool.com/--/web-images/sc/9478d9ba4a164302b569954444bb5421?hash=5d0dd657e9d3bde6b0ac3e8b04562cdb&lang=en&w=800","manual":"https://www.milwaukeetool.com/-/media/PDFs/2019-OPE-DigitalCatalog","manualName":"Milwaukee_2019_Outdoor_Equipment_Catalog.pdf"},id:Math.max(0,...items.map(x=>Number(x.id)||0))+1}];
+   if(!save()){items=previous;return;}
+  }
+  localStorage.setItem(key,'1');
+ }catch(e){console.warn('Could not add Milwaukee trimmer line:',e);}
+}
+addMilwaukeeTrimmerLineOnce();
+
 
 
 
