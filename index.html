@@ -137,6 +137,20 @@ function addDiabloSandNet120Once(){
  }catch(e){console.warn('Could not add Diablo SandNet discs:',e);}
 }
 addDiabloSandNet120Once();
+function addDiabloSandNet80Once(){
+ const key='hec-added-diablo-dnd050080h10i-v1';
+ try{
+  if(localStorage.getItem(key)||!Array.isArray(items))return;
+  if(!items.some(x=>String(x.model||'').trim().toUpperCase()==='DND050080H10I')){
+   const previous=items;
+   items=[...items,{...{"name":"5-inch 80-Grit SandNet Sanding Discs with Connection Pad (10-Pack)","brand":"Diablo","category":"Sanding Discs","model":"DND050080H10I","serial":"","location":"","purchaseDate":"","notes":"Quantity: 10 reusable net sanding discs, with connection pad. 5-inch (125 mm); 80 grit (coarse). For orbital and DA sanders. Clean by shaking, vacuuming, or rinsing away buildup. PDF is a one-page product/specification sheet from Edge of Arlington Saw & Tool, not an operating manual. Product: https://diablotools.com/products/DND050080H10I","image":"https://images.freudnation.com/tr:w-1000/img/1000/9c420c8fd31126b9eb1b5cb4f876455e2072063d.png","manual":"https://www.eoasaw.com/shop/dnd050080h10i/?pdf=product","manualName":"Diablo_DND050080H10I_Product_Sheet.pdf"},id:Math.max(0,...items.map(x=>Number(x.id)||0))+1}];
+   if(!save()){items=previous;return;}
+  }
+  localStorage.setItem(key,'1');
+ }catch(e){console.warn('Could not add SandNet 80-grit discs',e);}
+}
+addDiabloSandNet80Once();
+
 
 
 
