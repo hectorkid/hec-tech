@@ -74,6 +74,20 @@ function addDiabloBladesOnce(){
  }catch(e){console.warn('Could not add Diablo blades:',e);}
 }
 addDiabloBladesOnce();
+function addDiablo220DiscsOnce(){
+ const key='hec-added-diablo-dcd050220h15g-v1';
+ try{
+  if(localStorage.getItem(key)||!Array.isArray(items))return;
+  if(!items.some(x=>String(x.model||'').trim().toUpperCase()==='DCD050220H15G')){
+   const previous=items;
+   items=[...items,{...{"name":"5-inch 220-Grit Hook & Lock Sanding Discs (15-Pack)","brand":"Diablo","category":"Sanding Discs","model":"DCD050220H15G","serial":"","location":"","purchaseDate":"","notes":"Quantity: 15 discs. 5-inch (125 mm); 220 grit, ultra fine; premium ceramic blend; Hook & Lock backing. Universal 12-hole pattern for 5-hole and 8-hole sanders. Package maximum: 14,000 RPM. PDF is the Diablo sanding-disc alignment guide. Product: https://diablotools.com/products/DCD050220H15G","image":"https://images.freudnation.com/tr:w-1000/img/1000/3b1ad862d50782202b415a2a920e8d6147ef66ea.png","manual":"https://diablotools.com/public/assets/diablo/downloadables/diablotools-universal-hole-disc-alignment-reference-chart.pdf","manualName":"Diablo_Sanding_Disc_Alignment_Guide.pdf"},id:Math.max(0,...items.map(x=>Number(x.id)||0))+1}];
+   if(!save()){items=previous;return;}
+  }
+  localStorage.setItem(key,'1');
+ }catch(e){console.warn('Could not add Diablo sanding discs:',e);}
+}
+addDiablo220DiscsOnce();
+
 
 
 
