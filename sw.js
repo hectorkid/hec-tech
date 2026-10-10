@@ -1,5 +1,5 @@
 /* HEC TECH: online-first navigation with offline fallback. */
-const CACHE='hec-tech-v15';
+const CACHE='hec-tech-v16';
 const ASSETS=['./index.html','./manual-storage.js','./portable-backup.js','./drive-pdf-helpers.js','./drive-pdf-upload.js','./drive-pdf-restore.js','./install-guide.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()));
@@ -18,7 +18,7 @@ self.addEventListener('fetch',event=>{
     if(response.ok)await cache.put(request,response.clone());
     return response;
    }catch(error){
-    const cached=await cache.match(request);
+    const cached=await cache.match(request,{ignoreSearch:true});
     if(cached)return cached;
     throw error;
    }
