@@ -60,6 +60,21 @@ function updatePanasonicResourcesOnce(){
  }catch(e){console.warn('Could not update Panasonic resources:',e);}
 }
 updatePanasonicResourcesOnce();
+function addDiabloBladesOnce(){
+ const key='hec-added-diablo-ds0909cgpa-2pack-v1';
+ try{
+  if(localStorage.getItem(key)||!Array.isArray(items))return;
+  const exists=items.some(x=>['DS0909CGPA','DS0909CGPAP'].includes(String(x.model||'').trim().toUpperCase()));
+  if(!exists){
+   const previous=items;
+   items=[...items,{...{"name":"9-inch AMPED Demo Demon Reciprocating Saw Blades (2-Pack)","brand":"Diablo","category":"Saw Blades","model":"DS0909CGPA","serial":"","location":"","purchaseDate":"2026-10-09","notes":"Quantity: 2 blades (promotional pack). 9-inch length; 6/9 TPI; carbide teeth. General-purpose cutting: nail-embedded wood, metal 1/8 to 3/8 inch, and PVC/pipe. No product-specific PDF manual found in Diablo’s product/download pages. Product information: https://diablotools.com/products/DS0909CGPA","image":"https://images.freudnation.com/tr:w-1000/img/1000/814de02d5665080184d6f36f15ce748c5042798d.png"},id:Math.max(0,...items.map(x=>Number(x.id)||0))+1}];
+   if(!save()){items=previous;return;}
+  }
+  localStorage.setItem(key,'1');
+ }catch(e){console.warn('Could not add Diablo blades:',e);}
+}
+addDiabloBladesOnce();
+
 
 
 function removeItem(id){if(confirm('Delete this item?')){items=items.filter(x=>x.id!==id);save();document.getElementById('modal').close();render()}}function backup(){let blob=new Blob([JSON.stringify(items,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='my-tool-inventory-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}function restore(el){let file=el.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{let data=JSON.parse(r.result);if(!Array.isArray(data)||!data.every(x=>x.name&&x.id))throw Error('Invalid backup file');if(data.some(x=>x.manualStored)){alert('This inventory-only backup references PDF manuals but does not contain them. Use Restore complete backup to restore tools and PDFs together.');return;}if(confirm('Replace current inventory with this backup?')){const previous=items;items=data;if(!save()){items=previous;return;}filter='All';render()}}catch(e){alert(e.message||'Invalid backup file')}};r.readAsText(file);el.value=''}document.getElementById('search').oninput=e=>{q=e.target.value.toLowerCase().trim();render()};render();</script><script>if('serviceWorker' in navigator && location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}</script><script src="./drive-pdf-helpers.js"></script><script src="./drive-pdf-upload.js"></script><script src="./drive-pdf-restore.js"></script><script>
