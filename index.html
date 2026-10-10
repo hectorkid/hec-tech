@@ -43,6 +43,24 @@ function updatePanasonicLightNotesOnce(){
  }catch(e){console.warn('Could not update Panasonic light notes:',e);}
 }
 updatePanasonicLightNotesOnce();
+function updatePanasonicResourcesOnce(){
+ const key='hec-panasonic-resources-v1';
+ try{
+  if(localStorage.getItem(key))return;
+  const fan=items.find(x=>String(x.model||'').trim().toUpperCase()==='RG-T810LA');
+  if(!fan)return;
+  const previous={...fan};
+  if(!fan.manualStored&&!fan.manual){
+   fan.manual="https://ftp.panasonic.com/ventilationfan/installation/rg-t810la_eng.pdf";
+   fan.manualName='Panasonic_RG-T810LA_Installation_Manual.pdf';
+  }
+  if(!fan.image||fan.image.startsWith('data:image/svg+xml'))fan.image="https://iaq.na.panasonic.com/hs-fs/hubfs/RG-T810LA%20hero.jpeg?height=800&name=RG-T810LA+hero.jpeg&width=800";
+  if(!save()){for(const k of Object.keys(fan))delete fan[k];Object.assign(fan,previous);return;}
+  localStorage.setItem(key,'1');
+ }catch(e){console.warn('Could not update Panasonic resources:',e);}
+}
+updatePanasonicResourcesOnce();
+
 
 function removeItem(id){if(confirm('Delete this item?')){items=items.filter(x=>x.id!==id);save();document.getElementById('modal').close();render()}}function backup(){let blob=new Blob([JSON.stringify(items,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='my-tool-inventory-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}function restore(el){let file=el.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{let data=JSON.parse(r.result);if(!Array.isArray(data)||!data.every(x=>x.name&&x.id))throw Error('Invalid backup file');if(data.some(x=>x.manualStored)){alert('This inventory-only backup references PDF manuals but does not contain them. Use Restore complete backup to restore tools and PDFs together.');return;}if(confirm('Replace current inventory with this backup?')){const previous=items;items=data;if(!save()){items=previous;return;}filter='All';render()}}catch(e){alert(e.message||'Invalid backup file')}};r.readAsText(file);el.value=''}document.getElementById('search').oninput=e=>{q=e.target.value.toLowerCase().trim();render()};render();</script><script>if('serviceWorker' in navigator && location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}</script><script src="./drive-pdf-helpers.js"></script><script src="./drive-pdf-upload.js"></script><script src="./drive-pdf-restore.js"></script><script>
 (()=>{
