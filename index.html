@@ -39,21 +39,6 @@ async function viewManual(id){const x=items.find(y=>y.id===id);if(!x)return;try{
 async function addManual(id){const x=items.find(y=>y.id===id);if(!x)return;const picker=document.createElement('input');picker.type='file';picker.accept='application/pdf,.pdf';picker.onchange=async()=>{const file=picker.files?.[0];if(!file)return;if(file.type!=='application/pdf'&&!/\\.pdf$/i.test(file.name)){alert('Choose a PDF manual.');return;}try{await HECManualStore.put(id,file);const oldManual=x.manual,oldStored=x.manualStored,oldName=x.manualName;x.manualStored=true;x.manualName=file.name;delete x.manual;if(!save()){x.manual=oldManual;x.manualStored=oldStored;x.manualName=oldName;return;}detail(id);alert('PDF saved for offline viewing. If Google Drive is connected, automatic backup will be attempted; check the Drive backup status to confirm it succeeded.')}catch(e){alert('Could not save PDF: '+e.message)}};picker.click()}
 function detail(id){let x=items.find(y=>y.id===id);document.getElementById('modalContent').innerHTML=`<img src="${x.image||''}" alt=""><h2>${esc(x.name)}</h2><div class="detail"><div><b>Category</b>${esc(x.category)}</div><div><b>Brand</b>${esc(x.brand)}</div><div><b>Model</b>${esc(x.model)}</div><div><b>Serial / ID</b>${esc(x.serial||'Not recorded')}</div><div><b>Location</b>${esc(x.location||'Not recorded')}</div><div><b>Purchased</b>${esc(x.purchaseDate||'Not recorded')}</div><div><b>Notes</b>${esc(x.notes||'None')}</div></div><div class="controls"><button class="primary" onclick="edit(${id})">Edit item</button><button onclick="viewManual(${id})">📖 View Manual</button><button onclick="addManual(${id})">➕ Add Manual PDF</button><button onclick="getAccessories(${id})" style="background:#f58220;color:white">🛒 Get Accessories</button><button onclick="document.getElementById('modal').close()">Close</button></div>`;document.getElementById('modal').showModal()}function edit(id){let x=items.find(y=>y.id===id)||{id:Math.max(0,...items.map(y=>y.id))+1,name:'',brand:'',category:'Other',model:'',serial:'',notes:'',location:'',purchaseDate:'',image:''};document.getElementById('modalContent').innerHTML=`<h2>${id?'Edit':'Add'} tool</h2><form id="toolForm">${['name','brand','category','model','serial','location','purchaseDate','notes'].map(k=>`<label>${({name:'Tool name',brand:'Brand',category:'Category',model:'Model',serial:'Serial / ID',location:'Storage location',purchaseDate:'Purchase date',notes:'Notes'})[k]}</label>${k==='notes'?`<textarea name="${k}">${esc(x[k])}</textarea>`:`<input name="${k}" ${k==='name'?'required':''} value="${esc(x[k])}" ${k==='purchaseDate'?'type="date"':''}>`}`).join('')}<label>Photo (optional)</label><input type="file" id="photo" accept="image/*"><div class="controls"><button class="primary" type="submit">Save</button><button type="button" onclick="document.getElementById('modal').close()">Cancel</button>${id?`<button type="button" onclick="removeItem(${id})">Delete</button>`:''}</div></form>`;document.getElementById('toolForm').onsubmit=async e=>{e.preventDefault();let f=new FormData(e.target);for(let k of ['name','brand','category','model','serial','location','purchaseDate','notes'])x[k]=f.get(k)||'';let file=document.getElementById('photo').files[0];if(file){let img=new Image();let url=URL.createObjectURL(file);await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=url});let scale=Math.min(1,700/img.width,700/img.height);let c=document.createElement('canvas');c.width=img.width*scale;c.height=img.height*scale;c.getContext('2d').drawImage(img,0,0,c.width,c.height);x.image=c.toDataURL('image/jpeg',.68);URL.revokeObjectURL(url)}if(!id)items.push(x);save();document.getElementById('modal').close();render()};document.getElementById('modal').showModal()}
 // Add Hector's Panasonic fan once per device, preserving the saved inventory.
-function addPanasonicFanOnce(){
- const key='hec-added-panasonic-rg-t810la-v1';
- try{
-  if(localStorage.getItem(key))return;
-  if(!Array.isArray(items))return;
-  const exists=items.some(x=>String(x.model||'').trim().toUpperCase()==='RG-T810LA');
-  if(!exists){
-   const fan={id:Math.max(0,...items.map(x=>Number(x.id)||0))+1,name:'Bathroom Exhaust Fan with Light',brand:'Panasonic',category:'Home Equipment',model:'RG-T810LA',serial:'',location:'',purchaseDate:'',notes:'Model recorded from the Panasonic installation guide.',image:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200"><rect x="60" y="30" width="200" height="140" rx="18" fill="#f5f6f8" stroke="#596273" stroke-width="4"/><path d="M80 50h160M80 65h160M80 80h160M80 95h160M80 110h160M80 125h160M80 140h160M80 155h160" stroke="#a5abb4" stroke-width="5"/><rect x="118" y="72" width="84" height="56" rx="3" fill="#fff" stroke="#596273" stroke-width="3"/></svg>')};
-   const previous=items;items=[...items,fan];
-   if(!save()){items=previous;return;}
-  }
-  localStorage.setItem(key,'1');
- }catch(e){console.warn('Could not add Panasonic fan:',e);}
-}
-addPanasonicFanOnce();
 function updatePanasonicLightNotesOnce(){
  const key='hec-panasonic-light-notes-v1';
  try{
@@ -86,72 +71,6 @@ function updatePanasonicResourcesOnce(){
  }catch(e){console.warn('Could not update Panasonic resources:',e);}
 }
 updatePanasonicResourcesOnce();
-function addDiabloBladesOnce(){
- const key='hec-added-diablo-ds0909cgpa-2pack-v1';
- try{
-  if(localStorage.getItem(key)||!Array.isArray(items))return;
-  const exists=items.some(x=>['DS0909CGPA','DS0909CGPAP'].includes(String(x.model||'').trim().toUpperCase()));
-  if(!exists){
-   const previous=items;
-   items=[...items,{...{"name":"9-inch AMPED Demo Demon Reciprocating Saw Blades (2-Pack)","brand":"Diablo","category":"Saw Blades","model":"DS0909CGPA","serial":"","location":"","purchaseDate":"2026-10-09","notes":"Quantity: 2 blades (promotional pack). 9-inch length; 6/9 TPI; carbide teeth. General-purpose cutting: nail-embedded wood, metal 1/8 to 3/8 inch, and PVC/pipe. No product-specific PDF manual found in Diablo’s product/download pages. Product information: https://diablotools.com/products/DS0909CGPA","image":"https://images.freudnation.com/tr:w-1000/img/1000/814de02d5665080184d6f36f15ce748c5042798d.png"},id:Math.max(0,...items.map(x=>Number(x.id)||0))+1}];
-   if(!save()){items=previous;return;}
-  }
-  localStorage.setItem(key,'1');
- }catch(e){console.warn('Could not add Diablo blades:',e);}
-}
-addDiabloBladesOnce();
-function addDiablo220DiscsOnce(){
- const key='hec-added-diablo-dcd050220h15g-v1';
- try{
-  if(localStorage.getItem(key)||!Array.isArray(items))return;
-  if(!items.some(x=>String(x.model||'').trim().toUpperCase()==='DCD050220H15G')){
-   const previous=items;
-   items=[...items,{...{"name":"5-inch 220-Grit Hook & Lock Sanding Discs (15-Pack)","brand":"Diablo","category":"Sanding Discs","model":"DCD050220H15G","serial":"","location":"","purchaseDate":"","notes":"Quantity: 15 discs. 5-inch (125 mm); 220 grit, ultra fine; premium ceramic blend; Hook & Lock backing. Universal 12-hole pattern for 5-hole and 8-hole sanders. Package maximum: 14,000 RPM. PDF is the Diablo sanding-disc alignment guide. Product: https://diablotools.com/products/DCD050220H15G","image":"https://images.freudnation.com/tr:w-1000/img/1000/3b1ad862d50782202b415a2a920e8d6147ef66ea.png","manual":"https://diablotools.com/public/assets/diablo/downloadables/diablotools-universal-hole-disc-alignment-reference-chart.pdf","manualName":"Diablo_Sanding_Disc_Alignment_Guide.pdf"},id:Math.max(0,...items.map(x=>Number(x.id)||0))+1}];
-   if(!save()){items=previous;return;}
-  }
-  localStorage.setItem(key,'1');
- }catch(e){console.warn('Could not add Diablo sanding discs:',e);}
-}
-addDiablo220DiscsOnce();
-function addMilwaukeeTrimmerLineOnce(){
- const key='hec-added-milwaukee-49-16-2713-v1';
- try{
-  if(localStorage.getItem(key)||!Array.isArray(items))return;
-  if(!items.some(x=>String(x.model||'').trim()==='49-16-2713')){
-   const previous=items;
-   items=[...items,{...{"name":".095-inch × 250-foot Twisted Trimmer Line (1 lb)","brand":"Milwaukee","category":"Outdoor Accessories","model":"49-16-2713","serial":"","location":"","purchaseDate":"","notes":"Quantity: 1 spool. Diameter: .095 inch (2.4 mm). Length: 250 feet (76 m). Weight: 1 lb. Red twisted line for all-purpose trimming. Use with a trimmer head rated for .095-inch line. No separate manual found for the line itself; the PDF is Milwaukee’s 2019 Outdoor Power Equipment catalog, which lists this line on page 10. Product: https://www.milwaukeetool.com/Products/49-16-2713","image":"https://www.milwaukeetool.com/--/web-images/sc/9478d9ba4a164302b569954444bb5421?hash=5d0dd657e9d3bde6b0ac3e8b04562cdb&lang=en&w=800","manual":"https://www.milwaukeetool.com/-/media/PDFs/2019-OPE-DigitalCatalog","manualName":"Milwaukee_2019_Outdoor_Equipment_Catalog.pdf"},id:Math.max(0,...items.map(x=>Number(x.id)||0))+1}];
-   if(!save()){items=previous;return;}
-  }
-  localStorage.setItem(key,'1');
- }catch(e){console.warn('Could not add Milwaukee trimmer line:',e);}
-}
-addMilwaukeeTrimmerLineOnce();
-function addDiabloSandNet120Once(){
- const key='hec-added-diablo-dnd050120h10i-v1';
- try{
-  if(localStorage.getItem(key)||!Array.isArray(items))return;
-  if(!items.some(x=>String(x.model||'').trim().toUpperCase()==='DND050120H10I')){
-   const previous=items;
-   items=[...items,{...{"name":"5-inch 120-Grit SandNet Sanding Discs with Connection Pad (10-Pack)","brand":"Diablo","category":"Sanding Discs","model":"DND050120H10I","serial":"","location":"","purchaseDate":"","notes":"Quantity: 10 reusable net sanding discs, with connection pad. 5-inch (125 mm); 120 grit. For orbital and DA sanders. Clean by shaking, vacuuming, or rinsing away buildup. PDF is a one-page product/specification sheet from Edge of Arlington Saw & Tool, not an operating manual. Product: https://diablotools.com/products/DND050120H10I","image":"https://images.freudnation.com/tr:w-1000/img/1000/9c420c8fd31126b9eb1b5cb4f876455e2072063d.png","manual":"https://www.eoasaw.com/shop/dnd050120h10i/?pdf=product","manualName":"Diablo_DND050120H10I_Product_Sheet.pdf"},id:Math.max(0,...items.map(x=>Number(x.id)||0))+1}];
-   if(!save()){items=previous;return;}
-  }
-  localStorage.setItem(key,'1');
- }catch(e){console.warn('Could not add Diablo SandNet discs:',e);}
-}
-addDiabloSandNet120Once();
-function addDiabloSandNet80Once(){
- const key='hec-added-diablo-dnd050080h10i-v1';
- try{
-  if(localStorage.getItem(key)||!Array.isArray(items))return;
-  if(!items.some(x=>String(x.model||'').trim().toUpperCase()==='DND050080H10I')){
-   const previous=items;
-   items=[...items,{...{"name":"5-inch 80-Grit SandNet Sanding Discs with Connection Pad (10-Pack)","brand":"Diablo","category":"Sanding Discs","model":"DND050080H10I","serial":"","location":"","purchaseDate":"","notes":"Quantity: 10 reusable net sanding discs, with connection pad. 5-inch (125 mm); 80 grit (coarse). For orbital and DA sanders. Clean by shaking, vacuuming, or rinsing away buildup. PDF is a one-page product/specification sheet from Edge of Arlington Saw & Tool, not an operating manual. Product: https://diablotools.com/products/DND050080H10I","image":"https://images.freudnation.com/tr:w-1000/img/1000/9c420c8fd31126b9eb1b5cb4f876455e2072063d.png","manual":"https://www.eoasaw.com/shop/dnd050080h10i/?pdf=product","manualName":"Diablo_DND050080H10I_Product_Sheet.pdf"},id:Math.max(0,...items.map(x=>Number(x.id)||0))+1}];
-   if(!save()){items=previous;return;}
-  }
-  localStorage.setItem(key,'1');
- }catch(e){console.warn('Could not add SandNet 80-grit discs',e);}
-}
-addDiabloSandNet80Once();
 
 
 
