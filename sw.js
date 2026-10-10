@@ -1,5 +1,5 @@
 /* HEC TECH: online-first navigation with offline fallback. */
-const CACHE='hec-tech-v14';
+const CACHE='hec-tech-v15';
 const ASSETS=['./index.html','./manual-storage.js','./portable-backup.js','./drive-pdf-helpers.js','./drive-pdf-upload.js','./drive-pdf-restore.js','./install-guide.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()));
@@ -10,6 +10,21 @@ self.addEventListener('activate',event=>{
 self.addEventListener('fetch',event=>{
  const request=event.request;
  if(request.method!=='GET'||new URL(request.url).origin!==self.location.origin)return;
+ if(new URL(request.url).pathname.endsWith('/portable-backup.js')){
+  event.respondWith((async()=>{
+   const cache=await caches.open(CACHE);
+   try{
+    const response=await fetch(request,{cache:'no-store'});
+    if(response.ok)await cache.put(request,response.clone());
+    return response;
+   }catch(error){
+    const cached=await cache.match(request);
+    if(cached)return cached;
+    throw error;
+   }
+  })());
+  return;
+ }
  if(request.mode==='navigate'){
   event.respondWith((async()=>{
    const cache=await caches.open(CACHE);
