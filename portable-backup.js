@@ -62,11 +62,22 @@
     }catch(err){notify('Restore failed: '+err.message)}
   }
   function setup(){
-    const controls=document.querySelector('main .controls');
-    if(!controls)return;
+    const main=document.querySelector('main.wrap');
+    if(!main)return;
+    const panel=document.createElement('section');
+    panel.style.cssText='margin:10px 0 16px;padding:10px 14px;border:1px solid #d8dce3;border-radius:12px;background:#fff';
+    const details=document.createElement('details');
+    const title=document.createElement('summary');
+    title.textContent='Manual backup options (includes PDFs)';
+    title.style.cssText='font-weight:650;cursor:pointer';
+    const note=document.createElement('p');
+    note.style.cssText='font-size:13px;margin:10px 0';
+    note.textContent='Create a separate backup file with your tools and attached PDF manuals. Save it to Files, iCloud Drive, or another location. Restoring replaces the inventory on this device.';
+    const actions=document.createElement('div');
+    actions.className='controls';
     const exportButton=document.createElement('button');
     exportButton.type='button';
-    exportButton.textContent='📦 Export complete backup (Files/iCloud)';
+    exportButton.textContent='📦 Export complete backup';
     exportButton.addEventListener('click',exportComplete);
     const importButton=document.createElement('button');
     importButton.type='button';
@@ -75,11 +86,12 @@
     picker.type='file';picker.accept='.json,application/json';picker.hidden=true;
     importButton.addEventListener('click',()=>picker.click());
     picker.addEventListener('change',()=>importComplete(picker));
-    controls.append(exportButton,importButton,picker);
-    const note=document.createElement('p');
-    note.style.fontSize='13px';
-    note.textContent='Apple Files / iCloud Drive: manual complete backups. Google Drive backup includes attached offline PDFs when connected; check the Drive backup status to confirm success.';
-    controls.after(note);
+    actions.append(exportButton,importButton,picker);
+    details.append(title,note,actions);
+    panel.append(details);
+    const drive=document.getElementById('drive-backup');
+    if(drive)drive.after(panel);
+    else main.append(panel);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
 })();
