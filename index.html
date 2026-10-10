@@ -78,7 +78,45 @@ updatePanasonicResourcesOnce();
 
 
 
-function removeItem(id){if(confirm('Delete this item?')){items=items.filter(x=>x.id!==id);save();document.getElementById('modal').close();render()}}document.getElementById('search').oninput=e=>{q=e.target.value.toLowerCase().trim();render()};render();</script><script>if('serviceWorker' in navigator && location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?update=20').catch(()=>{}))}</script><script src="./drive-pdf-helpers.js"></script><script src="./drive-pdf-upload.js"></script><script src="./drive-pdf-restore.js"></script><script>
+function addLutronHumiditySwitchOnce(){
+ const key='hec-lutron-mshs3-tool-v1';
+ try{
+  if(localStorage.getItem(key))return;
+  const model='MS-HS3-WH';
+  const image='https://www.beeslighting.com/cdn/shop/files/lutron_MS-HS3-WH_humidity-switch_207.jpg?v=1771204077&width=1946';
+  const manual='https://assets.lutron.com/a/documents/0302184.pdf';
+  const existing=items.find(x=>String(x.model||'').trim().toUpperCase()===model);
+  if(existing){
+   let changed=false;
+   if(!existing.image){existing.image=image;changed=true;}
+   if(!existing.manualStored&&!existing.manual){existing.manual=manual;existing.manualName='Lutron_MS-HS3_Installation_Instructions.pdf';changed=true;}
+   if(changed&&!save())return;
+   localStorage.setItem(key,'1');
+   return;
+  }
+  if(!items.some(x=>String(x.model||'').trim().toUpperCase()==='RG-T810LA'))return;
+  const previous=items.slice();
+  const id=Math.max(0,...items.map(x=>Number(x.id)||0))+1;
+  items.push({
+   id,
+   name:'Lutron XactSense Humidity Sensor Switch',
+   brand:'Lutron',
+   category:'Electrical',
+   model,
+   serial:'',
+   location:'',
+   purchaseDate:'',
+   notes:'Single-pole humidity-sensing bathroom fan control. 120 V; rated for a 3 A fan/light combination (1/10 HP fan). Adjustable run times: 5, 15, 30, or 45 minutes; humidity thresholds: 50%, 60%, 70%, or 80% RH.',
+   image,
+   manual,
+   manualName:'Lutron_MS-HS3_Installation_Instructions.pdf'
+  });
+  if(!save()){items=previous;return;}
+  localStorage.setItem(key,'1');
+ }catch(e){console.warn('Could not add Lutron humidity switch:',e);}
+}
+addLutronHumiditySwitchOnce();
+function removeItem(id){if(confirm('Delete this item?')){items=items.filter(x=>x.id!==id);save();document.getElementById('modal').close();render()}}document.getElementById('search').oninput=e=>{q=e.target.value.toLowerCase().trim();render()};render();</script><script>if('serviceWorker' in navigator && location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?update=21').catch(()=>{}))}</script><script src="./drive-pdf-helpers.js"></script><script src="./drive-pdf-upload.js"></script><script src="./drive-pdf-restore.js"></script><script>
 (()=>{
 function appConfirm(message){return new Promise(resolve=>{const d=document.getElementById("confirmDialog"),ok=document.getElementById("confirmOk"),cancel=document.getElementById("confirmCancel");document.getElementById("confirmMessage").textContent=message;const finish=value=>{d.removeEventListener("cancel",onCancel);ok.removeEventListener("click",onYes);cancel.removeEventListener("click",onNo);if(d.open)d.close();resolve(value)};const onCancel=e=>{e.preventDefault();finish(false)},onYes=()=>finish(true),onNo=()=>finish(false);d.addEventListener("cancel",onCancel);ok.addEventListener("click",onYes);cancel.addEventListener("click",onNo);d.showModal();cancel.focus()})}
 const WORKER_BASE="https://hec-tech-drive.hectech.workers.dev";
