@@ -2,7 +2,21 @@
    Backup includes local tool records and PDF manuals from IndexedDB.
    iCloud Drive is a manual save destination, not automatic synchronization. */
 (function(){
-  function notify(message){window.alert(message)}
+  function notify(message){
+    let status=document.getElementById('portable-backup-status');
+    if(!status){
+      status=document.createElement('p');
+      status.id='portable-backup-status';
+      status.setAttribute('role','status');
+      status.setAttribute('aria-live','polite');
+      status.style.cssText='font-size:14px;font-weight:650;margin:10px 0;padding:10px;border-radius:9px';
+      (document.querySelector('#manual-backup-panel details')||document.body).append(status);
+    }
+    status.textContent=message;
+    status.style.background=/failed/i.test(message)?'#fff0f0':'#e8f6ed';
+    status.style.color=/failed/i.test(message)?'#a52a2a':'#146c36';
+    status.hidden=false;
+  }
   function readDataURL(blob){
     return new Promise((resolve,reject)=>{
       const reader=new FileReader();
@@ -24,14 +38,14 @@
       const data={format:'hec-tech-complete-v1',createdAt:new Date().toISOString(),items,manuals};
       const file=new File([JSON.stringify(data)],'hec-tech-complete-backup.json',{type:'application/json'});
       if(navigator.canShare&&navigator.canShare({files:[file]})){
-        try{await navigator.share({files:[file],title:'HEC TECH backup'});return}
+        try{await navigator.share({files:[file],title:'HEC TECH backup'});notify('Backup file shared. Choose a destination in the share panel to save it.');return}
         catch(err){if(err.name==='AbortError')return}
       }
       const url=URL.createObjectURL(file);
       const link=document.createElement('a');
       link.href=url;link.download=file.name;document.body.append(link);link.click();link.remove();
       setTimeout(()=>URL.revokeObjectURL(url),60000);
-      notify('Complete backup downloaded. Check your Downloads or Files app for hec-tech-complete-backup.json. The file includes your tools and attached PDF manuals.');
+      notify('Complete backup downloaded. Check Downloads or Files for hec-tech-complete-backup.json. It includes your tools and attached PDF manuals.');
     }catch(err){notify('Backup failed: '+err.message)}
   }
   async function importComplete(input){
@@ -73,6 +87,12 @@
     const note=document.createElement('p');
     note.style.cssText='font-size:13px;margin:10px 0';
     note.textContent='Create a separate backup file with your tools and attached PDF manuals. Save it to Files, iCloud Drive, or another location. Restoring replaces the inventory on this device.';
+    const status=document.createElement('p');
+    status.id='portable-backup-status';
+    status.setAttribute('role','status');
+    status.setAttribute('aria-live','polite');
+    status.hidden=true;
+    status.style.cssText='font-size:14px;font-weight:650;margin:10px 0;padding:10px;border-radius:9px';
     const actions=document.createElement('div');
     actions.className='controls';
     const exportButton=document.createElement('button');
@@ -87,7 +107,8 @@
     importButton.addEventListener('click',()=>picker.click());
     picker.addEventListener('change',()=>importComplete(picker));
     actions.append(exportButton,importButton,picker);
-    details.append(title,note,actions);
+    details.append(title,note,actions,status);
+    panel.id='manual-backup-panel';
     panel.append(details);
     const drive=document.getElementById('drive-backup');
     if(drive)drive.after(panel);
