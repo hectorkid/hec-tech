@@ -31,7 +31,7 @@
       const link=document.createElement('a');
       link.href=url;link.download=file.name;document.body.append(link);link.click();link.remove();
       setTimeout(()=>URL.revokeObjectURL(url),60000);
-      notify('Complete backup downloaded. On iPhone, save it in Files > iCloud Drive. This is not automatic iCloud backup.');
+      notify('Complete backup downloaded. Check your Downloads or Files app for hec-tech-complete-backup.json. The file includes your tools and attached PDF manuals.');
     }catch(err){notify('Backup failed: '+err.message)}
   }
   async function importComplete(input){
