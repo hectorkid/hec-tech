@@ -20,10 +20,9 @@ assert.match(html,/Back up your inventory, attached PDF manuals, and receipts/);
 assert.match(html,/manuals that open from web links stay in your inventory backup and need internet to open/);
 assert.match(html,/HECPdfDriveUpload/);
 assert.match(html,/HECPdfDriveRestore/);
-console.log('HEC TECH static syntax and integration checks passed');
-
 assert.match(html,/receiptStored/);
-assert.match(html,/capture=\\"environment\\"/);
+assert.match(html,/capture="environment"/);
 assert.match(html,/printReceipt/);
 assert.match(html,/HECReceiptDriveUpload/);
 assert.match(html,/HECReceiptDriveRestore/);
+console.log('HEC TECH static syntax and integration checks passed');
