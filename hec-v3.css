@@ -83,3 +83,8 @@ body.hec-v3 .hec-v3-avatar{position:absolute;right:4px;bottom:-5px;width:40%;max
 body.hec-v3 .hec-v3-mini{display:flex;gap:14px;margin-top:15px;font-size:9px;font-weight:900;letter-spacing:.08em;color:#e7e7e7}
 body.hec-v3 .hec-v3-mini i{color:#ef1f2b;font-style:normal}
 @media(max-width:430px){body.hec-v3 .hec-v3-header-inner{min-height:164px;padding-left:15px}body.hec-v3 .hec-v3-avatar{width:42%;max-height:160px}body.hec-v3 .hec-v3-brand{width:66%}}
+
+/* Header recovery: keep proven embedded banner visible until approved art is stored as a real asset */
+body.hec-v3 header.hectech-banner{display:block!important}
+body.hec-v3 .hec-v3-header{display:none!important}
+body.hec-v3 header.hectech-banner img{display:block!important;width:100%!important;height:auto!important;max-height:none!important}
