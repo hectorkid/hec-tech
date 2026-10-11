@@ -153,3 +153,15 @@ body.hec-v3 #grid .tool-loaned .info{background:linear-gradient(135deg,#211d10,#
 body.hec-v3 #grid .loan-tag{top:auto!important;right:12px!important;bottom:62px!important;max-width:calc(56% - 24px)!important;white-space:normal!important;text-align:center!important;line-height:1.15!important;background:#ffe58a!important;color:#3f3000!important;border:1px solid #f2b705!important;box-shadow:0 3px 10px #0007}
 body.hec-v3 #grid .tool-loaned .favorite-card-btn{bottom:12px!important}
 @media(max-width:430px){body.hec-v3 #grid .loan-tag{max-width:calc(56% - 24px)!important}}
+
+/* V3 loan label: place it over the photo so card details stay unobstructed */
+body.hec-v3 #grid .tool-loaned .loan-tag{
+ top:12px!important;left:12px!important;right:auto!important;bottom:auto!important;
+ max-width:calc(44% - 24px)!important;white-space:normal!important;
+ text-align:center!important;line-height:1.12!important;padding:7px 9px!important;
+ background:rgba(255,255,255,.94)!important;color:#20242b!important;
+ border:2px solid #f2b705!important;border-radius:9px!important;
+ box-shadow:0 3px 10px #0006!important
+}
+body.hec-v3 #grid .tool-loaned .loan-borrower{color:#1769aa!important;font-weight:900!important}
+body.hec-v3 #grid .tool-loaned{border-color:#f2b705!important}
