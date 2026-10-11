@@ -128,3 +128,9 @@ body.hec-v3 .hec-safe-inner{display:none!important}
 body.hec-v3 .hec-approved-header{display:block;width:100%;max-width:900px;margin:0 auto;overflow:hidden;background:#08090b}
 body.hec-v3 .hec-approved-header img{display:block;width:100%;height:auto;max-height:330px;object-fit:cover;object-position:center center}
 @media(max-width:430px){body.hec-v3 .hec-approved-header img{height:205px;max-height:none;object-fit:cover;object-position:center 45%}}
+
+/* V3 compact approved artwork header */
+@media(max-width:430px){
+ body.hec-v3 .hec-approved-header{height:180px}
+ body.hec-v3 .hec-approved-header img{width:100%;height:180px;max-height:none;object-fit:cover;object-position:center 48%}
+}
