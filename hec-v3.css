@@ -134,3 +134,10 @@ body.hec-v3 .hec-approved-header img{display:block;width:100%;height:auto;max-he
  body.hec-v3 .hec-approved-header{height:180px}
  body.hec-v3 .hec-approved-header img{width:100%;height:180px;max-height:none;object-fit:cover;object-position:center 48%}
 }
+
+/* V3 favorites */
+body.hec-v3 .tool{position:relative}
+body.hec-v3 .favorite-card-btn{position:absolute;z-index:4;right:10px;top:10px;width:38px;height:38px;border-radius:50%;border:1px solid #555c68;background:#101217;color:#8d939d;font-size:22px;line-height:1;padding:0;box-shadow:0 3px 10px #0008}
+body.hec-v3 .favorite-card-btn.is-favorite{color:#ffd34d;border-color:#d9a900;background:#29220d}
+body.hec-v3 .detail-favorite-btn,body.hec-v3 .edit-favorite-btn{border:1px solid #555c68;background:#171a20;color:#e9ebef}
+body.hec-v3 .detail-favorite-btn.is-favorite,body.hec-v3 .edit-favorite-btn.is-favorite{color:#ffd34d;border-color:#d9a900;background:#29220d}
