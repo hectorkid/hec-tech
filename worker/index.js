@@ -111,7 +111,7 @@ async function driveProxy(request, env) {
     return json(request, env, { error: 'Drive endpoint is not allowed.' }, 400);
   }
   const method = (request.headers.get('X-Drive-Method') || 'GET').toUpperCase();
-  if (!['GET', 'POST', 'PATCH'].includes(method)) return json(request, env, { error: 'Drive method is not allowed.' }, 405);
+  if (!['GET', 'POST', 'PATCH', 'DELETE'].includes(method)) return json(request, env, { error: 'Drive method is not allowed.' }, 405);
   let accessToken;
   try {
     accessToken = await getAccessToken(env);
