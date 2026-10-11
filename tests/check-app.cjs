@@ -25,4 +25,8 @@ assert.match(html,/capture="environment"/);
 assert.match(html,/printReceipt/);
 assert.match(html,/HECReceiptDriveUpload/);
 assert.match(html,/HECReceiptDriveRestore/);
+const portable=fs.readFileSync('portable-backup.js','utf8');
+assert.match(portable,/hec-tech-complete-v2/);
+assert.match(portable,/HECReceiptStore/);
+assert.match(portable,/restoredReceipts/);
 console.log('HEC TECH static syntax and integration checks passed');
