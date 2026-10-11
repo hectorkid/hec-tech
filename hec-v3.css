@@ -200,3 +200,21 @@ body.hec-v3 #grid .tool-loaned .loan-tag{
  text-shadow:0 1px 2px #fff,0 0 4px #fff!important
 }
 body.hec-v3 #grid .tool-loaned .loan-borrower{display:inline!important;color:#1769aa!important;font-weight:950!important}
+
+/* V3 tactile dashboard shortcut cards */
+body.hec-v3 .hec-stat{
+ cursor:pointer!important;
+ border:1px solid #3c4350!important;
+ border-bottom:4px solid #080a0e!important;
+ box-shadow:0 7px 0 #080a0e,0 10px 18px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.08)!important;
+ transform:translateY(-2px);
+ transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease!important;
+}
+body.hec-v3 .hec-stat:active{
+ transform:translateY(5px)!important;
+ box-shadow:0 1px 0 #080a0e,0 3px 7px rgba(0,0,0,.35),inset 0 1px 4px rgba(0,0,0,.35)!important;
+}
+body.hec-v3 .hec-stat:nth-child(2),body.hec-v3 .hec-stat:nth-child(3){
+ border-color:#66531d!important;
+ box-shadow:0 7px 0 #171205,0 10px 18px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,213,64,.12)!important;
+}
