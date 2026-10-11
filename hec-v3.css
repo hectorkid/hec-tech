@@ -304,3 +304,17 @@ body.hec-v3 .hec-stat,body.hec-v3 .hec-stat:nth-child(n){
 }
 body.hec-v3 .hec-stat strong{font-size:19px!important;line-height:.95!important;margin:0 0 2px!important}
 body.hec-v3 .hec-stat span{font-size:9px!important;line-height:1!important;margin:0!important}
+
+/* V3 v75: compact actual cards while restoring large readable labels */
+body.hec-v3 .hec-dashboard{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,72px))!important;
+ justify-content:center!important;column-gap:8px!important;row-gap:0!important;
+ margin:8px auto 12px!important;padding:0 4px!important
+}
+body.hec-v3 .hec-stat,body.hec-v3 .hec-stat:nth-child(n){
+ width:72px!important;max-width:72px!important;height:48px!important;min-height:48px!important;
+ padding:3px 1px 2px!important;border-radius:9px!important;
+ display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+}
+body.hec-v3 .hec-stat strong{font-size:23px!important;line-height:.9!important;margin:0 0 4px!important}
+body.hec-v3 .hec-stat span{font-size:11px!important;font-weight:800!important;line-height:.95!important;margin:0!important;white-space:nowrap!important}
