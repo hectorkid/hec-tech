@@ -36,3 +36,9 @@ body.hec-v3 .hec-dashboard .hec-stat:nth-child(3) strong{color:#ffcf33}
 body.hec-v3 .hec-dashboard .hec-stat:nth-child(4) strong{color:#d7dbe2}
 body.hec-v3 .hec-menu-label{display:flex;align-items:center;justify-content:space-between}
 body.hec-v3 .hec-classic-note{font-size:11px;color:#8f98a6;padding:5px 8px 2px}
+
+body.hec-v3 #manual-backup-panel{display:none!important}
+body.hec-v3 .hec-cat span{min-width:0;line-height:1.15}
+body.hec-v3 .hec-cat small{margin-left:auto;white-space:nowrap;padding-left:8px}
+body.hec-v3 .top-actions{position:fixed;left:0;right:0;bottom:0;margin:0;padding:10px max(14px,calc((100vw - 900px)/2));border-top:1px solid #2e333d}
+body.hec-v3 main.wrap{padding-bottom:105px}
