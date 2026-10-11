@@ -184,3 +184,19 @@ body.hec-v3 #grid .tool-loaned .loan-tag{
 }
 body.hec-v3 #grid .tool-loaned .loan-tag .loan-borrower{color:#1769aa!important;font-weight:950!important}
 body.hec-v3 #grid .tool-loaned .loan-tag::first-line{font-weight:900}
+
+/* V3 precise placements from mobile review */
+body.hec-v3 .favorite-card-btn{
+ top:auto!important;right:12px!important;bottom:14px!important;
+ width:auto!important;height:auto!important;padding:0!important;
+ border:0!important;background:transparent!important;box-shadow:none!important;
+ font-size:31px!important;line-height:1!important
+}
+body.hec-v3 #grid .tool-loaned .loan-tag{
+ top:10px!important;left:10px!important;right:auto!important;bottom:auto!important;
+ max-width:42%!important;padding:0!important;border:0!important;background:transparent!important;
+ box-shadow:none!important;border-radius:0!important;font-size:12px!important;line-height:1.05!important;
+ font-weight:900!important;color:#20242b!important;text-align:left!important;white-space:nowrap!important;
+ text-shadow:0 1px 2px #fff,0 0 4px #fff!important
+}
+body.hec-v3 #grid .tool-loaned .loan-borrower{display:inline!important;color:#1769aa!important;font-weight:950!important}
