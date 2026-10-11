@@ -88,3 +88,18 @@ body.hec-v3 .hec-v3-mini i{color:#ef1f2b;font-style:normal}
 body.hec-v3 header.hectech-banner{display:block!important}
 body.hec-v3 .hec-v3-header{display:none!important}
 body.hec-v3 header.hectech-banner img{display:block!important;width:100%!important;height:auto!important;max-height:none!important}
+
+/* V3 item list and category refinements */
+body.hec-v3 .hec-cat{min-height:74px}
+body.hec-v3 .hec-cat:after{content:"›";font-size:29px;line-height:1;color:#d7dce4;margin-left:6px}
+body.hec-v3 .hec-cat small{font-size:12px}
+body.hec-v3 .hec-items-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0 4px}
+body.hec-v3 .hec-items-heading .hec-section-title{margin:0}
+body.hec-v3 .hec-sort{background:#171a20;color:#fff;border:1px solid #3b414c;border-radius:10px;padding:9px 10px;font-size:12px;font-weight:750}
+body.hec-v3 #count{margin:0 0 12px}
+body.hec-v3 #grid .tool{display:grid;grid-template-columns:minmax(115px,42%) 1fr;min-height:160px;background:#15191f}
+body.hec-v3 #grid .tool>img{width:100%;height:100%;min-height:160px;object-fit:contain;border-radius:0}
+body.hec-v3 #grid .tool .info{padding:14px 12px;display:flex;flex-direction:column;justify-content:center}
+body.hec-v3 #grid .tool .info strong{font-size:18px;line-height:1.2}
+body.hec-v3 #grid .tool .tag{order:3;margin-top:10px;width:max-content;background:#3a1116;color:#ff737b;border:1px solid #d3222a}
+@media(max-width:430px){body.hec-v3 #grid .tool{grid-template-columns:44% 56%;min-height:145px}body.hec-v3 #grid .tool>img{min-height:145px}body.hec-v3 #grid .tool .info strong{font-size:17px}}
