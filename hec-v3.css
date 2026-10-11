@@ -291,3 +291,16 @@ body.hec-v3 .hec-stat,body.hec-v3 .hec-stat:nth-child(n){
 }
 body.hec-v3 .hec-stat strong{font-size:20px!important;margin-bottom:3px!important}
 body.hec-v3 .hec-stat span{font-size:10px!important}
+
+/* V3 v74: shrink the actual dashboard card footprint, not just its text */
+body.hec-v3 .hec-stats{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ gap:6px!important;margin:0 8px 12px!important
+}
+body.hec-v3 .hec-stat,body.hec-v3 .hec-stat:nth-child(n){
+ box-sizing:border-box!important;width:100%!important;height:50px!important;min-height:50px!important;
+ padding:4px 1px 3px!important;border-radius:10px!important;border-width:1px!important;border-bottom-width:3px!important;
+ box-shadow:0 4px 0 #120e03,0 6px 9px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,213,64,.12)!important;
+}
+body.hec-v3 .hec-stat strong{font-size:19px!important;line-height:.95!important;margin:0 0 2px!important}
+body.hec-v3 .hec-stat span{font-size:9px!important;line-height:1!important;margin:0!important}
