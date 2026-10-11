@@ -16,7 +16,8 @@ const worker = fs.readFileSync('sw.js','utf8');
 for (const file of ['manual-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js','install-guide.js']) {
   assert.ok(worker.includes(file), file+' is missing from offline cache');
 }
-assert.match(html,/This inventory-only backup references PDF manuals/);
+assert.match(html,/Back up your inventory and attached offline PDF files/);
+assert.match(html,/manuals that open from web links stay in your inventory backup and need internet to open/);
 assert.match(html,/HECPdfDriveUpload/);
 assert.match(html,/HECPdfDriveRestore/);
 console.log('HEC TECH static syntax and integration checks passed');
