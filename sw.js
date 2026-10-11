@@ -1,5 +1,5 @@
 /* HEC TECH: online-first navigation with offline fallback. */
-const CACHE='hec-tech-v36';
+const CACHE='hec-tech-v37';
 const ASSETS=['./index.html','./manual-storage.js','./receipt-storage.js','./portable-backup.js','./drive-pdf-helpers.js','./drive-pdf-upload.js','./drive-pdf-restore.js','./drive-receipt-helpers.js','./drive-receipt-upload.js','./drive-receipt-restore.js','./install-guide.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()));
@@ -28,12 +28,16 @@ self.addEventListener('fetch',event=>{
  if(request.mode==='navigate'){
   event.respondWith((async()=>{
    const cache=await caches.open(CACHE);
+   const url=new URL(request.url);
+   const appURL=new URL('./index.html',self.location.href);
+   const isApp=url.pathname===appURL.pathname||url.pathname===new URL('./',appURL).pathname;
+   const cacheKey=isApp?appURL.href:request;
    try{
     const response=await fetch(request,{cache:'no-store'});
-    if(response.ok)await cache.put('./index.html',response.clone());
+    if(response.ok)await cache.put(cacheKey,response.clone());
     return response;
    }catch(error){
-    const cached=await cache.match('./index.html');
+    const cached=await cache.match(cacheKey,{ignoreSearch:true});
     if(cached)return cached;
     throw error;
    }
@@ -42,3 +46,4 @@ self.addEventListener('fetch',event=>{
  }
  event.respondWith(caches.match(request).then(cached=>cached||fetch(request)));
 });
+

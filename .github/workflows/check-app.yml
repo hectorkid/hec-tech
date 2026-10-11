@@ -3,6 +3,7 @@ on:
   pull_request:
   push:
     branches:
+      - main
       - feature/in-app-tool-manuals
 jobs:
   static-check:
@@ -13,4 +14,5 @@ jobs:
         with:
           node-version: '22'
       - name: Check app scripts and offline assets
-        run: node tests/check-app.cjs && node tests/check-drive-pdfs.cjs && node tests/check-receipts.cjs
+        run: node tests/check-app.cjs && node tests/check-drive-pdfs.cjs && node tests/check-receipts.cjs && node tests/check-service-worker.cjs
+
