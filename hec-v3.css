@@ -218,3 +218,19 @@ body.hec-v3 .hec-stat:nth-child(2),body.hec-v3 .hec-stat:nth-child(3){
  border-color:#66531d!important;
  box-shadow:0 7px 0 #171205,0 10px 18px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,213,64,.12)!important;
 }
+
+/* V3 stronger raised shortcut buttons */
+body.hec-v3 .hec-stat{
+ transform:translateY(-6px)!important;
+ border:2px solid #454d5b!important;
+ border-bottom:6px solid #050609!important;
+ box-shadow:0 10px 0 #050609,0 15px 24px rgba(0,0,0,.62),inset 0 2px 0 rgba(255,255,255,.12)!important;
+}
+body.hec-v3 .hec-stat:nth-child(2),body.hec-v3 .hec-stat:nth-child(3){
+ border:2px solid #77611e!important;border-bottom:6px solid #120e03!important;
+ box-shadow:0 10px 0 #120e03,0 15px 24px rgba(0,0,0,.62),inset 0 2px 0 rgba(255,213,64,.16)!important;
+}
+body.hec-v3 .hec-stat:active{
+ transform:translateY(4px)!important;
+ box-shadow:0 2px 0 #050609,0 4px 8px rgba(0,0,0,.45),inset 0 2px 5px rgba(0,0,0,.4)!important;
+}
