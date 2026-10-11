@@ -44,3 +44,22 @@ body.hec-v3 .top-actions{position:fixed;left:0;right:0;bottom:0;margin:0;padding
 body.hec-v3 main.wrap{padding-bottom:105px}
 
 body.hec-v3 section#manual-backup-panel{display:none!important}
+
+/* V3 visual polish */
+body.hec-v3 .hectech-banner{background:#090a0d;border-bottom:1px solid #292d35}
+body.hec-v3 .banner-image-wrap{box-shadow:0 10px 30px #0008}
+body.hec-v3 .search-row{gap:12px;margin-top:18px}
+body.hec-v3 .hec-stat{transition:transform .15s ease,border-color .15s ease}
+body.hec-v3 .hec-cat{position:relative;overflow:hidden;padding:14px 16px;box-shadow:0 5px 16px #0002;transition:transform .12s ease,border-color .12s ease}
+body.hec-v3 .hec-cat:active{transform:scale(.98)}
+body.hec-v3 .hec-cat span:before{display:inline-block;width:25px;margin-right:7px;font-size:17px}
+body.hec-v3 .hec-cat[data-hec-cat="Power Tools"] span:before{content:"⚡"}
+body.hec-v3 .hec-cat[data-hec-cat="Hand Tools"] span:before{content:"🔧"}
+body.hec-v3 .hec-cat[data-hec-cat="Lawn & Garden"] span:before{content:"🌿"}
+body.hec-v3 .hec-cat[data-hec-cat="Home & Kitchen"] span:before{content:"⌂"}
+body.hec-v3 .hec-cat[data-hec-cat="Automotive"] span:before{content:"◆"}
+body.hec-v3 .hec-cat[data-hec-cat="Other"] span:before{content:"•••"}
+body.hec-v3 .hec-section-title{font-weight:750}
+body.hec-v3 #grid{gap:14px}
+body.hec-v3 .tool{border-radius:15px;overflow:hidden;box-shadow:0 5px 18px #0004}
+body.hec-v3 .top-actions{box-shadow:0 -8px 24px #0008}
