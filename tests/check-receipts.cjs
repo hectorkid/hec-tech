@@ -8,6 +8,7 @@ async function testIndexedDbStorage(){
  const db={
   objectStoreNames:{contains:name=>stores.has(name)},
   createObjectStore:name=>stores.set(name,new Map()),
+  close(){},
   transaction(name,mode){
    const tx={objectStore(){
     const map=stores.get(name);
