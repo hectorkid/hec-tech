@@ -80,7 +80,7 @@
         if(!receipt.size)throw new Error('Empty receipt in backup');
         restoredReceipts.push([id,receipt]);
       }
-      if(!confirm('Replace the current inventory with this backup? Export your current inventory first.'))return;
+      if(window.HECConfirm){if(!await window.HECConfirm('Replace the current inventory with this backup? Export your current inventory first.'))return}else if(!confirm('Replace the current inventory with this backup? Export your current inventory first.'))return;
       for(const [id,pdf] of restored)await HECManualStore.put(id,pdf);
       for(const [id,receipt] of restoredReceipts)await HECReceiptStore.put(id,receipt);
       const previous=items;
