@@ -93,7 +93,7 @@ function addKnownOfficialManuals(){
  for(const x of items){
   const model=String(x.model||"").trim().toUpperCase();
   let entry=manuals[model];
-  if(!entry&&model==="MASTER SHOT")entry=manuals["MASTER-SHOT"];
+  if(!entry&&(/RAMSET/i.test(String(x.brand||"")+" "+String(x.name||"")))&&/MASTER\s*-?\s*SHOT/i.test(model+" "+String(x.name||"")))entry=manuals["MASTER-SHOT"];
   if(!entry||x.manualStored||x.manual)continue;
   x.manual=entry[0];x.manualName=entry[1];changed=true;
  }
