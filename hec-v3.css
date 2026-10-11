@@ -255,3 +255,17 @@ body.hec-v3 .hec-stat:nth-child(4):active{
  transform:translateY(4px)!important;
  box-shadow:0 2px 0 #120e03,0 4px 8px rgba(0,0,0,.45),inset 0 2px 5px rgba(0,0,0,.4)!important;
 }
+
+/* V3 compact dashboard shortcuts with clear backup spacing */
+body.hec-v3 .hec-dashboard{margin-bottom:4px!important}
+body.hec-v3 .hec-stats{gap:10px!important;margin-bottom:18px!important}
+body.hec-v3 .hec-stat,
+body.hec-v3 .hec-stat:nth-child(n){
+ min-height:78px!important;padding:10px 5px 8px!important;
+ transform:translateY(-3px)!important;
+ border-bottom-width:4px!important;
+ box-shadow:0 7px 0 #120e03,0 10px 17px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,213,64,.14)!important;
+}
+body.hec-v3 .hec-stat strong{font-size:26px!important;line-height:1!important}
+body.hec-v3 .hec-stat span{font-size:13px!important}
+body.hec-v3 .hec-backup-status{margin-top:8px!important}
