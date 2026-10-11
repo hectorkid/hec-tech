@@ -165,3 +165,22 @@ body.hec-v3 #grid .tool-loaned .loan-tag{
 }
 body.hec-v3 #grid .tool-loaned .loan-borrower{color:#1769aa!important;font-weight:900!important}
 body.hec-v3 #grid .tool-loaned{border-color:#f2b705!important}
+
+/* V3 cleaner card annotations */
+body.hec-v3 .favorite-card-btn{
+ top:48px!important;right:12px!important;bottom:auto!important;
+ width:auto!important;height:auto!important;min-width:0!important;
+ padding:0!important;border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ color:#9ba1ab!important;font-size:31px!important;line-height:1!important
+}
+body.hec-v3 .favorite-card-btn.is-favorite{color:#ef2633!important;background:transparent!important;border:0!important}
+body.hec-v3 #grid .tool-loaned .loan-tag{
+ top:9px!important;left:10px!important;right:auto!important;bottom:auto!important;
+ max-width:43%!important;padding:0!important;border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;text-align:left!important;
+ color:#1f2329!important;font-size:13px!important;line-height:1.12!important;
+ text-shadow:0 1px 2px #fff,0 0 4px #fff!important
+}
+body.hec-v3 #grid .tool-loaned .loan-tag .loan-borrower{color:#1769aa!important;font-weight:950!important}
+body.hec-v3 #grid .tool-loaned .loan-tag::first-line{font-weight:900}
