@@ -141,3 +141,7 @@ body.hec-v3 .favorite-card-btn{position:absolute;z-index:4;right:10px;top:10px;w
 body.hec-v3 .favorite-card-btn.is-favorite{color:#ffd34d;border-color:#d9a900;background:#29220d}
 body.hec-v3 .detail-favorite-btn,body.hec-v3 .edit-favorite-btn{border:1px solid #555c68;background:#171a20;color:#e9ebef}
 body.hec-v3 .detail-favorite-btn.is-favorite,body.hec-v3 .edit-favorite-btn.is-favorite{color:#ffd34d;border-color:#d9a900;background:#29220d}
+
+/* V3 quick-favorite heart on every item card */
+body.hec-v3 .favorite-card-btn{display:flex!important;align-items:center;justify-content:center;right:10px;top:10px;width:42px;height:42px;border-radius:50%;font-family:Arial,sans-serif;font-size:26px;font-weight:900;color:#a5abb4;background:#0d1015eF;border:2px solid #555d69;cursor:pointer}
+body.hec-v3 .favorite-card-btn.is-favorite{color:#ef2633;border-color:#ef2633;background:#2a0d11}
