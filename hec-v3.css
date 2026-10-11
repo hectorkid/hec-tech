@@ -1,0 +1,29 @@
+/* HEC Tech Option 3 dashboard skin */
+:root{--hec-bg:#0d0f13;--hec-panel:#171a20;--hec-panel2:#20242c;--hec-red:#d3222a;--hec-green:#39c56b;--hec-text:#f6f7f9;--hec-muted:#aeb5c0}
+body.hec-v3{background:var(--hec-bg);color:var(--hec-text)}
+body.hec-v3 main.wrap{max-width:900px}
+body.hec-v3 .search{background:#171a20;border:1px solid #343944;color:#fff}
+body.hec-v3 .search::placeholder{color:#9098a5}
+body.hec-v3 .app-menu>summary{background:#20242c;border-color:var(--hec-red)}
+body.hec-v3 .top-actions{position:sticky;bottom:0;z-index:7;background:rgba(13,15,19,.94);padding:9px 4px;margin-left:-4px;margin-right:-4px;backdrop-filter:blur(10px)}
+body.hec-v3 .top-actions button{min-width:0;flex:1}
+body.hec-v3 .hec-dashboard{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0 8px}
+body.hec-v3 .hec-stat{background:var(--hec-panel);border:1px solid #343944;border-radius:13px;padding:11px 6px;text-align:center;box-shadow:0 4px 16px #0003}
+body.hec-v3 .hec-stat strong{display:block;font-size:21px;color:#fff;line-height:1.1}
+body.hec-v3 .hec-stat span{display:block;font-size:11px;color:var(--hec-muted);margin-top:4px}
+body.hec-v3 .hec-backup-line{font-size:12px;color:var(--hec-green);text-align:center;margin:7px 0 13px;font-weight:700}
+body.hec-v3 .hec-categories{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:8px 0 14px}
+body.hec-v3 .hec-cat{min-height:58px;background:var(--hec-panel);border:1px solid #343944;border-left:4px solid var(--hec-red);color:#fff;text-align:left;font-size:14px}
+body.hec-v3 .hec-cat.active{background:#302126;border-color:var(--hec-red)}
+body.hec-v3 .hec-section-title{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#aeb5c0;margin:14px 0 7px}
+body.hec-v3 #drive-backup{display:none}
+body.hec-v3 .chips{display:none}
+body.hec-v3 .count{color:#aeb5c0}
+body.hec-v3 .tool{background:#171a20;border-color:#343944;color:#fff}
+body.hec-v3 .tool img{background:#fff}
+body.hec-v3 .muted{color:#aeb5c0}
+body.hec-v3 .app-menu-panel{width:min(270px,calc(100vw - 32px));padding:8px}
+body.hec-v3 .app-menu-panel .hec-backup-menu{margin-top:5px;border-top:1px solid #434955;padding-top:6px}
+body.hec-v3 .app-menu-panel .hec-menu-label{font-size:11px;color:#aeb5c0;padding:7px 8px 4px;text-transform:uppercase;letter-spacing:.08em}
+body.hec-v3 .app-menu-panel button{margin:3px 0}
+@media(max-width:430px){body.hec-v3 .hec-stat strong{font-size:18px}body.hec-v3 .hec-stat span{font-size:10px}body.hec-v3 .top-actions button{font-size:15px;padding:10px 7px}}
