@@ -145,3 +145,11 @@ body.hec-v3 .detail-favorite-btn.is-favorite,body.hec-v3 .edit-favorite-btn.is-f
 /* V3 quick-favorite heart on every item card */
 body.hec-v3 .favorite-card-btn{display:flex!important;align-items:center;justify-content:center;right:10px;top:10px;width:42px;height:42px;border-radius:50%;font-family:Arial,sans-serif;font-size:26px;font-weight:900;color:#a5abb4;background:#0d1015eF;border:2px solid #555d69;cursor:pointer}
 body.hec-v3 .favorite-card-btn.is-favorite{color:#ef2633;border-color:#ef2633;background:#2a0d11}
+
+/* V3 card badge layout: keep controls clear of PDF/status labels */
+body.hec-v3 .favorite-card-btn{top:auto!important;right:12px!important;bottom:12px!important}
+body.hec-v3 #grid .tool-loaned{border:3px solid #f2b705!important;box-shadow:0 0 0 2px #f2b705,0 0 22px #f2b70555!important;background:#211d10!important}
+body.hec-v3 #grid .tool-loaned .info{background:linear-gradient(135deg,#211d10,#15191f 62%)}
+body.hec-v3 #grid .loan-tag{top:auto!important;right:12px!important;bottom:62px!important;max-width:calc(56% - 24px)!important;white-space:normal!important;text-align:center!important;line-height:1.15!important;background:#ffe58a!important;color:#3f3000!important;border:1px solid #f2b705!important;box-shadow:0 3px 10px #0007}
+body.hec-v3 #grid .tool-loaned .favorite-card-btn{bottom:12px!important}
+@media(max-width:430px){body.hec-v3 #grid .loan-tag{max-width:calc(56% - 24px)!important}}
