@@ -281,3 +281,13 @@ body.hec-v3 .hec-stat strong{font-size:23px!important;line-height:1!important;ma
 body.hec-v3 .hec-stat span{font-size:11px!important;line-height:1.05!important}
 body.hec-v3 .hec-stat:active,body.hec-v3 .hec-stat:nth-child(n):active{transform:translateY(4px)!important;box-shadow:0 1px 0 #120e03,0 3px 6px rgba(0,0,0,.4)!important}
 body.hec-v3 .hec-backup-status{margin-top:9px!important}
+
+/* V3 v73: smaller dashboard stat squares */
+body.hec-v3 .hec-stats{gap:7px!important;margin-bottom:12px!important}
+body.hec-v3 .hec-stat,body.hec-v3 .hec-stat:nth-child(n){
+ height:58px!important;min-height:58px!important;padding:5px 2px 4px!important;
+ border-bottom-width:3px!important;
+ box-shadow:0 4px 0 #120e03,0 7px 10px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,213,64,.12)!important;
+}
+body.hec-v3 .hec-stat strong{font-size:20px!important;margin-bottom:3px!important}
+body.hec-v3 .hec-stat span{font-size:10px!important}
