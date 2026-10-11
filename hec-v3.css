@@ -68,3 +68,18 @@ body.hec-v3 .top-actions{box-shadow:0 -8px 24px #0008}
 body.hec-v3 .hectech-banner .banner-image-wrap>img{content:url("./hec-v3-header.jpg");width:100%;aspect-ratio:600/285;object-fit:cover;object-position:center;display:block}
 body.hec-v3 .hectech-banner .banner-subtitle{display:none!important}
 body.hec-v3 .hectech-banner .wrap{max-width:900px}
+
+/* Approved V3 compact header */
+body.hec-v3 header.hectech-banner{display:none!important}
+body.hec-v3 .hec-v3-header{background:radial-gradient(circle at 80% 35%,#421015 0,#15171b 34%,#08090b 72%);border-bottom:2px solid #d3222a;overflow:hidden}
+body.hec-v3 .hec-v3-header-inner{max-width:900px;margin:auto;min-height:178px;position:relative;display:flex;align-items:center;padding:18px 18px 14px}
+body.hec-v3 .hec-v3-brand{position:relative;z-index:2;width:63%;padding-right:6px}
+body.hec-v3 .hec-v3-tools{font-size:31px;line-height:1;margin-bottom:4px}
+body.hec-v3 .hec-v3-title{font-size:clamp(38px,11vw,66px);font-weight:1000;letter-spacing:-.055em;line-height:.9;color:#f5f5f5;text-shadow:0 3px 0 #000}
+body.hec-v3 .hec-v3-title b{color:#ef1f2b}
+body.hec-v3 .hec-v3-tag{margin-top:9px;font-size:clamp(11px,3.1vw,17px);font-weight:900;letter-spacing:.08em;white-space:nowrap}
+body.hec-v3 .hec-v3-stripe{width:90%;height:4px;background:#e51f2a;margin-top:10px;transform:skewX(-24deg);box-shadow:0 7px 0 #6d0b10}
+body.hec-v3 .hec-v3-avatar{position:absolute;right:4px;bottom:-5px;width:40%;max-height:174px;object-fit:contain;object-position:center bottom;filter:drop-shadow(-8px 4px 10px #0009)}
+body.hec-v3 .hec-v3-mini{display:flex;gap:14px;margin-top:15px;font-size:9px;font-weight:900;letter-spacing:.08em;color:#e7e7e7}
+body.hec-v3 .hec-v3-mini i{color:#ef1f2b;font-style:normal}
+@media(max-width:430px){body.hec-v3 .hec-v3-header-inner{min-height:164px;padding-left:15px}body.hec-v3 .hec-v3-avatar{width:42%;max-height:160px}body.hec-v3 .hec-v3-brand{width:66%}}
