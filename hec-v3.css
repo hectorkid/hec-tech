@@ -318,3 +318,13 @@ body.hec-v3 .hec-stat,body.hec-v3 .hec-stat:nth-child(n){
 }
 body.hec-v3 .hec-stat strong{font-size:23px!important;line-height:.9!important;margin:0 0 4px!important}
 body.hec-v3 .hec-stat span{font-size:11px!important;font-weight:800!important;line-height:.95!important;margin:0!important;white-space:nowrap!important}
+
+/* V3 v79: cleaner item-detail actions */
+body.hec-v3 .detail-actions-main{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:16px 0 22px}
+body.hec-v3 .detail-actions-main button{min-width:0;min-height:42px;padding:8px 9px;font-size:13px;line-height:1.15}
+body.hec-v3 .detail-actions-main .accessories-detail-btn{background:#d3222a;color:#fff}
+body.hec-v3 .detail-actions-bottom{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:18px;padding-top:14px;border-top:1px solid #343944}
+body.hec-v3 .detail-actions-bottom button{min-height:42px;padding:8px 13px;font-size:13px}
+body.hec-v3 .detail-close-btn{margin-right:auto}
+body.hec-v3 .detail-actions-bottom .archive-detail-btn{margin-left:auto;background:#303846;color:#fff;border:1px solid #d3222a}
+@media(max-width:370px){body.hec-v3 .detail-actions-main{gap:7px}body.hec-v3 .detail-actions-main button{font-size:12px;padding:7px 5px}}
