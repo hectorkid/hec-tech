@@ -234,3 +234,24 @@ body.hec-v3 .hec-stat:active{
  transform:translateY(4px)!important;
  box-shadow:0 2px 0 #050609,0 4px 8px rgba(0,0,0,.45),inset 0 2px 5px rgba(0,0,0,.4)!important;
 }
+
+/* V3 unify all four dashboard shortcut buttons */
+body.hec-v3 .hec-stat,
+body.hec-v3 .hec-stat:nth-child(1),
+body.hec-v3 .hec-stat:nth-child(2),
+body.hec-v3 .hec-stat:nth-child(3),
+body.hec-v3 .hec-stat:nth-child(4){
+ transform:translateY(-6px)!important;
+ border:2px solid #77611e!important;
+ border-bottom:6px solid #120e03!important;
+ box-shadow:0 10px 0 #120e03,0 15px 24px rgba(0,0,0,.62),inset 0 2px 0 rgba(255,213,64,.16)!important;
+ cursor:pointer!important;
+}
+body.hec-v3 .hec-stat:active,
+body.hec-v3 .hec-stat:nth-child(1):active,
+body.hec-v3 .hec-stat:nth-child(2):active,
+body.hec-v3 .hec-stat:nth-child(3):active,
+body.hec-v3 .hec-stat:nth-child(4):active{
+ transform:translateY(4px)!important;
+ box-shadow:0 2px 0 #120e03,0 4px 8px rgba(0,0,0,.45),inset 0 2px 5px rgba(0,0,0,.4)!important;
+}
