@@ -1,5 +1,5 @@
 /* HEC TECH: online-first navigation with offline fallback. */
-const CACHE='hec-tech-v51';
+const CACHE='hec-tech-v52';
 const ASSETS=['./index.html','./manual-storage.js','./receipt-storage.js','./portable-backup.js','./drive-pdf-helpers.js','./drive-pdf-upload.js','./drive-pdf-restore.js','./drive-receipt-helpers.js','./drive-receipt-upload.js','./drive-receipt-restore.js','./install-guide.js','./hec-v3.css','./hec-v3.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()));
@@ -10,7 +10,7 @@ self.addEventListener('activate',event=>{
 self.addEventListener('fetch',event=>{
  const request=event.request;
  if(request.method!=='GET'||new URL(request.url).origin!==self.location.origin)return;
- if(new URL(request.url).pathname.endsWith('/portable-backup.js')){
+ if(/\/(portable-backup|hec-v3)\.(js|css)$/.test(new URL(request.url).pathname)){
   event.respondWith((async()=>{
    const cache=await caches.open(CACHE);
    try{
