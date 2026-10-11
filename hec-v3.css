@@ -63,3 +63,8 @@ body.hec-v3 .hec-section-title{font-weight:750}
 body.hec-v3 #grid{gap:14px}
 body.hec-v3 .tool{border-radius:15px;overflow:hidden;box-shadow:0 5px 18px #0004}
 body.hec-v3 .top-actions{box-shadow:0 -8px 24px #0008}
+
+/* Approved V3 header */
+body.hec-v3 .hectech-banner .banner-image-wrap>img{content:url("./hec-v3-header.jpg");width:100%;aspect-ratio:600/285;object-fit:cover;object-position:center;display:block}
+body.hec-v3 .hectech-banner .banner-subtitle{display:none!important}
+body.hec-v3 .hectech-banner .wrap{max-width:900px}
