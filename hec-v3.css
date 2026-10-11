@@ -269,3 +269,15 @@ body.hec-v3 .hec-stat:nth-child(n){
 body.hec-v3 .hec-stat strong{font-size:26px!important;line-height:1!important}
 body.hec-v3 .hec-stat span{font-size:13px!important}
 body.hec-v3 .hec-backup-status{margin-top:8px!important}
+
+/* V3 v72: truly compact stat buttons; preserve tactile depth without crowding backup */
+body.hec-v3 .hec-stats{gap:8px!important;margin:0 0 13px!important;align-items:start!important}
+body.hec-v3 .hec-stat,body.hec-v3 .hec-stat:nth-child(n){
+ min-height:0!important;height:68px!important;padding:7px 3px 5px!important;
+ transform:translateY(0)!important;border-width:1px!important;border-bottom-width:3px!important;
+ box-shadow:0 5px 0 #120e03,0 8px 12px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,213,64,.12)!important;
+}
+body.hec-v3 .hec-stat strong{font-size:23px!important;line-height:1!important;margin:0 0 4px!important}
+body.hec-v3 .hec-stat span{font-size:11px!important;line-height:1.05!important}
+body.hec-v3 .hec-stat:active,body.hec-v3 .hec-stat:nth-child(n):active{transform:translateY(4px)!important;box-shadow:0 1px 0 #120e03,0 3px 6px rgba(0,0,0,.4)!important}
+body.hec-v3 .hec-backup-status{margin-top:9px!important}
