@@ -22,7 +22,7 @@ async function testIndexedDbStorage(){
   }
  };
  const indexedDB={open(){const request={};setTimeout(()=>{request.result=db;if(!upgraded){upgraded=true;request.onupgradeneeded&&request.onupgradeneeded()}request.onsuccess&&request.onsuccess()},0);return request}};
- const context={window:{},indexedDB,Error,setTimeout};
+ const context={window:{indexedDB},indexedDB,Error,setTimeout};
  vm.createContext(context);
  vm.runInContext(fs.readFileSync('receipt-storage.js','utf8'),context,{filename:'receipt-storage.js'});
  const store=vm.runInContext('HECReceiptStore',context);
