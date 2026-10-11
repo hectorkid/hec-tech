@@ -328,3 +328,13 @@ body.hec-v3 .detail-actions-bottom button{min-height:42px;padding:8px 13px;font-
 body.hec-v3 .detail-close-btn{margin-right:auto}
 body.hec-v3 .detail-actions-bottom .archive-detail-btn{margin-left:auto;background:#303846;color:#fff;border:1px solid #d3222a}
 @media(max-width:370px){body.hec-v3 .detail-actions-main{gap:7px}body.hec-v3 .detail-actions-main button{font-size:12px;padding:7px 5px}}
+
+/* V3 v80: semantic item-detail button colors */
+body.hec-v3 .detail-actions-main button{background:#2b313b!important;color:#f4f6f8!important;border:1px solid #555e6b!important;box-shadow:0 2px 5px #0003}
+body.hec-v3 .detail-actions-main button.primary{background:#2b313b!important;color:#f4f6f8!important;border-color:#687381!important}
+body.hec-v3 .detail-actions-main .accessories-detail-btn{background:#c9252d!important;color:#fff!important;border-color:#e0444b!important}
+body.hec-v3 .detail-close-btn{background:#303640!important;color:#f4f6f8!important;border:1px solid #59616d!important}
+body.hec-v3 .detail-actions-bottom .archive-detail-btn{background:#b86b12!important;color:#fff!important;border:1px solid #dc8a28!important}
+body.hec-v3 .detail-actions-main .restore-item-btn{background:#247a45!important;color:#fff!important;border-color:#36a05f!important}
+body.hec-v3 .detail-actions-main .delete-item-btn{background:#b9232b!important;color:#fff!important;border-color:#df3c45!important}
+body.hec-v3 .detail-actions-main button:active,body.hec-v3 .detail-actions-bottom button:active{filter:brightness(.88)}
