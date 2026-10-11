@@ -18,6 +18,8 @@ export default {
       if (url.pathname === '/api/session' && request.method === 'GET') return await sessionInfo(request, env);
       if (url.pathname === '/api/logout' && request.method === 'OPTIONS') return preflight(request, env);
       if (url.pathname === '/api/logout' && request.method === 'POST') return await logout(request, env);
+      if (url.pathname === '/api/ai-item' && request.method === 'OPTIONS') return preflight(request, env);
+      if (url.pathname === '/api/ai-item' && request.method === 'POST') return await aiItem(request, env);
       if (url.pathname === '/api/drive' && request.method === 'OPTIONS') return preflight(request, env);
       if (url.pathname === '/api/drive' && request.method === 'POST') return await driveProxy(request, env);
       return new Response('Not found', { status: 404 });
@@ -26,6 +28,21 @@ export default {
     }
   }
 };
+
+async function aiItem(request,env){
+ const originError=checkOrigin(request,env);if(originError)return originError;
+ await requireSession(request,env);
+ if(!env.OPENAI_API_KEY)return json(request,env,{error:'AI is not configured yet. Add OPENAI_API_KEY as a Cloudflare Worker secret.'},503);
+ const raw=await request.text();if(raw.length>1800000)return json(request,env,{error:'Photo too large.'},413);
+ const {instructions='',image=''}=JSON.parse(raw);
+ if(typeof instructions!=='string'||instructions.length>2000||typeof image!=='string'||(image&&!/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(image)))return json(request,env,{error:'Invalid input.'},400);
+ const content=[{type:'input_text',text:'Identify the physical item from this description and optional photo. Do not invent model numbers. Return a JSON object with item fields name, brand, category, model, notes. Category should be one of Power Tools, Hand Tools, Lawn & Garden, Home & Kitchen, Automotive, Other. Keep unknown fields empty. Instructions: '+instructions}];
+ if(image)content.push({type:'input_image',image_url:image,detail:'low'});
+ const resp=await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:'Bearer '+env.OPENAI_API_KEY,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4.1-mini',input:[{role:'user',content}],text:{format:{type:'json_schema',name:'catalog_item',strict:true,schema:{type:'object',properties:{name:{type:'string'},brand:{type:'string'},category:{type:'string'},model:{type:'string'},notes:{type:'string'}},required:['name','brand','category','model','notes'],additionalProperties:false}}},max_output_tokens:350})});
+ if(!resp.ok)return json(request,env,{error:'AI identification is temporarily unavailable.'},502);
+ const data=await resp.json();const output=(data.output||[]).flatMap(x=>x.content||[]).filter(x=>x.type==='output_text').map(x=>x.text).join('');
+ const item=JSON.parse(output);return json(request,env,{item});
+}
 
 async function startAuth(request, env) {
   const state = randomToken();
