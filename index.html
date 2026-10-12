@@ -150,7 +150,7 @@ async function hecLookupBarcode(raw){
  const status=document.getElementById('hec-scan-code-status');
  const setStatus=s=>{if(status)status.textContent=s};
  const code=String(raw||'').trim();
- if(!/^\\d{8,14}$/.test(code)){setStatus('Scanned: '+code+' — not a retail UPC/EAN.');return}
+ if(!/^\d{8,14}$/.test(code)){setStatus('Scanned: '+code+' — not a retail UPC/EAN.');return}
  setStatus('Scanned '+code+' — looking up product…');
  const endpoints=[
   'https://world.openfoodfacts.org/api/v2/product/',
