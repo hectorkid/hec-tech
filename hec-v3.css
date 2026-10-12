@@ -338,3 +338,7 @@ body.hec-v3 .detail-actions-bottom .archive-detail-btn{background:#b86b12!import
 body.hec-v3 .detail-actions-main .restore-item-btn{background:#247a45!important;color:#fff!important;border-color:#36a05f!important}
 body.hec-v3 .detail-actions-main .delete-item-btn{background:#b9232b!important;color:#fff!important;border-color:#df3c45!important}
 body.hec-v3 .detail-actions-main button:active,body.hec-v3 .detail-actions-bottom button:active{filter:brightness(.88)}
+
+/* v93: restore centered 3-button bottom navigation after AI Add removal */
+body.hec-v3 .top-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;align-items:stretch!important;justify-content:center!important;padding-left:max(14px,calc((100vw - 900px)/2))!important;padding-right:max(14px,calc((100vw - 900px)/2))!important}
+body.hec-v3 .top-actions>button{width:100%!important;max-width:none!important;margin:0!important}
