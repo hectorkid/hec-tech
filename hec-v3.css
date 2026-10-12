@@ -395,3 +395,13 @@ body.hec-v3 .controls.top-actions>button{
   flex:none!important;
 }
 body.hec-v3 .controls.top-actions #message-hector{gap:6px!important}
+
+/* v96: barcode / QR scanner */
+body.hec-v3 .hec-scan-row{display:flex;align-items:center;gap:10px;margin:8px 0 14px}
+body.hec-v3 .hec-scan-code-btn{background:#c9252d!important;color:#fff!important;border:1px solid #e0444b!important;font-weight:800}
+body.hec-v3 #hec-scan-code-status{font-size:12px;color:#8ed5a8;overflow-wrap:anywhere}
+.hec-scanner-overlay{position:fixed;inset:0;z-index:99999;background:#000e;display:flex;align-items:center;justify-content:center;padding:18px}
+.hec-scanner-box{width:min(94vw,520px);background:#171a20;color:#fff;border:1px solid #3a404b;border-radius:16px;padding:16px;text-align:center;box-shadow:0 18px 55px #000}
+.hec-scanner-box h2{margin:0 0 5px}.hec-scanner-box p{margin:0 0 12px;color:#b9c0ca}
+.hec-scanner-box video{display:block;width:100%;max-height:62vh;object-fit:cover;border-radius:12px;border:2px solid #d3222a;background:#050505}
+.hec-scanner-box button{margin-top:14px;min-width:120px}
