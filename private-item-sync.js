@@ -38,7 +38,7 @@ function apiUrl(path){return 'https://www.googleapis.com/drive/v3/files'+path}
 function uploadUrl(path){return 'https://www.googleapis.com/upload/drive/v3/files'+path}
 async function listSyncFile(api){
  const q=encodeURIComponent("name = '"+FILE_NAME+"' and trashed = false");
- const response=await api(apiUrl('?spaces=drive&fields=files(id,name)&pageSize=10&q='+q));
+ const response=await api(apiUrl('?fields=files(id,name)&pageSize=10&q='+q));
  const data=await response.json();
  return (data.files||[])[0]||null;
 }
@@ -80,8 +80,14 @@ function makePanel(){
  button.addEventListener('click',async()=>{
   button.disabled=true;
   if(!localStorage.getItem(FILE_ID_KEY)){
-   setStatus(status,'Opening Google Drive permission…');
-   try{root.HECItemSyncBridge.reauthorize()}catch(error){setStatus(status,error.message||'Could not start Google Drive setup.',true);button.disabled=false}
+   const bridge=root.HECItemSyncBridge;
+   if(bridge&&bridge.hasSession()){
+    await setupSync();
+    button.disabled=false;
+   }else{
+    setStatus(status,'Opening Google Drive permission…');
+    try{bridge.reauthorize()}catch(error){setStatus(status,error.message||'Could not start Google Drive setup.',true);button.disabled=false}
+   }
    return;
   }
   try{await pull(true)}catch(error){setStatus(status,error.message||'Could not check for updates.',true)}
