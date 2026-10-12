@@ -52,18 +52,14 @@ window.openAIAdd=function(){
   }catch(e){el('hec-ai-status').textContent='Could not read that photo.'}
  };
  el('hec-ai-send').onclick=async()=>{
+  if(!photoFile){el('hec-ai-status').textContent='Take or upload a photo first.';return}
   const extra=el('hec-ai-words').value.trim(),text=PROMPT+(extra?'\nUser note: '+extra:'');
-  try{
-   if(photoFile&&navigator.canShare&&navigator.canShare({files:[photoFile]})){
-    await navigator.share({title:'HEC Tech — Identify Item',text,files:[photoFile]});
-    el('hec-ai-status').textContent='When the AI replies, use its Share button and choose HEC TECH. If HEC TECH is not listed, copy the reply, return here, and tap Paste AI Result.';
-   }else if(navigator.share){
-    await navigator.share({title:'HEC Tech — Identify Item',text});
-    el('hec-ai-status').textContent='Photo sharing is unavailable here. Send the photo in your AI app, then share or copy its reply back to HEC TECH.';
-   }else{
-    await navigator.clipboard.writeText(text);el('hec-ai-status').textContent='Request copied. Open your AI app, attach the photo, and paste the request.';
-   }
-  }catch(e){if(e.name!=='AbortError'){try{await navigator.clipboard.writeText(text);el('hec-ai-status').textContent='Request copied. Open your AI app and paste it.'}catch(_){el('hec-ai-status').textContent='Use your AI app with the photo, then paste its reply here.'}}}
+  try{await navigator.clipboard.writeText(text)}catch(e){localStorage.setItem('hec-ai-prompt-v1',text)}
+  el('modalContent').innerHTML='<h2>🤖 Choose Your AI</h2><p>Your HEC Tech request has been copied. Open your AI, attach the same item photo, and paste the request.</p><div class="controls" style="display:grid;grid-template-columns:1fr 1fr"><button type="button" class="primary" id="hec-open-chatgpt">Open ChatGPT</button><button type="button" class="primary" id="hec-open-gemini">Open Gemini</button></div><p style="font-size:13px">When the AI replies, copy its full reply. Come back to HEC Tech and tap <b>Paste AI Result</b>.</p><div class="controls"><button type="button" id="hec-ai-return-paste">📋 Paste AI Result</button><button type="button" id="hec-ai-back">← Back</button></div><div id="hec-ai-status" class="hec-ai-status"></div>';
+  el('hec-open-chatgpt').onclick=()=>{location.href='https://chatgpt.com/'};
+  el('hec-open-gemini').onclick=()=>{location.href='https://gemini.google.com/app'};
+  el('hec-ai-return-paste').onclick=async()=>{try{reviewImported(await navigator.clipboard.readText())}catch(e){const t=prompt('Paste the AI reply here:');if(t)reviewImported(t)}};
+  el('hec-ai-back').onclick=()=>openAIAdd();
  };
  el('hec-ai-paste').onclick=async()=>{
   try{const t=await navigator.clipboard.readText();reviewImported(t)}catch(e){const t=prompt('Paste the AI reply here:');if(t)reviewImported(t)}
