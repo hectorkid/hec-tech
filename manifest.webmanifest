@@ -1,7 +1,7 @@
 {
-  "name": "HEC TECH \u2014 My Tool Collection",
+  "name": "HEC TECH — My Home & Gear",
   "short_name": "HEC TECH",
-  "description": "Search and organize my personal tool inventory",
+  "description": "Organize tools, appliances, electronics and home gear",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -20,5 +20,15 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "share_target": {
+    "action": "./index.html",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "hecTitle",
+      "text": "hecText",
+      "url": "hecUrl"
+    }
+  }
 }
