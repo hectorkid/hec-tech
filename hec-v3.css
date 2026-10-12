@@ -405,3 +405,14 @@ body.hec-v3 #hec-scan-code-status{font-size:12px;color:#8ed5a8;overflow-wrap:any
 .hec-scanner-box h2{margin:0 0 5px}.hec-scanner-box p{margin:0 0 12px;color:#b9c0ca}
 .hec-scanner-box video{display:block;width:100%;max-height:62vh;object-fit:cover;border-radius:12px;border:2px solid #d3222a;background:#050505}
 .hec-scanner-box button{margin-top:14px;min-width:120px}
+
+/* v97: mobile Add Item + scanner fixes */
+body.hec-v3 #modalContent{scroll-behavior:smooth}
+body.hec-v3.hec-scanning dialog#modal{visibility:hidden!important;pointer-events:none!important}
+body.hec-v3.hec-scanning .hec-scanner-overlay{visibility:visible!important;pointer-events:auto!important}
+body.hec-v3 .hec-scanner-overlay{z-index:2147483647!important}
+@media(max-width:600px){
+ body.hec-v3 dialog#modal{max-height:92dvh!important}
+ body.hec-v3 #modalContent{max-height:86dvh!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch}
+ body.hec-v3 #toolForm input,body.hec-v3 #toolForm textarea{scroll-margin-top:90px;scroll-margin-bottom:220px}
+}
