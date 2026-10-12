@@ -11,7 +11,8 @@ function parseResult(raw){
   const m=line.match(/^\s*(Name|Brand|Category|Model|Notes)\s*:\s*(.*)$/i);
   if(m)out[m[1].toLowerCase()]=m[2].trim();
  }
- if(!out.name){const json=text.match(/\{[\s\S]*\}/);if(json)try{const j=JSON.parse(json[0]);for(const k of ['name','brand','category','model','notes'])if(j[k]!=null)out[k]=String(j[k]).trim()}catch(e){} }\n if(!out.name)return null;
+ if(!out.name){const json=text.match(/\{[\s\S]*\}/);if(json)try{const j=JSON.parse(json[0]);for(const k of ['name','brand','category','model','notes'])if(j[k]!=null)out[k]=String(j[k]).trim()}catch(e){} }
+ if(!out.name)return null;
  const allowed=['Power Tools','Hand Tools','Lawn & Garden','Home & Kitchen','Automotive','Other'];
  if(!allowed.includes(out.category))out.category='Other';
  return out;
