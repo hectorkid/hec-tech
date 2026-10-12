@@ -9,8 +9,8 @@
       status.id='portable-backup-status';
       status.setAttribute('role','status');
       status.setAttribute('aria-live','polite');
-      status.style.cssText='font-size:14px;font-weight:650;margin:10px 0;padding:10px;border-radius:9px';
-      (document.querySelector('#manual-backup-panel details')||document.body).append(status);
+      status.style.cssText='position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:99999;max-width:min(92vw,540px);box-sizing:border-box;font-size:14px;font-weight:650;margin:0;padding:12px 16px;border-radius:9px;box-shadow:0 4px 18px rgba(0,0,0,.25)';
+      document.body.append(status);
     }
     status.textContent=message;
     status.style.background=/failed/i.test(message)?'#fff0f0':'#e8f6ed';
