@@ -154,7 +154,12 @@ function hecStoreSearchUrl(store,code){
  if(s.includes('target'))return 'https://www.target.com/s?searchTerm='+q;
  if(s.includes('shaw'))return 'https://www.shaws.com/shop/search-results.html?q='+q;
  if(s.includes('stop')&&s.includes('shop'))return 'https://stopandshop.com/product-search/'+q;
- return 'https://www.google.com/search?q='+encodeURIComponent((store||'')+' '+code);
+ // For a custom store, search within its website when a URL/domain was supplied.
+ const custom=String(store||'').trim();
+ if(/^(https?:\\/\\/)?(?:www\\.)?[a-z0-9-]+(?:\\.[a-z0-9-]+)+(?:\\/.*)?$/i.test(custom)){
+   try{const u=new URL(/^https?:\\/\\//i.test(custom)?custom:'https://'+custom);return 'https://www.google.com/search?q='+encodeURIComponent('site:'+u.hostname+' '+code)}catch(e){}
+ }
+ return 'https://www.google.com/search?q='+encodeURIComponent(custom+' '+code);
 }
 async function hecAutoFillBarcode(code){
  // Open Food Facts is a public product catalog, not a retailer website.
@@ -184,11 +189,13 @@ async function hecAutoFillBarcode(code){
 function hecChooseStoreForBarcode(code){
  const old=document.getElementById('hec-store-picker');if(old)old.remove();
  const box=document.createElement('div');box.id='hec-store-picker';box.className='hec-store-picker';
- box.innerHTML='<div class="hec-store-card"><h2>Where did you buy this item?</h2><p>Choose a store or type another one. HEC Tech will search that store using barcode <b>'+esc(code)+'</b>.</p><div class="hec-store-grid">'+["Home Depot","Lowe's","Best Buy","Target","Shaw's","Stop & Shop"].map(s=>'<button type="button" data-store="'+s.replace(/"/g,'&quot;')+'">'+s+'</button>').join('')+'</div><label>Other store</label><input id="hec-other-store" placeholder="Type store name"><div class="hec-store-actions"><button type="button" class="primary" id="hec-other-search">Search</button><button type="button" id="hec-store-manual">Fill in manually</button><button type="button" id="hec-store-cancel">Cancel</button></div></div>';
+ box.innerHTML='<div class="hec-store-card"><h2>Where did you buy this item?</h2><p>Choose a store or type another one. HEC Tech will search that store using barcode <b>'+esc(code)+'</b>.</p><div class="hec-store-grid">'+["Home Depot","Lowe's","Best Buy","Target","Shaw's","Stop & Shop"].map(s=>'<button type="button" data-store="'+s.replace(/"/g,'&quot;')+'">'+s+'</button>').join('')+'</div><label for="hec-other-store">Other store or website</label><input id="hec-other-store" type="search" enterkeyhint="search" autocomplete="off" placeholder="Enter a store name or website URL"><div class="hec-store-actions"><button type="button" class="primary" id="hec-other-search">Search</button><button type="button" id="hec-store-manual">Fill in manually</button><button type="button" id="hec-store-cancel">Cancel</button></div></div>';
  document.body.appendChild(box);
  const go=async store=>{store=String(store||'').trim();if(!store)return;box.remove();const modal=document.getElementById('modal');if(!modal.open)modal.showModal();const st=document.getElementById('hec-scan-code-status');if(st)st.textContent='Searching for product details…';window.open(hecStoreSearchUrl(store,code),'_blank','noopener');const found=await hecAutoFillBarcode(code);if(!found&&st)st.textContent='No automatic catalog match found. Review the store results and enter missing details manually.';};
  box.querySelectorAll('[data-store]').forEach(btn=>btn.onclick=()=>go(btn.dataset.store));
  box.querySelector('#hec-other-search').onclick=()=>go(box.querySelector('#hec-other-store').value);
+ box.querySelector('#hec-other-store').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go(e.currentTarget.value)}});
+ box.querySelector('#hec-other-store').focus();
  box.querySelector('#hec-store-manual').onclick=()=>{box.remove();document.getElementById('modal').showModal();const st=document.getElementById('hec-scan-code-status');if(st)st.textContent='Barcode saved. Fill in the item details manually.'};
  box.querySelector('#hec-store-cancel').onclick=()=>{box.remove();document.getElementById('modal').showModal()};
 }
