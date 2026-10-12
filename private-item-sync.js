@@ -80,14 +80,8 @@ function makePanel(){
  button.addEventListener('click',async()=>{
   button.disabled=true;
   if(!localStorage.getItem(FILE_ID_KEY)){
-   const bridge=root.HECItemSyncBridge;
-   if(bridge&&bridge.hasSession()){
-    await setupSync();
-    button.disabled=false;
-   }else{
-    setStatus(status,'Opening Google Drive permission…');
-    try{bridge.reauthorize()}catch(error){setStatus(status,error.message||'Could not start Google Drive setup.',true);button.disabled=false}
-   }
+   setStatus(status,'Opening Google Drive permission…');
+   try{root.HECItemSyncBridge.reauthorize()}catch(error){setStatus(status,error.message||'Could not start Google Drive setup.',true);button.disabled=false}
    return;
   }
   try{await pull(true)}catch(error){setStatus(status,error.message||'Could not check for updates.',true)}
