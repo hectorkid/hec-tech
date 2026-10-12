@@ -120,6 +120,7 @@
     importButton.textContent='📦 Restore complete backup';
     const picker=document.createElement('input');
     picker.type='file';picker.accept='.json,application/json';picker.hidden=true;
+    window.HECRestoreCompleteBackup=()=>picker.click();
     importButton.addEventListener('click',()=>picker.click());
     picker.addEventListener('change',()=>importComplete(picker));
     actions.append(exportButton,importButton,picker);
