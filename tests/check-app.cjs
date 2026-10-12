@@ -13,7 +13,7 @@ for (const file of ['manual-storage.js','receipt-storage.js','portable-backup.js
   assert.ok(html.includes(file) || file==='sw.js', file+' is not loaded');
 }
 const worker = fs.readFileSync('sw.js','utf8');
-for (const file of ['manual-storage.js','receipt-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js','drive-receipt-helpers.js','drive-receipt-upload.js','drive-receipt-restore.js','install-guide.js','private-item-sync.js?v=107']) {
+for (const file of ['manual-storage.js','receipt-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js','drive-receipt-helpers.js','drive-receipt-upload.js','drive-receipt-restore.js','install-guide.js','private-item-sync.js?v=108']) {
   assert.ok(worker.includes(file), file+' is missing from offline cache');
 }
 assert.match(html,/Back up your inventory, attached PDF manuals, and receipts/);
@@ -29,6 +29,9 @@ assert.match(html,/HECItemSyncBridge/);
 assert.match(fs.readFileSync('private-item-sync.js','utf8'),/Private item sync/);
 const oauthWorker = fs.readFileSync('worker/index.js','utf8');
 assert.ok(oauthWorker.includes('https://www.googleapis.com/auth/drive.file'));
+assert.match(oauthWorker,/include_granted_scopes: 'true'/);
+assert.match(oauthWorker,/cachedAccessToken = tokens.access_token/);
+assert.doesNotMatch(fs.readFileSync('private-item-sync.js','utf8'),/spaces=drive/);
 const hecV3 = fs.readFileSync('hec-v3.js','utf8');
 assert.match(hecV3,/data-hec-manual/);
 assert.match(hecV3,/panel\.style\.removeProperty\('display'\)/);
