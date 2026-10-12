@@ -416,3 +416,6 @@ body.hec-v3 .hec-scanner-overlay{z-index:2147483647!important}
  body.hec-v3 #modalContent{max-height:86dvh!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch}
  body.hec-v3 #toolForm input,body.hec-v3 #toolForm textarea{scroll-margin-top:90px;scroll-margin-bottom:220px}
 }
+
+/* v98 product lookup feedback */
+body.hec-v3 .hec-scan-row{flex-wrap:wrap}body.hec-v3 #hec-scan-code-status{flex:1 1 160px;line-height:1.4}
