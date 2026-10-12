@@ -206,6 +206,37 @@ function startAddItemScan(){
  edit(null);
 }
 
+function hecPickCodePhoto(){
+ const picker=document.getElementById('hec-code-photo-input');
+ if(picker){picker.value='';picker.click()}
+}
+async function hecReadCodePhoto(input){
+ const file=input&&input.files&&input.files[0];
+ if(!file)return;
+ const status=document.getElementById('hec-scan-code-status');
+ const report=message=>{if(status)status.textContent=message};
+ report('Reading code from photo…');
+ if(!('BarcodeDetector' in window)){report('Photo scanning is not supported in this browser.');return}
+ let bitmap;
+ try{
+   const formats=await BarcodeDetector.getSupportedFormats();
+   const supported=formats.filter(f=>['qr_code','ean_13','ean_8','upc_a','upc_e','code_128','code_39','data_matrix'].includes(f));
+   if(!supported.length){report('No supported barcode formats available.');return}
+   const detector=new BarcodeDetector({formats:supported});
+   bitmap=await createImageBitmap(file);
+   const codes=await detector.detect(bitmap);
+   const raw=String(codes[0]?.rawValue||'').trim();
+   if(!raw){report('No readable barcode or QR code found. Try a clearer, closer photo.');return}
+   const field=document.querySelector('#toolForm [name="barcode"]');
+   if(field)field.value=raw;
+   const notes=document.querySelector('#toolForm [name="notes"]');
+   const isUrl=/^https?:\\/\\//i.test(raw);
+   if(isUrl&&notes&&!notes.value.trim())notes.value='QR code: '+raw;
+   report('Scanned: '+raw);
+   if(!isUrl){const modal=document.getElementById('modal');if(modal.open)modal.close();hecChooseStoreForBarcode(raw)}
+ }catch(e){report('Could not read this image. Try a clearer picture or use the camera.')}
+ finally{if(bitmap&&bitmap.close)bitmap.close()}
+}
 async function scanItemCode(){
  // A camera overlay cannot appear above a native modal dialog.
  const scanModal=document.getElementById('modal');
@@ -260,7 +291,7 @@ async function scanItemCode(){
    document.getElementById('modal').showModal();alert('Could not open the scanner. Make sure HEC Tech has camera permission, then try again.');
  }
 }
-function edit(id){let x=items.find(y=>y.id===id)||{id:Math.max(0,...items.map(y=>y.id))+1,name:'',brand:'',category:'Other',model:'',serial:'',notes:'',location:'',purchaseDate:'',barcode:'',qrCode:'',image:''};document.getElementById('modalContent').innerHTML=`<h2>${id?'Edit':'Add'} item</h2><form id="toolForm">${['name','brand','category','model','serial','location','purchaseDate','barcode','notes'].map(k=>`<label>${({name:'Item name',brand:'Brand',category:'Category',model:'Model',serial:'Serial / ID',location:'Storage location',purchaseDate:'Purchase date',barcode:'Barcode / QR code',notes:'Notes'})[k]}</label>${k==='notes'?`<textarea name="${k}">${esc(x[k])}</textarea>`:`<input name="${k}" ${k==='name'?'required':''} value="${esc(x[k])}" ${k==='purchaseDate'?'type="date"':''} ${k==='category'?'list="categoryOptions"':''}>`}`).join('')}<datalist id="categoryOptions">${[...new Set([...items.map(y=>y.category).filter(Boolean),'Tools','Appliances','Electronics','Other'])].map(c=>`<option value="${esc(c)}"></option>`).join('')}</datalist><div class="hec-scan-row"><button type="button" class="hec-scan-code-btn" onclick="scanItemCode()">▦ Scan Barcode / QR</button><span id="hec-scan-code-status" role="status" aria-live="polite"></span></div><label>Photo (optional)</label><input type="file" id="photo" accept="image/*">${!id?`<section class="receipt-panel"><h3>Receipt (optional)</h3><p>You can attach a receipt after you save this item.</p><label><input type="checkbox" id="addReceiptAfterSave"> Add a receipt after saving</label></section>`:""}<div class="controls"><button class="primary" type="submit">Save</button><button type="button" onclick="document.getElementById('modal').close()">Cancel</button>${id?`<button type="button" class="edit-favorite-btn ${x.favorite||x.favourite?'is-favorite':''}" onclick="event.preventDefault();toggleFavorite(event,${id});edit(${id})">★ ${x.favorite||x.favourite?'Favorite':'Add to Favorites'}</button><button type="button" onclick="archiveItem(${id})">Archive</button>`:''}</div></form>`;document.activeElement?.blur();setTimeout(()=>document.getElementById('modalContent')?.scrollTo({top:0,behavior:'instant'}),0);document.getElementById('toolForm').onsubmit=async e=>{e.preventDefault();let f=new FormData(e.target);for(let k of ['name','brand','category','model','serial','location','purchaseDate','barcode','notes'])x[k]=f.get(k)||'';let file=document.getElementById('photo').files[0];if(file){let img=new Image();let url=URL.createObjectURL(file);await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=url});let scale=Math.min(1,700/img.width,700/img.height);let c=document.createElement('canvas');c.width=img.width*scale;c.height=img.height*scale;c.getContext('2d').drawImage(img,0,0,c.width,c.height);x.image=c.toDataURL('image/jpeg',.68);URL.revokeObjectURL(url)}const addReceiptAfter=!id&&document.getElementById('addReceiptAfterSave')?.checked;if(!id)items.push(x);if(!save())return;document.getElementById('modal').close();render();if(addReceiptAfter)setTimeout(()=>detail(x.id),120)};document.getElementById('modal').showModal()}
+function edit(id){let x=items.find(y=>y.id===id)||{id:Math.max(0,...items.map(y=>y.id))+1,name:'',brand:'',category:'Other',model:'',serial:'',notes:'',location:'',purchaseDate:'',barcode:'',qrCode:'',image:''};document.getElementById('modalContent').innerHTML=`<h2>${id?'Edit':'Add'} item</h2><form id="toolForm">${['name','brand','category','model','serial','location','purchaseDate','barcode','notes'].map(k=>`<label>${({name:'Item name',brand:'Brand',category:'Category',model:'Model',serial:'Serial / ID',location:'Storage location',purchaseDate:'Purchase date',barcode:'Barcode / QR code',notes:'Notes'})[k]}</label>${k==='notes'?`<textarea name="${k}">${esc(x[k])}</textarea>`:`<input name="${k}" ${k==='name'?'required':''} value="${esc(x[k])}" ${k==='purchaseDate'?'type="date"':''} ${k==='category'?'list="categoryOptions"':''}>`}`).join('')}<datalist id="categoryOptions">${[...new Set([...items.map(y=>y.category).filter(Boolean),'Tools','Appliances','Electronics','Other'])].map(c=>`<option value="${esc(c)}"></option>`).join('')}</datalist><div class="hec-scan-row"><button type="button" class="hec-scan-code-btn" onclick="scanItemCode()">▦ Use Camera</button><button type="button" class="hec-scan-code-btn" onclick="hecPickCodePhoto()">▧ Choose from Photos</button><input id="hec-code-photo-input" type="file" accept="image/*" style="display:none" onchange="hecReadCodePhoto(this)"><span id="hec-scan-code-status" role="status" aria-live="polite"></span></div><label>Photo (optional)</label><input type="file" id="photo" accept="image/*">${!id?`<section class="receipt-panel"><h3>Receipt (optional)</h3><p>You can attach a receipt after you save this item.</p><label><input type="checkbox" id="addReceiptAfterSave"> Add a receipt after saving</label></section>`:""}<div class="controls"><button class="primary" type="submit">Save</button><button type="button" onclick="document.getElementById('modal').close()">Cancel</button>${id?`<button type="button" class="edit-favorite-btn ${x.favorite||x.favourite?'is-favorite':''}" onclick="event.preventDefault();toggleFavorite(event,${id});edit(${id})">★ ${x.favorite||x.favourite?'Favorite':'Add to Favorites'}</button><button type="button" onclick="archiveItem(${id})">Archive</button>`:''}</div></form>`;document.activeElement?.blur();setTimeout(()=>document.getElementById('modalContent')?.scrollTo({top:0,behavior:'instant'}),0);document.getElementById('toolForm').onsubmit=async e=>{e.preventDefault();let f=new FormData(e.target);for(let k of ['name','brand','category','model','serial','location','purchaseDate','barcode','notes'])x[k]=f.get(k)||'';let file=document.getElementById('photo').files[0];if(file){let img=new Image();let url=URL.createObjectURL(file);await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=url});let scale=Math.min(1,700/img.width,700/img.height);let c=document.createElement('canvas');c.width=img.width*scale;c.height=img.height*scale;c.getContext('2d').drawImage(img,0,0,c.width,c.height);x.image=c.toDataURL('image/jpeg',.68);URL.revokeObjectURL(url)}const addReceiptAfter=!id&&document.getElementById('addReceiptAfterSave')?.checked;if(!id)items.push(x);if(!save())return;document.getElementById('modal').close();render();if(addReceiptAfter)setTimeout(()=>detail(x.id),120)};document.getElementById('modal').showModal()}
 // Add Hector's Panasonic fan once per device, preserving the saved inventory.
 function updatePanasonicLightNotesOnce(){
  const key='hec-panasonic-light-notes-v1';
