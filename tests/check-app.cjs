@@ -28,7 +28,7 @@ assert.match(html,/HECReceiptDriveRestore/);
 assert.match(html,/HECItemSyncBridge/);
 assert.match(fs.readFileSync('private-item-sync.js','utf8'),/Private item sync/);
 const oauthWorker = fs.readFileSync('worker/index.js','utf8');
-assert.match(oauthWorker,/scope: '[^']*drive\\.file/);
+assert.ok(oauthWorker.includes('https://www.googleapis.com/auth/drive.file'));
 const hecV3 = fs.readFileSync('hec-v3.js','utf8');
 assert.match(hecV3,/data-hec-manual/);
 assert.match(hecV3,/panel\.style\.removeProperty\('display'\)/);
