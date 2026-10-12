@@ -342,3 +342,26 @@ body.hec-v3 .detail-actions-main button:active,body.hec-v3 .detail-actions-botto
 /* v93: restore centered 3-button bottom navigation after AI Add removal */
 body.hec-v3 .top-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;align-items:stretch!important;justify-content:center!important;padding-left:max(14px,calc((100vw - 900px)/2))!important;padding-right:max(14px,calc((100vw - 900px)/2))!important}
 body.hec-v3 .top-actions>button{width:100%!important;max-width:none!important;margin:0!important}
+
+/* v94: center the three bottom-nav buttons as one compact group */
+body.hec-v3 .top-actions{
+  display:flex!important;
+  justify-content:center!important;
+  align-items:stretch!important;
+  gap:12px!important;
+  padding:10px 14px!important;
+}
+body.hec-v3 .top-actions>button{
+  flex:0 1 190px!important;
+  width:min(30vw,190px)!important;
+  max-width:190px!important;
+  min-width:0!important;
+  margin:0!important;
+}
+@media(max-width:600px){
+  body.hec-v3 .top-actions>button{
+    flex:0 1 calc((100vw - 52px)/3)!important;
+    width:calc((100vw - 52px)/3)!important;
+    max-width:190px!important;
+  }
+}
