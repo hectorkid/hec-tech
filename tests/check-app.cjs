@@ -26,7 +26,7 @@ assert.match(html,/printReceipt/);
 assert.match(html,/HECReceiptDriveUpload/);
 assert.match(html,/HECReceiptDriveRestore/);
 assert.match(html,/HECItemSyncBridge/);
-assert.match(html,/Private item sync/);
+assert.match(fs.readFileSync('private-item-sync.js','utf8'),/Private item sync/);
 const oauthWorker = fs.readFileSync('worker/index.js','utf8');
 assert.match(oauthWorker,/scope: '[^']*drive\\.file/);
 const hecV3 = fs.readFileSync('hec-v3.js','utf8');
