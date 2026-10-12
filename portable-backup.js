@@ -53,6 +53,7 @@
       notify('Complete backup downloaded. Check Downloads or Files for hec-tech-complete-backup.json. It includes your tools, attached PDF manuals, and item receipts.');
     }catch(err){notify('Backup failed: '+err.message)}
   }
+  window.HECExportCompleteBackup=exportComplete;
   async function importComplete(input){
     const file=input.files&&input.files[0];
     input.value='';
