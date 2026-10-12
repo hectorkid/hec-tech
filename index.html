@@ -510,11 +510,12 @@ if(callbackError)status("Google Drive connection canceled or unsuccessful. Tap B
 const pendingAction=sessionStorage.getItem(PENDING_KEY);sessionStorage.removeItem(PENDING_KEY);
 if(driveConnected){
  if(!getLastBackup())status("Google Drive connected — checking backup status…");
- if(callbackSession)setTimeout(()=>{if(pendingAction==="restore")download().catch(e=>status("✕ Restore unsuccessful — "+(e.message||e)));else upload(false).catch(e=>status("✕ Backup unsuccessful — "+(e.message||e)));},900);
- else if(!callbackError)window.addEventListener("load",()=>setTimeout(()=>upload(false).catch(e=>status("✕ Backup unsuccessful — "+(e.message||e))),1800),{once:true});
+ if(callbackSession)setTimeout(()=>{if(pendingAction==="restore")download().catch(e=>status("✕ Restore unsuccessful — "+(e.message||e)));else if(pendingAction==="item-sync")window.HECPrivateItemSyncSetup().catch(e=>status("✕ Private sync setup failed — "+(e.message||e)));else upload(false).catch(e=>status("✕ Backup unsuccessful — "+(e.message||e)));},900);
+ else if(!callbackError)window.addEventListener("load",()=>setTimeout(async()=>{try{await window.HECPrivateItemSyncPull(false);await upload(false)}catch(e){status("✕ Backup unsuccessful — "+(e.message||e))}},1800),{once:true});
 }
+window.HECItemSyncBridge={api,ensureAuthorized:()=>ensureAuthorized(false,"item-sync"),reauthorize:()=>beginAuthorization("item-sync"),hasSession:()=>Boolean(workerSession&&driveConnected),getItems:()=>items,save,render:()=>{filter="All";render()},backup:()=>upload(false)};
 for(const [id,fn] of [["drive-save",upload],["drive-load",download]])document.getElementById(id).addEventListener("click",async()=>{let b=document.getElementById(id);b.disabled=true;try{await fn()}catch(e){status("✕ Backup unsuccessful — "+(e.message||"Something went wrong"));alert("Google Drive: "+(e.message||"Unable to complete"));}finally{b.disabled=false}});
-})();</script><script src="./portable-backup.js?v=20261012-restore"></script><script src="./install-guide.js"></script><style>
+})();</script><script src="./portable-backup.js?v=20261012-restore"></script><script src="./install-guide.js"></script><script src="./private-item-sync.js?v=107"></script><style>
 body.hec-v3 .top-actions{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important}
 body.hec-v3 .top-actions>button{min-width:0!important;font-size:clamp(10px,2.6vw,15px)!important;padding:9px 3px!important}
 body.hec-v3 .hec-ai-action{background:#512b7c;color:#fff;border:1px solid #b187eb;border-radius:11px;font-weight:800}
