@@ -11,7 +11,7 @@ function parseResult(raw){
   const m=line.match(/^\s*(Name|Brand|Category|Model|Notes)\s*:\s*(.*)$/i);
   if(m)out[m[1].toLowerCase()]=m[2].trim();
  }
- if(!out.name)return null;
+ if(!out.name){const json=text.match(/\{[\s\S]*\}/);if(json)try{const j=JSON.parse(json[0]);for(const k of ['name','brand','category','model','notes'])if(j[k]!=null)out[k]=String(j[k]).trim()}catch(e){} }\n if(!out.name)return null;
  const allowed=['Power Tools','Hand Tools','Lawn & Garden','Home & Kitchen','Automotive','Other'];
  if(!allowed.includes(out.category))out.category='Other';
  return out;
@@ -55,15 +55,13 @@ window.openAIAdd=function(){
   if(!photoFile){el('hec-ai-status').textContent='Take or upload a photo first.';return}
   const extra=el('hec-ai-words').value.trim(),text=PROMPT+(extra?'\nUser note: '+extra:'');
   try{await navigator.clipboard.writeText(text)}catch(e){localStorage.setItem('hec-ai-prompt-v1',text)}
-  el('modalContent').innerHTML='<h2>🤖 Choose Your AI</h2><p>Your HEC Tech request has been copied. Open your AI, attach the same item photo, and paste the request.</p><div class="controls" style="display:grid;grid-template-columns:1fr 1fr"><button type="button" class="primary" id="hec-open-chatgpt">Open ChatGPT</button><button type="button" class="primary" id="hec-open-gemini">Open Gemini</button></div><p style="font-size:13px">When the AI replies, copy its full reply. Come back to HEC Tech and tap <b>Paste AI Result</b>.</p><div class="controls"><button type="button" id="hec-ai-return-paste">📋 Paste AI Result</button><button type="button" id="hec-ai-back">← Back</button></div><div id="hec-ai-status" class="hec-ai-status"></div>';
-  el('hec-open-chatgpt').onclick=()=>{location.href='https://chatgpt.com/'};
-  el('hec-open-gemini').onclick=()=>{location.href='https://gemini.google.com/app'};
-  el('hec-ai-return-paste').onclick=async()=>{try{reviewImported(await navigator.clipboard.readText())}catch(e){const t=prompt('Paste the AI reply here:');if(t)reviewImported(t)}};
+  el('modalContent').innerHTML='<h2>🤖 Choose Your AI</h2><p><b>Next:</b> tap ChatGPT or Gemini below. In the AI app, attach the same photo and paste the request HEC Tech copied for you.</p><div class="controls" style="display:grid;grid-template-columns:1fr 1fr"><button type="button" class="primary" id="hec-open-chatgpt">Open ChatGPT</button><button type="button" class="primary" id="hec-open-gemini">Open Gemini</button></div><p style="font-size:13px">When the AI replies, copy its full reply. Come back to HEC Tech and tap <b>Paste AI Result</b>.</p><div class="controls"><button type="button" id="hec-ai-return-paste">📋 Paste AI Result</button><button type="button" id="hec-ai-back">← Back</button></div><div id="hec-ai-status" class="hec-ai-status"></div>';
+  el('hec-open-chatgpt').onclick=()=>{window.open('https://chatgpt.com/','_blank')};
+  el('hec-open-gemini').onclick=()=>{window.open('https://gemini.google.com/app','_blank')};
+  el('hec-ai-return-paste').onclick=()=>{const t=prompt('Paste the AI reply here:');if(t)reviewImported(t)};
   el('hec-ai-back').onclick=()=>openAIAdd();
  };
- el('hec-ai-paste').onclick=async()=>{
-  try{const t=await navigator.clipboard.readText();reviewImported(t)}catch(e){const t=prompt('Paste the AI reply here:');if(t)reviewImported(t)}
- };
+ el('hec-ai-paste').onclick=()=>{const t=prompt('Paste the AI reply here. First send the photo to ChatGPT or Gemini and copy its reply.');if(t)reviewImported(t)};
 };
 window.addEventListener('DOMContentLoaded',()=>{
  const q=new URLSearchParams(location.search),shared=q.get('hecText')||'';
