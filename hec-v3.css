@@ -365,3 +365,33 @@ body.hec-v3 .top-actions>button{
     max-width:190px!important;
   }
 }
+
+/* v95: hard reset bottom navigation to the approved 3-button geometry */
+body.hec-v3 .controls.top-actions{
+  position:fixed!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:0!important;
+  transform:translateX(-50%)!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:900px!important;
+  margin:0!important;
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom))!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:12px!important;
+  align-items:stretch!important;
+}
+body.hec-v3 .controls.top-actions>button{
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin:0!important;
+  flex:none!important;
+}
+body.hec-v3 .controls.top-actions #message-hector{gap:6px!important}
