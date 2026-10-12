@@ -56,6 +56,7 @@ async function startAuth(request, env) {
     scope: 'openid email https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file',
     access_type: 'offline',
     prompt: 'consent',
+    include_granted_scopes: 'true',
     code_challenge: challenge,
     code_challenge_method: 'S256',
     state
@@ -97,6 +98,8 @@ async function callback(request, env) {
   } else if (!oldRefresh) {
     throw new Error('Google did not return offline access. Reconnect and approve Drive access.');
   }
+  cachedAccessToken = tokens.access_token;
+  cachedAccessExpires = Date.now() + Math.max(60, (Number(tokens.expires_in) || 3600) - 90) * 1000;
   const sessionToken = randomToken();
   const sessionHash = await sha256(sessionToken);
   await env.HEC_OAUTH_KV.put(`session:${sessionHash}`, JSON.stringify({ email: allowedEmail }), { expirationTtl: SESSION_TTL });
