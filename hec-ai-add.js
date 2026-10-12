@@ -31,14 +31,16 @@ function reviewImported(raw){
 }
 window.openAIAdd=function(){
  photoFile=null;photoData='';
- el('modalContent').innerHTML='<h2>🎙 AI Add Item</h2><p>Take a photo, then HEC Tech will send it to an AI app already on this phone. No HEC Tech AI fee.</p><button type="button" id="hec-ai-mic">🎤 Speak</button><label for="hec-ai-words">Extra instructions (optional)</label><textarea id="hec-ai-words" rows="2" placeholder="Add this item to my inventory"></textarea><label for="hec-ai-photo">Take or upload photo</label><input type="file" id="hec-ai-photo" accept="image/*" capture="environment"><img id="hec-ai-photo-preview" alt="Selected item photo"><div id="hec-ai-status" class="hec-ai-status"></div><div class="controls"><button type="button" class="primary" id="hec-ai-send">📤 Use My AI</button><button type="button" id="hec-ai-paste">📋 Paste AI Result</button><button type="button" onclick="document.getElementById(\'modal\').close()">Cancel</button></div>';
+ el('modalContent').innerHTML='<h2>📷 AI Add Item</h2><p><b>1. Take or upload a photo.</b><br><b>2. Add a note if needed.</b><br><b>3. Tap Use My AI.</b></p><label for="hec-ai-photo">Take or upload photo</label><input type="file" id="hec-ai-photo" accept="image/*" capture="environment"><img id="hec-ai-photo-preview" alt="Selected item photo"><label for="hec-ai-words">Optional note</label><div style="display:flex;gap:8px;align-items:stretch"><textarea id="hec-ai-words" rows="2" style="flex:1" placeholder="Example: Add this to my garage"></textarea><button type="button" id="hec-ai-mic" aria-label="Speak optional note" title="Speak optional note">🎤</button></div><div id="hec-ai-status" class="hec-ai-status"></div><div class="controls"><button type="button" class="primary" id="hec-ai-send">📤 Use My AI</button><button type="button" id="hec-ai-paste">📋 Paste AI Result</button><button type="button" onclick="document.getElementById(\'modal\').close()">Cancel</button></div>';
  el('modal').showModal();
  el('hec-ai-mic').onclick=()=>{
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){el('hec-ai-status').textContent='Voice input is not supported here. You can type instead.';return}
-  const rec=new SR();rec.lang='en-US';rec.interimResults=false;el('hec-ai-status').textContent='Listening…';
-  rec.onresult=e=>{el('hec-ai-words').value=(el('hec-ai-words').value+' '+e.results[0][0].transcript).trim();el('hec-ai-status').textContent='Voice captured.'};
-  rec.onerror=e=>el('hec-ai-status').textContent='Microphone: '+e.error;rec.start();
+  if(!SR){el('hec-ai-status').textContent='Voice typing is not available in this installed app. Tap the note box and use the microphone on your phone keyboard instead.';el('hec-ai-words').focus();return}
+  const btn=el('hec-ai-mic'),rec=new SR();rec.lang='en-US';rec.interimResults=false;rec.continuous=false;btn.disabled=true;btn.textContent='Listening…';el('hec-ai-status').textContent='Listening — say your note now.';
+  rec.onresult=e=>{const said=Array.from(e.results).map(r=>r[0].transcript).join(' ');el('hec-ai-words').value=(el('hec-ai-words').value+' '+said).trim();el('hec-ai-status').textContent='✓ I heard: “'+said+'”';};
+  rec.onnomatch=()=>el('hec-ai-status').textContent='I did not hear anything. Try again or use the keyboard microphone.';
+  rec.onerror=e=>el('hec-ai-status').textContent=(e.error==='not-allowed'?'Microphone permission is blocked. Use your keyboard microphone or allow microphone permission.':'Voice did not start. Use your keyboard microphone or try again.');
+  rec.onend=()=>{btn.disabled=false;btn.textContent='🎤';};try{rec.start()}catch(e){rec.onend();el('hec-ai-status').textContent='Voice did not start. Use your keyboard microphone instead.'}
  };
  el('hec-ai-photo').onchange=async e=>{
   photoFile=e.target.files[0]||null;if(!photoFile)return;
