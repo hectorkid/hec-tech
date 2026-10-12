@@ -156,8 +156,8 @@ function hecStoreSearchUrl(store,code){
  if(s.includes('stop')&&s.includes('shop'))return 'https://stopandshop.com/product-search/'+q;
  // For a custom store, search within its website when a URL/domain was supplied.
  const custom=String(store||'').trim();
- if(/^(https?:\\/\\/)?(?:www\\.)?[a-z0-9-]+(?:\\.[a-z0-9-]+)+(?:\\/.*)?$/i.test(custom)){
-   try{const u=new URL(/^https?:\\/\\//i.test(custom)?custom:'https://'+custom);return 'https://www.google.com/search?q='+encodeURIComponent('site:'+u.hostname+' '+code)}catch(e){}
+ if(/^(https?:\/\/)?(?:www\\.)?[a-z0-9-]+(?:\\.[a-z0-9-]+)+(?:\/.*)?$/i.test(custom)){
+   try{const u=new URL(/^https?:\/\//i.test(custom)?custom:'https://'+custom);return 'https://www.google.com/search?q='+encodeURIComponent('site:'+u.hostname+' '+code)}catch(e){}
  }
  return 'https://www.google.com/search?q='+encodeURIComponent(custom+' '+code);
 }
@@ -230,7 +230,7 @@ async function hecReadCodePhoto(input){
    const field=document.querySelector('#toolForm [name="barcode"]');
    if(field)field.value=raw;
    const notes=document.querySelector('#toolForm [name="notes"]');
-   const isUrl=/^https?:\\/\\//i.test(raw);
+   const isUrl=/^https?:\/\//i.test(raw);
    if(isUrl&&notes&&!notes.value.trim())notes.value='QR code: '+raw;
    report('Scanned: '+raw);
    if(!isUrl){const modal=document.getElementById('modal');if(modal.open)modal.close();hecChooseStoreForBarcode(raw)}
