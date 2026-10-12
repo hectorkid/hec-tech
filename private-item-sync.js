@@ -4,7 +4,7 @@ const FORMAT='hec-tech-item-updates-v1';
 const FILE_NAME='HEC TECH private item updates.json';
 const FILE_ID_KEY='hec-tech-private-item-sync-file-v1';
 const ALLOWED_FIELDS=new Set(['name','brand','category','model','serial','location','purchaseDate','notes','image','favorite']);
-function normalize(value){return String(value||'').trim().toLowerCase().replace(/\\s+/g,' ')}
+function normalize(value){return String(value||'').trim().toLowerCase().replace(/\s+/g,' ')}
 function applyRemoteUpdates(items,manifest){
  if(!Array.isArray(items))throw new Error('Inventory is not available.');
  if(!manifest||manifest.format!==FORMAT||!Array.isArray(manifest.updates))throw new Error('Private item update file is not valid.');
@@ -46,7 +46,7 @@ async function createSyncFile(api){
  const boundary='hecitemupdates'+Date.now();
  const metadata={name:FILE_NAME,mimeType:'application/json',parents:['root']};
  const initial={format:FORMAT,updatedAt:new Date().toISOString(),updates:[]};
- const body='--'+boundary+'\\r\\nContent-Type: application/json; charset=UTF-8\\r\\n\\r\\n'+JSON.stringify(metadata)+'\\r\\n--'+boundary+'\\r\\nContent-Type: application/json; charset=UTF-8\\r\\n\\r\\n'+JSON.stringify(initial)+'\\r\\n--'+boundary+'--';
+ const body='--'+boundary+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(metadata)+'\r\n--'+boundary+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(initial)+'\r\n--'+boundary+'--';
  const response=await api(uploadUrl('?uploadType=multipart&fields=id,name'),{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+boundary},body});
  const result=await response.json();
  if(!result.id)throw new Error('Google Drive did not create the private sync file.');
@@ -60,20 +60,20 @@ function setStatus(node,message,isError=false){
  node.setAttribute('aria-live','polite');
 }
 function makePanel(){
- const drive=document.getElementById('drive-backup');
- if(!drive||document.getElementById('hec-private-item-sync'))return;
- const panel=document.createElement('div');
+ const drive=root.document&&root.document.getElementById('drive-backup');
+ if(!drive||root.document.getElementById('hec-private-item-sync'))return;
+ const panel=root.document.createElement('div');
  panel.id='hec-private-item-sync';
  panel.style.cssText='margin-top:12px;padding-top:12px;border-top:1px solid #d8dce3';
- const title=document.createElement('strong');
+ const title=root.document.createElement('strong');
  title.textContent='Private item sync';
- const note=document.createElement('p');
+ const note=root.document.createElement('p');
  note.style.cssText='font-size:13px;margin:6px 0';
  note.textContent='Keep item updates in your private Google Drive. HEC TECH checks for updates when it opens; your existing list is preserved.';
- const status=document.createElement('p');
+ const status=root.document.createElement('p');
  status.id='hec-private-item-sync-status';
  status.style.cssText='font-size:13px;margin:6px 0;min-height:18px';
- const button=document.createElement('button');
+ const button=root.document.createElement('button');
  button.type='button';
  button.id='hec-private-item-sync-button';
  button.textContent=localStorage.getItem(FILE_ID_KEY)?'Check for item updates':'Enable private item sync';
@@ -81,7 +81,7 @@ function makePanel(){
   button.disabled=true;
   if(!localStorage.getItem(FILE_ID_KEY)){
    setStatus(status,'Opening Google Drive permission…');
-   try{window.HECItemSyncBridge.reauthorize();}catch(error){setStatus(status,error.message||'Could not start Google Drive setup.',true);button.disabled=false;}
+   try{root.HECItemSyncBridge.reauthorize()}catch(error){setStatus(status,error.message||'Could not start Google Drive setup.',true);button.disabled=false}
    return;
   }
   try{await pull(true)}catch(error){setStatus(status,error.message||'Could not check for updates.',true)}
@@ -92,8 +92,8 @@ function makePanel(){
 }
 async function setupSync(){
  const bridge=root.HECItemSyncBridge;
- const status=document.getElementById('hec-private-item-sync-status');
- const button=document.getElementById('hec-private-item-sync-button');
+ const status=root.document&&root.document.getElementById('hec-private-item-sync-status');
+ const button=root.document&&root.document.getElementById('hec-private-item-sync-button');
  try{
   if(!bridge)throw new Error('Reload HEC TECH and try again.');
   await bridge.ensureAuthorized();
@@ -103,6 +103,7 @@ async function setupSync(){
   setStatus(status,'Private item sync is ready.');
   if(button){button.textContent='Check for item updates';button.disabled=false}
   await pull(true);
+  await bridge.backup();
  }catch(error){
   setStatus(status,error.message||'Private item sync could not be enabled.',true);
   if(button)button.disabled=false;
@@ -111,7 +112,7 @@ async function setupSync(){
 async function pull(showStatus=false){
  const bridge=root.HECItemSyncBridge;
  if(!bridge||!bridge.hasSession())return false;
- const status=document.getElementById('hec-private-item-sync-status');
+ const status=root.document&&root.document.getElementById('hec-private-item-sync-status');
  try{
   await bridge.ensureAuthorized(false);
   let fileId=localStorage.getItem(FILE_ID_KEY);
@@ -120,7 +121,7 @@ async function pull(showStatus=false){
    if(!file)return false;
    fileId=file.id;
    localStorage.setItem(FILE_ID_KEY,fileId);
-   const button=document.getElementById('hec-private-item-sync-button');
+   const button=root.document.getElementById('hec-private-item-sync-button');
    if(button)button.textContent='Check for item updates';
   }
   const response=await bridge.api(apiUrl('/'+encodeURIComponent(fileId)+'?alt=media'));
@@ -139,12 +140,15 @@ async function pull(showStatus=false){
 }
 function init(){
  makePanel();
- const pending=sessionStorage.getItem('hec-tech-drive-pending-action');
- if(pending==='item-sync'){sessionStorage.removeItem('hec-tech-drive-pending-action');setTimeout(setupSync,150)}
- if(root.HECItemSyncBridge&&root.HECItemSyncBridge.hasSession())setTimeout(()=>pull(false),350);
+ const pending=root.sessionStorage&&root.sessionStorage.getItem('hec-tech-drive-pending-action');
+ if(pending==='item-sync'){
+  root.sessionStorage.removeItem('hec-tech-drive-pending-action');
+  root.setTimeout(setupSync,150);
+ }
+ if(root.HECItemSyncBridge&&root.HECItemSyncBridge.hasSession())root.setTimeout(()=>pull(false),350);
 }
 root.HECPrivateItemSyncPull=pull;
 root.HECPrivateItemSyncSetup=setupSync;
 if(typeof module!=='undefined'&&module.exports)module.exports={applyRemoteUpdates,FORMAT,FILE_NAME};
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+if(root.document){if(root.document.readyState==='loading')root.document.addEventListener('DOMContentLoaded',init,{once:true});else init()}
 })(typeof window!=='undefined'?window:globalThis);
