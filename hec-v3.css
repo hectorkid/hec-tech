@@ -419,3 +419,6 @@ body.hec-v3 .hec-scanner-overlay{z-index:2147483647!important}
 
 /* v98 product lookup feedback */
 body.hec-v3 .hec-scan-row{flex-wrap:wrap}body.hec-v3 #hec-scan-code-status{flex:1 1 160px;line-height:1.4}
+
+/* v99: always display barcode lookup progress */
+body.hec-v3 #hec-scan-code-status{display:block!important;flex:1 1 100%!important;font-size:14px!important;font-weight:700!important;color:#22633a!important;white-space:normal!important;min-height:22px!important}
