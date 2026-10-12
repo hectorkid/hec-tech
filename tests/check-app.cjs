@@ -35,6 +35,8 @@ assert.match(hecV3,/window\.HECExportCompleteBackup\)window\.HECExportCompleteBa
 assert.doesNotMatch(hecV3,/querySelectorAll\('button'\)\]\.find/);
 const portable=fs.readFileSync('portable-backup.js','utf8');
 assert.match(portable,/window\.HECExportCompleteBackup=exportComplete/);
+assert.match(portable,/position:fixed;top:12px/);
+assert.match(portable,/document\.body\.append\(status\)/);
 assert.match(portable,/window\.HECExportCompleteBackup=exportComplete/);
 assert.match(portable,/hec-tech-complete-v2/);
 assert.match(portable,/HECReceiptStore/);
