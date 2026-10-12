@@ -53,7 +53,7 @@ async function startAuth(request, env) {
     client_id: required(env.GOOGLE_CLIENT_ID),
     redirect_uri: redirectUri,
     response_type: 'code',
-    scope: 'openid email https://www.googleapis.com/auth/drive.appdata',
+    scope: 'openid email https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file',
     access_type: 'offline',
     prompt: 'consent',
     code_challenge: challenge,
