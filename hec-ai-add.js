@@ -31,7 +31,7 @@ function reviewImported(raw){
 }
 window.openAIAdd=function(){
  photoFile=null;photoData='';
- el('modalContent').innerHTML='<h2>📷 AI Add Item</h2><p><b>1. Take or upload a photo.</b><br><b>2. Add a note if needed.</b><br><b>3. Tap Use My AI.</b></p><label for="hec-ai-photo">Take or upload photo</label><input type="file" id="hec-ai-photo" accept="image/*" capture="environment"><img id="hec-ai-photo-preview" alt="Selected item photo"><label for="hec-ai-words">Optional note</label><div style="display:flex;gap:8px;align-items:stretch"><textarea id="hec-ai-words" rows="2" style="flex:1" placeholder="Example: Add this to my garage"></textarea><button type="button" id="hec-ai-mic" aria-label="Speak optional note" title="Speak optional note">🎤</button></div><div id="hec-ai-status" class="hec-ai-status"></div><div class="controls"><button type="button" class="primary" id="hec-ai-send">📤 Use My AI</button><button type="button" id="hec-ai-paste">📋 Paste AI Result</button><button type="button" onclick="document.getElementById(\'modal\').close()">Cancel</button></div>';
+ el('modalContent').innerHTML='<h2>📷 AI Add Item</h2><p><b>1. Take or upload a photo.</b><br><b>2. Add a note if needed.</b><br><b>3. Tap Use My AI.</b></p><label>Add a photo</label><div class="controls"><button type="button" id="hec-ai-camera">📷 Take Photo</button><button type="button" id="hec-ai-gallery">🖼 Choose Existing Photo</button></div><input type="file" id="hec-ai-photo" accept="image/*" capture="environment" style="display:none"><input type="file" id="hec-ai-gallery-file" accept="image/*" style="display:none"><img id="hec-ai-photo-preview" alt="Selected item photo"><label for="hec-ai-words">Optional note</label><div style="display:flex;gap:8px;align-items:stretch"><textarea id="hec-ai-words" rows="2" style="flex:1" placeholder="Example: Add this to my garage"></textarea><button type="button" id="hec-ai-mic" aria-label="Speak optional note" title="Speak optional note">🎤</button></div><div id="hec-ai-status" class="hec-ai-status"></div><div class="controls"><button type="button" class="primary" id="hec-ai-send">📤 Use My AI</button><button type="button" id="hec-ai-paste">📋 Paste AI Result</button><button type="button" onclick="document.getElementById(\'modal\').close()">Cancel</button></div>';
  el('modal').showModal();
  el('hec-ai-mic').onclick=()=>{
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -42,7 +42,7 @@ window.openAIAdd=function(){
   rec.onerror=e=>el('hec-ai-status').textContent=(e.error==='not-allowed'?'Microphone permission is blocked. Use your keyboard microphone or allow microphone permission.':'Voice did not start. Use your keyboard microphone or try again.');
   rec.onend=()=>{btn.disabled=false;btn.textContent='🎤';};try{rec.start()}catch(e){rec.onend();el('hec-ai-status').textContent='Voice did not start. Use your keyboard microphone instead.'}
  };
- el('hec-ai-photo').onchange=async e=>{
+ const handlePhoto=async e=>{
   photoFile=e.target.files[0]||null;if(!photoFile)return;
   try{
    const im=new Image(),url=URL.createObjectURL(photoFile);await new Promise((res,rej)=>{im.onload=res;im.onerror=rej;im.src=url});
@@ -51,6 +51,10 @@ window.openAIAdd=function(){
    el('hec-ai-photo-preview').src=photoData;el('hec-ai-photo-preview').style.display='block';
   }catch(e){el('hec-ai-status').textContent='Could not read that photo.'}
  };
+ el('hec-ai-camera').onclick=()=>el('hec-ai-photo').click();
+ el('hec-ai-gallery').onclick=()=>el('hec-ai-gallery-file').click();
+ el('hec-ai-photo').onchange=handlePhoto;
+ el('hec-ai-gallery-file').onchange=handlePhoto;
  el('hec-ai-send').onclick=async()=>{
   if(!photoFile){el('hec-ai-status').textContent='Take or upload a photo first.';return}
   const extra=el('hec-ai-words').value.trim(),text=PROMPT+(extra?'\nUser note: '+extra:'');
