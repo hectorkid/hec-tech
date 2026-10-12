@@ -18,8 +18,6 @@ export default {
       if (url.pathname === '/api/session' && request.method === 'GET') return await sessionInfo(request, env);
       if (url.pathname === '/api/logout' && request.method === 'OPTIONS') return preflight(request, env);
       if (url.pathname === '/api/logout' && request.method === 'POST') return await logout(request, env);
-      if (url.pathname === '/api/ai-item' && request.method === 'OPTIONS') return preflight(request, env);
-      if (url.pathname === '/api/ai-item' && request.method === 'POST') return await aiItem(request, env);
       if (url.pathname === '/api/drive' && request.method === 'OPTIONS') return preflight(request, env);
       if (url.pathname === '/api/drive' && request.method === 'POST') return await driveProxy(request, env);
       return new Response('Not found', { status: 404 });
