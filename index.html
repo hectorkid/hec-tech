@@ -514,10 +514,10 @@ if(driveConnected){
  else if(!callbackError)window.addEventListener("load",()=>setTimeout(()=>upload(false).catch(e=>status("✕ Backup unsuccessful — "+(e.message||e))),1800),{once:true});
 }
 for(const [id,fn] of [["drive-save",upload],["drive-load",download]])document.getElementById(id).addEventListener("click",async()=>{let b=document.getElementById(id);b.disabled=true;try{await fn()}catch(e){status("✕ Backup unsuccessful — "+(e.message||"Something went wrong"));alert("Google Drive: "+(e.message||"Unable to complete"));}finally{b.disabled=false}});
-})();</script><script src="./portable-backup.js?v=20261012-status"></script><script src="./install-guide.js"></script><style>
+})();</script><script src="./portable-backup.js?v=20261012-restore"></script><script src="./install-guide.js"></script><style>
 body.hec-v3 .top-actions{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important}
 body.hec-v3 .top-actions>button{min-width:0!important;font-size:clamp(10px,2.6vw,15px)!important;padding:9px 3px!important}
 body.hec-v3 .hec-ai-action{background:#512b7c;color:#fff;border:1px solid #b187eb;border-radius:11px;font-weight:800}
 #hec-ai-photo-preview{max-width:180px;max-height:170px;object-fit:contain;display:none;background:#fff;border-radius:9px;margin:10px auto}
 .hec-ai-status{font-size:13px;color:#c4cbd7;min-height:22px;margin:10px 0}
-</style><script src="./hec-v3.js?v=24"></script></body></html>
+</style><script src="./hec-v3.js?v=25"></script></body></html>
