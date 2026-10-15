@@ -43,14 +43,14 @@
       const data={format:'hec-tech-complete-v2',createdAt:new Date().toISOString(),items,manuals,receipts};
       const file=new File([JSON.stringify(data)],'hec-tech-complete-backup.json',{type:'application/json'});
       if(navigator.canShare&&navigator.canShare({files:[file]})){
-        try{await navigator.share({files:[file],title:'HEC TECH backup'});notify('Backup file shared. Choose a destination in the share panel to save it.');return}
+        try{await navigator.share({files:[file],title:'HEC TECH backup'});notify('Backup prepared. To keep it in iCloud Drive, choose Save to Files, then iCloud Drive. Confirm the file appears in Files before relying on it.');return}
         catch(err){if(err.name==='AbortError')return}
       }
       const url=URL.createObjectURL(file);
       const link=document.createElement('a');
       link.href=url;link.download=file.name;document.body.append(link);link.click();link.remove();
       setTimeout(()=>URL.revokeObjectURL(url),60000);
-      notify('Complete backup downloaded. Check Downloads or Files for hec-tech-complete-backup.json. It includes your tools, attached PDF manuals, and item receipts.');
+      notify('Backup file downloaded. On iPhone, move it from Downloads to Files → iCloud Drive. Confirm it is saved there. Includes inventory, offline PDFs and receipts.');
     }catch(err){notify('Backup failed: '+err.message)}
   }
   window.HECExportCompleteBackup=exportComplete;
@@ -62,6 +62,8 @@
       const data=JSON.parse(await file.text());
       const isV1=data.format==='hec-tech-complete-v1',isV2=data.format==='hec-tech-complete-v2';
       if((!isV1&&!isV2)||!Array.isArray(data.items)||!data.items.every(t=>t&&t.id!=null&&t.name)||!data.manuals||typeof data.manuals!=='object'||(isV2&&(!data.receipts||typeof data.receipts!=='object')))throw new Error('Not a valid complete backup.');
+      const ids=data.items.map(tool=>String(tool.id));
+      if(new Set(ids).size!==ids.length)throw new Error('Backup contains duplicate item IDs.');
       for(const tool of data.items){
         if(tool.manualStored&&!data.manuals[String(tool.id)])throw new Error('Missing manual for '+tool.name);
         if(tool.receiptStored&&!(data.receipts||{})[String(tool.id)])throw new Error('Missing receipt for '+tool.name);
@@ -98,11 +100,11 @@
     panel.style.cssText='margin:10px 0 16px;padding:10px 14px;border:1px solid #d8dce3;border-radius:12px;background:#fff';
     const details=document.createElement('details');
     const title=document.createElement('summary');
-    title.textContent='Manual backup options (includes PDFs and receipts)';
+    title.textContent='iCloud Drive / Files backup (optional)';
     title.style.cssText='font-weight:650;cursor:pointer';
     const note=document.createElement('p');
     note.style.cssText='font-size:13px;margin:10px 0';
-    note.textContent='Create a separate backup file with your tools, attached PDF manuals, and item receipts. Save it to Files, iCloud Drive, or another location. Restoring replaces the inventory on this device.';
+    note.textContent='No Google account needed. Export your items, offline PDF manuals, and receipts, then on iPhone choose Save to Files → iCloud Drive. This is a manual backup, not automatic iCloud syncing. To restore, select the saved JSON file. Restoring replaces this device’s inventory.';
     const status=document.createElement('p');
     status.id='portable-backup-status';
     status.setAttribute('role','status');
@@ -113,11 +115,11 @@
     actions.className='controls';
     const exportButton=document.createElement('button');
     exportButton.type='button';
-    exportButton.textContent='📦 Export complete backup';
+    exportButton.textContent='📦 Back up to Files / iCloud';
     exportButton.addEventListener('click',exportComplete);
     const importButton=document.createElement('button');
     importButton.type='button';
-    importButton.textContent='📦 Restore complete backup';
+    importButton.textContent='📦 Restore from Files / iCloud';
     const picker=document.createElement('input');
     picker.type='file';picker.accept='.json,application/json';picker.hidden=true;
     window.HECRestoreCompleteBackup=()=>picker.click();
