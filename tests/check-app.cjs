@@ -30,7 +30,10 @@ assert.match(fs.readFileSync('private-item-sync.js','utf8'),/Private item sync/)
 const oauthWorker = fs.readFileSync('worker/index.js','utf8');
 assert.ok(oauthWorker.includes('https://www.googleapis.com/auth/drive.file'));
 assert.match(oauthWorker,/include_granted_scopes: 'true'/);
-assert.match(oauthWorker,/cachedAccessToken = tokens.access_token/);
+assert.match(oauthWorker,/getAccessToken\(env, session.email\)/);
+assert.match(oauthWorker,/refreshKey\(accountEmail\)/);
+assert.doesNotMatch(oauthWorker,/cachedAccessToken/);
+assert.doesNotMatch(oauthWorker,/ALLOWED_GOOGLE_EMAIL/);
 assert.doesNotMatch(fs.readFileSync('private-item-sync.js','utf8'),/spaces=drive/);
 const hecV3 = fs.readFileSync('hec-v3.js','utf8');
 assert.match(hecV3,/data-hec-manual/);

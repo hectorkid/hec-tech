@@ -37,10 +37,9 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          ALLOWED_GOOGLE_EMAIL: ${{ secrets.ALLOWED_GOOGLE_EMAIL }}
         run: |
           set -euo pipefail
-          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET ALLOWED_GOOGLE_EMAIL; do
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET; do
             if [ -z "${!name:-}" ]; then
               echo "Missing GitHub Actions secret: ${name}" >&2
               exit 1
@@ -105,12 +104,11 @@ jobs:
         env:
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          ALLOWED_GOOGLE_EMAIL: ${{ secrets.ALLOWED_GOOGLE_EMAIL }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
           import json, os
-          required = ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "ALLOWED_GOOGLE_EMAIL"]
+          required = ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET"]
           missing = [name for name in required if not os.environ.get(name)]
           if missing:
               raise SystemExit("Missing GitHub Actions secrets: " + ", ".join(missing))

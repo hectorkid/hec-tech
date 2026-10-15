@@ -27,6 +27,7 @@
   }
   async function exportComplete(){
     try{
+      notify('Preparing complete backup… Please wait.');
       const manuals={},receipts={};
       for(const tool of items){
         if(tool.manualStored){
@@ -42,15 +43,16 @@
       }
       const data={format:'hec-tech-complete-v2',createdAt:new Date().toISOString(),items,manuals,receipts};
       const file=new File([JSON.stringify(data)],'hec-tech-complete-backup.json',{type:'application/json'});
+      notify('Backup ready. Opening save options…');
       if(navigator.canShare&&navigator.canShare({files:[file]})){
         try{await navigator.share({files:[file],title:'HEC TECH backup'});notify('Backup prepared. To keep it in iCloud Drive, choose Save to Files, then iCloud Drive. Confirm the file appears in Files before relying on it.');return}
-        catch(err){if(err.name==='AbortError')return}
+        catch(err){if(err.name==='AbortError'){notify('Backup canceled. No data was changed.');return}}
       }
       const url=URL.createObjectURL(file);
       const link=document.createElement('a');
       link.href=url;link.download=file.name;document.body.append(link);link.click();link.remove();
       setTimeout(()=>URL.revokeObjectURL(url),60000);
-      notify('Backup file downloaded. On iPhone, move it from Downloads to Files → iCloud Drive. Confirm it is saved there. Includes inventory, offline PDFs and receipts.');
+      notify('Backup download requested. Find hec-tech-complete-backup.json in Downloads / Files. On iPhone, move it to iCloud Drive. If no download appears, open HEC TECH in Safari or Chrome and try again.');
     }catch(err){notify('Backup failed: '+err.message)}
   }
   window.HECExportCompleteBackup=exportComplete;
