@@ -5,8 +5,6 @@ const DRIVE_HOST = 'www.googleapis.com';
 const REFRESH_KEY = 'google:refresh:v1';
 const SESSION_TTL = 60 * 60 * 24 * 30;
 
-let cachedAccessToken = '';
-let cachedAccessExpires = 0;
 
 export default {
   async fetch(request, env) {
@@ -87,22 +85,18 @@ async function callback(request, env) {
   const profile = await fetch(GOOGLE_USERINFO, { headers: { Authorization: `Bearer ${tokens.access_token}` } });
   if (!profile.ok) throw new Error('Google account verification failed.');
   const user = await profile.json();
-  const allowedEmail = required(env.ALLOWED_GOOGLE_EMAIL).trim().toLowerCase();
-  if (!user.email_verified || String(user.email || '').trim().toLowerCase() !== allowedEmail) {
-    throw new Error('This Google account is not authorized for HEC TECH.');
-  }
-
-  const oldRefresh = await env.HEC_OAUTH_KV.get(REFRESH_KEY);
+  const accountEmail = String(user.email || '').trim().toLowerCase();
+  if (!user.email_verified || !accountEmail) throw new Error('Google account verification failed.');
+  const accountKey = await refreshKey(accountEmail);
+  const oldRefresh = await env.HEC_OAUTH_KV.get(accountKey);
   if (tokens.refresh_token) {
-    await env.HEC_OAUTH_KV.put(REFRESH_KEY, await encryptSecret(tokens.refresh_token, required(env.GOOGLE_CLIENT_SECRET)));
+    await env.HEC_OAUTH_KV.put(accountKey, await encryptSecret(tokens.refresh_token, required(env.GOOGLE_CLIENT_SECRET)));
   } else if (!oldRefresh) {
     throw new Error('Google did not return offline access. Reconnect and approve Drive access.');
   }
-  cachedAccessToken = tokens.access_token;
-  cachedAccessExpires = Date.now() + Math.max(60, (Number(tokens.expires_in) || 3600) - 90) * 1000;
   const sessionToken = randomToken();
   const sessionHash = await sha256(sessionToken);
-  await env.HEC_OAUTH_KV.put(`session:${sessionHash}`, JSON.stringify({ email: allowedEmail }), { expirationTtl: SESSION_TTL });
+  await env.HEC_OAUTH_KV.put(`session:${sessionHash}`, JSON.stringify({ email: accountEmail }), { expirationTtl: SESSION_TTL });
   return redirectToApp(env, `#hec-drive-session=${sessionToken}`);
 }
 
@@ -122,7 +116,7 @@ async function logout(request, env) {
 async function driveProxy(request, env) {
   const originError = checkOrigin(request, env);
   if (originError) return originError;
-  await requireSession(request, env);
+  const session = await requireSession(request, env);
   const rawUrl = request.headers.get('X-Drive-URL') || '';
   const target = new URL(rawUrl);
   if (target.protocol !== 'https:' || target.hostname !== DRIVE_HOST || !/^\/(?:upload\/)?drive\/v3\/files(?:\/[^/]+)?$/.test(target.pathname)) {
@@ -132,10 +126,10 @@ async function driveProxy(request, env) {
   if (!['GET', 'POST', 'PATCH', 'DELETE'].includes(method)) return json(request, env, { error: 'Drive method is not allowed.' }, 405);
   let accessToken;
   try {
-    accessToken = await getAccessToken(env);
+    accessToken = await getAccessToken(env, session.email);
   } catch (error) {
     if (error.status === 401) {
-      await env.HEC_OAUTH_KV.delete(REFRESH_KEY);
+      await env.HEC_OAUTH_KV.delete(await refreshKey(session.email));
       const sessionToken = bearer(request);
       await env.HEC_OAUTH_KV.delete(`session:${await sha256(sessionToken)}`);
     }
@@ -155,10 +149,13 @@ async function driveProxy(request, env) {
   return new Response(upstream.body, { status: upstream.status, headers: responseHeaders });
 }
 
-async function getAccessToken(env) {
-  if (cachedAccessToken && Date.now() < cachedAccessExpires) return cachedAccessToken;
-  const encrypted = await env.HEC_OAUTH_KV.get(REFRESH_KEY);
-  if (!encrypted) throw new Error('Google Drive is not connected. Tap Back up to Drive to reconnect.');
+async function refreshKey(email) {
+  return 'google:refresh:account:' + await sha256(String(email).trim().toLowerCase());
+}
+
+async function getAccessToken(env, email) {
+  const encrypted = await env.HEC_OAUTH_KV.get(await refreshKey(email));
+  if (!encrypted) throw Object.assign(new Error('This Google account must reconnect Drive.'), { status: 401 });
   const refreshToken = await decryptSecret(encrypted, required(env.GOOGLE_CLIENT_SECRET));
   const tokens = await tokenRequest({
     client_id: required(env.GOOGLE_CLIENT_ID),
@@ -166,9 +163,7 @@ async function getAccessToken(env) {
     refresh_token: refreshToken,
     grant_type: 'refresh_token'
   });
-  cachedAccessToken = tokens.access_token;
-  cachedAccessExpires = Date.now() + Math.max(60, (Number(tokens.expires_in) || 3600) - 90) * 1000;
-  return cachedAccessToken;
+  return tokens.access_token;
 }
 
 async function tokenRequest(fields) {
