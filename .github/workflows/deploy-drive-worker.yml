@@ -104,7 +104,6 @@ jobs:
         env:
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          ALLOWED_GOOGLE_EMAIL: ${{ secrets.ALLOWED_GOOGLE_EMAIL }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
