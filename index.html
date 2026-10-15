@@ -308,8 +308,7 @@ function updatePanasonicLightNotesOnce(){
  }catch(e){console.warn('Could not update Panasonic light notes:',e);}
 }
 updatePanasonicLightNotesOnce();
-function addHoneywellFilterOnce(){const key='hec-honeywell-filter-cf200d1625-v1';try{if(localStorage.getItem(key))return;if(items.some(x=>/CF200D1625/i.test(String(x.model||'')))){localStorage.setItem(key,'1');return}const id=Math.max(0,...items.map(x=>Number(x.id)||0))+1;const item={id,name:'Honeywell Home 16 x 25 x 4 Air Filter MERV 12',brand:'Honeywell Home',category:'Home & Kitchen',model:'CF200D1625',serial:'',location:'HVAC / Furnace',purchaseDate:'',notes:'Replacement furnace air filter. Nominal 16 x 25 x 4 inches; original filter label actual 15-15/16 x 24-7/8 x 4-3/8 inches. MERV 12; FPR 10. Airflow arrow points toward heating/cooling equipment. Home Depot Internet #203781261, SKU #309010. Shop: https://www.homedepot.com/p/203781261 . Manufacturer product information: https://customer.resideo.com/products/s-cf200d1625-e . No verified product-specific PDF manual available.',image:''};items.push(item);if(save())localStorage.setItem(key,'1');else items.pop()}catch(e){console.warn('Could not add Honeywell filter',e)}}
-addHoneywellFilterOnce();
+
 
 function updatePanasonicResourcesOnce(){
  const key='hec-panasonic-resources-v1';
