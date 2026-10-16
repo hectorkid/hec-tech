@@ -1,11 +1,12 @@
 (function(){
 const KEY='hec-welcome-seen-v1';
 function start(force=false){
- if((!force&&localStorage.getItem(KEY))||document.getElementById('hec-welcome'))return;
+ if(document.getElementById('hec-welcome'))return;
+ if(!force){try{if(localStorage.getItem(KEY)==='1'||sessionStorage.getItem(KEY)==='1')return;}catch(e){}}
  // Never interrupt an existing collection or an OAuth callback.
  if(!force&&(location.search.includes('session=')||location.hash.includes('access_token')))return;
  const saved=localStorage.getItem('tool-inventory-v1');
- if(!force&&saved){try{if(JSON.parse(saved).length>0)return;}catch(e){return;}}
+ if(!force&&saved){try{if(Array.isArray(JSON.parse(saved))&&JSON.parse(saved).length>0)return;}catch(e){return;}}
  const style=document.createElement('style');style.textContent=`
  #hec-welcome{position:fixed;inset:0;z-index:99999;background:rgba(9,15,25,.82);display:grid;place-items:center;padding:18px;overflow:auto}
  #hec-welcome *{box-sizing:border-box}#hec-welcome .hw-card{width:min(100%,440px);background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 25px 80px #0008;font-family:system-ui,Arial,sans-serif;color:#1b2330}
@@ -20,9 +21,9 @@ function start(force=false){
  @media(max-height:650px){#hec-welcome{place-items:start center}#hec-welcome .hw-hero{padding:17px}#hec-welcome .hw-body{padding:15px}#hec-welcome .hw-step{margin:9px 0}}
  `;document.head.appendChild(style);
  const overlay=document.createElement('div');overlay.id='hec-welcome';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','Welcome to HEC TECH');
- overlay.innerHTML='<div class="hw-card"><div class="hw-hero"><div class="hw-logo">H<span>T</span></div><h2>Welcome to HEC TECH</h2><p>Your gear. Your gadgets. All in one place.</p></div><div class="hw-body"><p class="hw-intro">Keep track of everything you own — simply and securely.</p><div class="hw-step"><div class="hw-icon">🧰</div><div><strong>Add your first item</strong><small>Save tools, home devices, gadgets and more.</small></div></div><div class="hw-step"><div class="hw-icon">📸</div><div><strong>Keep the important details</strong><small>Add photos, receipts, manuals and notes.</small></div></div><div class="hw-step"><div class="hw-icon">☁️</div><div><strong>Back up your collection</strong><small>Use your own Google Drive or save a file to iCloud.</small></div></div><button class="hw-start" type="button">Get Started →</button><p class="hw-foot">Your collection starts empty and stays on your device unless you choose to back it up.</p></div></div>';
+ overlay.innerHTML='<div class="hw-card"><div class="hw-hero"><div class="hw-logo">H<span>T</span></div><h2>Welcome to HEC TECH</h2><p>Your gear. Your gadgets. All in one place.</p></div><div class="hw-body"><p class="hw-intro">Keep track of everything you own — simply and securely.</p><div class="hw-step"><div class="hw-icon">🧰</div><div><strong>Add your first item</strong><small>Save tools, home devices, gadgets and more.</small></div></div><div class="hw-step"><div class="hw-icon">📸</div><div><strong>Keep the important details</strong><small>Add photos, receipts, manuals and notes.</small></div></div><div class="hw-step"><div class="hw-icon">☁️</div><div><strong>Back up your collection</strong><small>Use your own Google Drive or save a file to iCloud.</small></div></div><button class="hw-start" type="button">Get Started</button><p class="hw-foot">Your collection starts empty and stays on your device unless you choose to back it up.</p></div></div>';
  document.body.appendChild(overlay);
- overlay.querySelector('button').addEventListener('click',()=>{if(!force)localStorage.setItem(KEY,'1');overlay.remove();});
+ overlay.querySelector('button').addEventListener('click',()=>{try{localStorage.setItem(KEY,'1');sessionStorage.setItem(KEY,'1');}catch(e){console.warn('Welcome preference not persisted',e)}overlay.remove();});
  overlay.querySelector('button').focus();
 }
 window.HECPreviewWelcome=()=>start(true);
