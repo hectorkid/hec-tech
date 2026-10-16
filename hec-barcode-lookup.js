@@ -31,7 +31,12 @@ function setup(){
     // explicitly associate a product with its GTIN, unlike search snippets.
     for(const [catalogHost,catalogName] of [['world.openproductsfacts.org','Open Products Facts'],['world.openfoodfacts.org','Open Food Facts'],['world.openbeautyfacts.org','Open Beauty Facts']]){
      try{
-     const catalog=await fetch('https://'+catalogHost+'/api/v2/product/'+encodeURIComponent(code)+'.json?fields=code,product_name,brands,image_front_small_url',{signal:controller.signal});
+     const perCatalog=new AbortController();
+     const catalogTimer=setTimeout(()=>perCatalog.abort(),3500);
+     let catalog;
+     try{
+      catalog=await fetch('https://'+catalogHost+'/api/v2/product/'+encodeURIComponent(code)+'.json?fields=code,product_name,brands,image_front_small_url',{signal:AbortSignal.any([controller.signal,perCatalog.signal])});
+     }finally{clearTimeout(catalogTimer)}
      if(catalog.ok){
       const record=await catalog.json(),item=record.product;
       if(record.status===1&&item&&item.product_name&&String(item.code||record.code||'')===code){
