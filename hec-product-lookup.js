@@ -18,6 +18,18 @@ function fillProduct(product,query){
  set('brand',brand);
  if(/sander|drill|grinder|saw|impact driver|router|nailer|hammer drill/i.test(title))set('category','Power Tools');
  set('model',model);
+ // Check existing inventory without modifying or saving it.
+ const existing=(Array.isArray(window.items)?window.items:[]).find(item=>
+   String(item.model||'').trim().toLowerCase()===model.toLowerCase()&&
+   (!brand||String(item.brand||'').trim().toLowerCase()===brand.toLowerCase()));
+ if(existing){
+  const warning=document.createElement('div');
+  warning.setAttribute('role','alert');
+  warning.style.cssText='padding:12px;margin:10px 0;border:2px solid #d97706;border-radius:10px;background:#fff7ed;color:#78350f';
+  const label=document.createElement('strong');label.textContent='Possible duplicate item';
+  const detail=document.createElement('p');detail.textContent='Your inventory may already contain '+String(existing.name||model)+'. Review before saving another copy.';
+  warning.append(label,detail);form.prepend(warning);
+ }
  set('notes',[source?'Found via '+source:'',product.link?'Product listing: '+product.link:''].filter(Boolean).join('\n'));
  const priceLabel=document.createElement('label');priceLabel.textContent='Listed price (reference only)';
  const priceField=document.createElement('input');priceField.type='text';priceField.readOnly=true;priceField.value=product.price||'Not listed';
