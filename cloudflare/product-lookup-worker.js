@@ -14,7 +14,7 @@ export default {
   if(!env.SERPAPI_KEY)return new Response(JSON.stringify({error:'Product lookup is not configured yet'}),{status:503,headers});
   try{
    const search=new URL('https://serpapi.com/search.json');
-   search.searchParams.set('engine','google_shopping');search.searchParams.set('q',model+' tool product');search.searchParams.set('api_key',env.SERPAPI_KEY);search.searchParams.set('gl','us');search.searchParams.set('hl','en');
+   search.searchParams.set('engine','google_shopping');search.searchParams.set('q',model);search.searchParams.set('api_key',env.SERPAPI_KEY);search.searchParams.set('gl','us');search.searchParams.set('hl','en');
    const response=await fetch(search.toString(),{signal:AbortSignal.timeout(12000)});
    if(!response.ok)throw Error('Product search temporarily unavailable');
    const data=await response.json();
@@ -26,7 +26,7 @@ export default {
    const ranked=(data.shopping_results||[]).filter(x=>x.title).map(x=>{
     const title=String(x.title);
     const lower=title.toLowerCase();
-    const exactModel=lower.includes(modelToken);
+    const exactModel=new RegExp('(^|[^a-z0-9])'+modelToken.replace(/[.*+?^${}()|[\]\\]/g,'\\const exactModel=lower.includes(modelToken);')+'($|[^a-z0-9])','i').test(title);
     const brandMatch=!requestedBrand||lower.includes(requestedBrand.toLowerCase());
     const accessory=excluded.test(title);
     return {title,source:String(x.source||''),link:String(x.product_link||x.link||''),thumbnail:String(x.thumbnail||''),price:String(x.price||''),exactModel,brandMatch,accessory};
