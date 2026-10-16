@@ -17,27 +17,36 @@ function setup(){
   button.onclick=async()=>{
    const code=field.value.trim();results.replaceChildren();
    if(!/^\d{8,14}$/.test(code)){status.textContent='Enter or scan an 8–14 digit product barcode first. QR web links are not product barcodes.';return}
+   const existing=(typeof items!=='undefined'&&Array.isArray(items)?items:[]).find(x=>String(x.barcode||'').trim()===code);
+   if(existing){
+    const warn=document.createElement('div');warn.setAttribute('role','alert');
+    warn.style.cssText='padding:10px;border:2px solid #d97706;border-radius:9px;background:#fff7ed;color:#78350f';
+    warn.textContent='Possible duplicate: '+String(existing.name||'An existing item')+' already uses this barcode. Check before adding another.';
+    results.append(warn);
+   }
    status.textContent='Looking up barcode '+code+'…';button.disabled=true;
    const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),16000);
    try{
     // Try a structured barcode catalog before shopping search. Catalog records
     // explicitly associate a product with its GTIN, unlike search snippets.
-    try{
-     const catalog=await fetch('https://world.openfoodfacts.org/api/v2/product/'+encodeURIComponent(code)+'.json?fields=code,product_name,brands,image_front_small_url',{signal:controller.signal});
+    for(const [catalogHost,catalogName] of [['world.openproductsfacts.org','Open Products Facts'],['world.openfoodfacts.org','Open Food Facts'],['world.openbeautyfacts.org','Open Beauty Facts']]){
+     try{
+     const catalog=await fetch('https://'+catalogHost+'/api/v2/product/'+encodeURIComponent(code)+'.json?fields=code,product_name,brands,image_front_small_url',{signal:controller.signal});
      if(catalog.ok){
       const record=await catalog.json(),item=record.product;
       if(record.status===1&&item&&item.product_name&&String(item.code||record.code||'')===code){
        const name=form.elements.namedItem('name'),brand=form.elements.namedItem('brand');
-       status.textContent='Barcode found in Open Food Facts. Confirm the packaging before using this catalog entry.';
+       status.textContent='Barcode found in '+catalogName+'. Confirm the packaging before using this catalog entry.';
        const choose=document.createElement('button');choose.type='button';
        choose.style.cssText='display:flex;align-items:center;gap:8px;padding:10px;text-align:left;white-space:normal;border-radius:10px';
        if(item.image_front_small_url&&/^https:\/\//.test(item.image_front_small_url)){const img=document.createElement('img');img.src=item.image_front_small_url;img.alt='';img.style.cssText='width:55px;height:55px;object-fit:contain';choose.append(img)}
-       const label=document.createElement('span');label.textContent=item.product_name+' · Open Food Facts catalog';choose.append(label);
+       const label=document.createElement('span');label.textContent=item.product_name+' · '+catalogName+' catalog';choose.append(label);
        choose.onclick=()=>{if(name&&!name.value.trim())name.value=item.product_name;if(brand&&!brand.value.trim())brand.value=(item.brands||'').split(',')[0].trim();status.textContent='Catalog details added. Review before saving.';results.replaceChildren()};
        results.append(choose);return;
       }
      }
-    }catch(catalogError){if(controller.signal.aborted)throw catalogError}
+     }catch(catalogError){if(controller.signal.aborted)throw catalogError}
+    }
     const response=await fetch(ENDPOINT+'?barcode='+encodeURIComponent(code),{signal:controller.signal});
     const data=await response.json();if(!response.ok)throw Error(data.error||'Lookup failed');
     const matches=Array.isArray(data.matches)?data.matches:[];
