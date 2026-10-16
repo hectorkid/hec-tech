@@ -7,13 +7,14 @@ function fillProduct(product,query){
  const form=document.getElementById('toolForm');
  if(!form)return;
  const title=product.title||'';
- const model=query.trim();
+ const model=query.trim().replace(/[.,;:!?]+$/,'').trim();
  const source=product.source||'';
  const brandCandidates=['Milwaukee','Honeywell','DeWalt','Makita','Bosch','Ryobi','Craftsman','Samsung','LG','GE','Panasonic','Klein','Ridgid','Husky','Apple','Sony','Shark','Dyson','Bissell','Black+Decker','Dremel'];
  const brand=brandCandidates.find(b=>title.toLowerCase().includes(b.toLowerCase()))||'';
  const set=(name,value)=>{const input=form.elements.namedItem(name);if(input)input.value=value||''};
  set('name',title);
  set('brand',brand);
+ if(/sander|drill|grinder|saw|impact driver|router|nailer|hammer drill/i.test(title))set('category','Power Tools');
  set('model',model);
  set('notes',[source?'Found via '+source:'',product.price?'Listed price: '+product.price:'',product.link?'Product listing: '+product.link:''].filter(Boolean).join('\n'));
  const notice=document.createElement('p');notice.className='hec-smart-hint';notice.textContent='Review these suggested details before saving. Photos and manuals are not automatically imported.';
