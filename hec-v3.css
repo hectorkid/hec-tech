@@ -553,3 +553,38 @@ body.hec-v3 #drive-backup #drive-status{
   line-height:1.5!important;
   overflow-wrap:anywhere!important;
 }
+
+/* User-selectable HEC TECH themes: cosmetic only, inventory and backups untouched. */
+body.hec-v3[data-hec-theme="original"]{--hec-accent:#d3222a;--hec-accent-light:#f04a52;--hec-accent-tint:#302126;--hec-accent-contrast:#fff;--hec-accent-glow:#421015}
+body.hec-v3[data-hec-theme="ocean"]{--hec-accent:#008c95;--hec-accent-light:#24b9c2;--hec-accent-tint:#16343b;--hec-accent-contrast:#fff;--hec-accent-glow:#083f46}
+body.hec-v3[data-hec-theme="forest"]{--hec-accent:#62b53e;--hec-accent-light:#8cdb68;--hec-accent-tint:#203822;--hec-accent-contrast:#101b12;--hec-accent-glow:#24451c}
+body.hec-v3[data-hec-theme="orange"]{--hec-accent:#f47721;--hec-accent-light:#ffa35b;--hec-accent-tint:#392719;--hec-accent-contrast:#19120b;--hec-accent-glow:#522a0c}
+body.hec-v3[data-hec-theme="lime"]{--hec-accent:#b8d432;--hec-accent-light:#d4e875;--hec-accent-tint:#31391a;--hec-accent-contrast:#1a2109;--hec-accent-glow:#35420e}
+body.hec-v3[data-hec-theme]{--hec-red:var(--hec-accent)}
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-cat,
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-stat,
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .tool{border-color:color-mix(in srgb,var(--hec-accent) 37%,#343944)!important}
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-cat{border-left:4px solid var(--hec-accent)!important}
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-cat.active{background:var(--hec-accent-tint)!important;border-color:var(--hec-accent)!important}
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-safe-header,
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-v3-header{border-bottom-color:var(--hec-accent)!important}
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-safe-title b,
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-v3-title b,
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-safe-mini i,
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-v3-mini i{color:var(--hec-accent-light)!important}
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-safe-rule,
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-v3-stripe{background:var(--hec-accent)!important;box-shadow:none!important}
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .app-menu>summary{border-color:var(--hec-accent)!important}
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) button.primary,
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .top-actions button.primary,
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .top-actions .primary,
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) #drive-save,
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) #manual-backup-panel .controls button:first-child{background:var(--hec-accent)!important;border-color:var(--hec-accent-light)!important;color:var(--hec-accent-contrast)!important}
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) #drive-backup[open],
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) section#manual-backup-panel.hec-backup-visible{border-color:var(--hec-accent)!important}
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-backup-line{color:var(--hec-accent-light)!important}
+body.hec-v3 .hec-theme-menu{border-top:1px solid #434955;margin:8px 0 3px;padding:7px 4px 3px;color:#fff}
+body.hec-v3 .hec-theme-menu>summary{cursor:pointer;font-weight:800;padding:9px 7px;list-style:revert}
+body.hec-v3 .hec-theme-options{display:grid;gap:4px;padding:4px}
+body.hec-v3 .hec-theme-options button{background:#202833;color:#fff;border:1px solid #495365;border-radius:10px;text-align:left;padding:10px 12px;min-height:42px}
+body.hec-v3 .hec-theme-options button.hec-theme-selected{border:2px solid var(--hec-accent,#d3222a);background:var(--hec-accent-tint,#302126);font-weight:800}
