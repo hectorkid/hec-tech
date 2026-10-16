@@ -489,3 +489,67 @@ body.hec-v3 #manual-backup-panel #portable-backup-status{
   border-radius:12px!important;
   overflow-wrap:anywhere!important;
 }
+
+/* Google Drive backup card: match the iCloud/Files dark card. */
+body.hec-v3 #drive-backup[open]{
+  box-sizing:border-box!important;
+  background:linear-gradient(155deg,#232e40,#151c29)!important;
+  color:#f6f8fc!important;
+  border:2px solid #dc2935!important;
+  border-radius:18px!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.42),0 0 0 1px rgba(255,255,255,.06) inset!important;
+  padding:18px!important;
+  margin:20px 0!important;
+}
+body.hec-v3 #drive-backup summary{
+  color:#fff!important;
+  font-size:17px!important;
+  font-weight:800!important;
+  line-height:1.4!important;
+}
+body.hec-v3 #drive-backup #drive-summary-status{
+  color:#b9d6ee!important;
+  line-height:1.5!important;
+}
+body.hec-v3 #drive-backup > p:not([role="status"]){
+  color:#dbe3ef!important;
+  font-size:14px!important;
+  line-height:1.55!important;
+}
+body.hec-v3 #drive-backup > p:not([role="status"])[style*="background"]{
+  background:#2d3b50!important;
+  color:#eaf2fc!important;
+  border:1px solid #50617a!important;
+}
+body.hec-v3 #drive-backup .controls{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:12px!important;
+  margin-top:16px!important;
+}
+body.hec-v3 #drive-backup .controls button{
+  display:block!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  background:#d52330!important;
+  color:#fff!important;
+  border:1px solid #ff5964!important;
+  border-radius:12px!important;
+  padding:15px 12px!important;
+  font-size:15px!important;
+  font-weight:800!important;
+  min-height:54px!important;
+  box-shadow:0 5px 13px rgba(0,0,0,.22)!important;
+}
+body.hec-v3 #drive-backup .controls button:nth-of-type(2){
+  background:#303c50!important;
+  border-color:#75849b!important;
+}
+body.hec-v3 #drive-backup #drive-status{
+  color:#e3f7ec!important;
+  background:#234436!important;
+  border:1px solid #4a8b6a!important;
+  border-radius:12px!important;
+  line-height:1.5!important;
+  overflow-wrap:anywhere!important;
+}
