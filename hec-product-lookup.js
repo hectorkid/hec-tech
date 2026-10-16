@@ -6,7 +6,7 @@ function fillProduct(product,query){
  window.edit(null);
  const form=document.getElementById('toolForm');
  if(!form)return;
- const title=product.title||'';
+ const title=String(product.title||'').replace(/\s+/g,' ').trim();
  const cleanQuery=query.trim().replace(/[.,;:!?]+$/,'').trim();
  const codes=cleanQuery.match(/\b(?=[a-z0-9-]*\d)[a-z0-9]+(?:-[a-z0-9]+)*\b/gi)||[];
  const model=(codes.sort((a,b)=>b.length-a.length)[0]||cleanQuery);
@@ -14,9 +14,12 @@ function fillProduct(product,query){
  const brandCandidates=['Milwaukee','Honeywell','DeWalt','Makita','Bosch','Ryobi','Craftsman','Samsung','LG','GE','Panasonic','Klein','Ridgid','Husky','Apple','Sony','Shark','Dyson','Bissell','Black+Decker','Dremel'];
  const brand=brandCandidates.find(b=>title.toLowerCase().includes(b.toLowerCase()))||'';
  const set=(name,value)=>{const input=form.elements.namedItem(name);if(input)input.value=value||''};
- set('name',title);
+ set('name',title.slice(0,180));
  set('brand',brand);
  if(/sander|drill|grinder|saw|impact driver|router|nailer|hammer drill/i.test(title))set('category','Power Tools');
+ else if(/refrigerator|fridge|dehumidifier|dishwasher|microwave|air conditioner|washer|dryer|freezer|range hood/i.test(title))set('category','Appliances');
+ else if(/television|\btv\b|monitor|headphones|speaker|tablet|laptop|camera|router modem/i.test(title))set('category','Electronics');
+ else if(/fan|light switch|thermostat|humidistat|air purifier/i.test(title))set('category','Home Devices');
  set('model',model);
  // Check existing inventory without modifying or saving it.
  const existing=(typeof items!=='undefined'&&Array.isArray(items)?items:[]).find(item=>
