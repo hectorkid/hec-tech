@@ -19,7 +19,7 @@ function fillProduct(product,query){
  if(/sander|drill|grinder|saw|impact driver|router|nailer|hammer drill/i.test(title))set('category','Power Tools');
  set('model',model);
  // Check existing inventory without modifying or saving it.
- const existing=(Array.isArray(window.items)?window.items:[]).find(item=>
+ const existing=(typeof items!=='undefined'&&Array.isArray(items)?items:[]).find(item=>
    String(item.model||'').trim().toLowerCase()===model.toLowerCase()&&
    (!brand||String(item.brand||'').trim().toLowerCase()===brand.toLowerCase()));
  if(existing){
