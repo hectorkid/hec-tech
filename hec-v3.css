@@ -431,3 +431,6 @@ body.hec-v3 #hec-scan-code-status{display:block!important;flex:1 1 100%!importan
 .hec-store-grid button,.hec-store-actions button{min-height:48px;font-weight:800}
 .hec-store-card label{display:block;font-weight:800;margin:8px 0}.hec-store-card input{box-sizing:border-box;width:100%;min-height:50px;font-size:16px;padding:10px;border:1px solid #bbb;border-radius:10px}
 .hec-store-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.hec-store-actions .primary{background:#d3222a;color:#fff}
+
+/* Show Files/iCloud backup panel only when opened from the menu. */
+body.hec-v3 section#manual-backup-panel.hec-backup-visible{display:block!important}
