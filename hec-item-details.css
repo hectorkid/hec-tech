@@ -36,3 +36,39 @@
 .hec-more-actions>div{display:grid;gap:8px;padding-top:10px}
 .hec-more-actions button{font-size:13px;min-height:44px;width:100%;white-space:normal;margin:0}
 @media(max-width:360px){#modalContent.hec-clean-detail{padding:12px}.hec-clean-detail .detail>div{font-size:13px;grid-template-columns:85px minmax(0,1fr)}}
+
+/* Consistent theme surfaces for item details, editors, and manual screens. */
+body.hec-v3 #modal{background:#171d26;color:#f1f4f8;border:1px solid var(--hec-accent,#d3222a);color-scheme:dark}
+body.hec-v3 #modalContent{color:#f1f4f8;background:#171d26}
+body.hec-v3 #modalContent h2,body.hec-v3 #modalContent h3{color:#f5f7fa}
+body.hec-v3 #modalContent label,body.hec-v3 #modalContent .detail b,body.hec-v3 #modalContent .hec-detail-header{color:#bfc8d5}
+body.hec-v3 #modalContent input:not([type="checkbox"]):not([type="file"]),body.hec-v3 #modalContent textarea,body.hec-v3 #modalContent select{
+ background:#222b38!important;color:#f5f7fa!important;border:1px solid var(--hec-accent,#d3222a)!important;border-radius:9px;color-scheme:dark;
+}
+body.hec-v3 #modalContent input:focus-visible,body.hec-v3 #modalContent textarea:focus-visible,body.hec-v3 #modalContent select:focus-visible,body.hec-v3 #modalContent button:focus-visible,body.hec-v3 #modalContent summary:focus-visible{outline:2px solid var(--hec-accent-light,#f04a52);outline-offset:3px}
+body.hec-v3 #modalContent .hec-detail-category{color:#eef2f8!important;background:transparent!important}
+body.hec-v3 #modalContent .hec-detail-category label{color:#bdc7d6}
+body.hec-v3 #modalContent .hec-detail-header button,body.hec-v3 #modalContent .hec-manual-header button{background:transparent;color:#edf2f8;border:0;box-shadow:none}
+body.hec-v3 #modalContent .detail-favorite-btn{color:var(--hec-accent-light,#f04a52)!important}
+body.hec-v3 #modalContent .detail-favorite-btn.is-favorite{color:var(--hec-accent,#d3222a)!important}
+body.hec-v3 #modalContent .hec-extra-details,body.hec-v3 #modalContent .hec-attachment-row{background:#222b38;color:#f2f5f9;border-color:#4a586c}
+body.hec-v3 #modalContent .hec-extra-details[open],body.hec-v3 #modalContent .hec-receipt-options[open]{border-color:var(--hec-accent,#d3222a)}
+body.hec-v3 #modalContent .hec-extra-details[open]>summary,body.hec-v3 #modalContent .hec-receipt-options[open]>summary{background:var(--hec-accent-tint,#302126);border-radius:11px 11px 0 0;color:var(--hec-accent-light,#f04a52)}
+body.hec-v3 #modalContent .hec-attachment-action,body.hec-v3 #modalContent .hec-manual-row button,body.hec-v3 #modalContent .hec-receipt-view{color:var(--hec-accent-light,#f04a52)!important}
+body.hec-v3 #modalContent .hec-receipt-options .receipt-panel{color:#f1f4f8;background:transparent!important}
+body.hec-v3 #modalContent button:not(.primary){background:#2a3545;color:#eef2f8;border-color:#56647a}
+body.hec-v3 #modalContent button.primary{background:var(--hec-accent,#d3222a)!important;color:var(--hec-accent-contrast,#fff)!important;border:1px solid var(--hec-accent-light,#f04a52)}
+body.hec-v3 #modalContent .hec-visible-loan{background:var(--hec-accent-tint,#302126);color:#f1f4f8;border:1px solid var(--hec-accent,#d3222a)}
+body.hec-v3 #modalContent .hec-more-actions>summary{background:#222b38;color:var(--hec-accent-light,#f04a52);border-color:var(--hec-accent,#d3222a)}
+.hec-detail-footer>.hec-more-actions[open]{display:contents}
+.hec-detail-footer>.hec-more-actions[open]>summary{grid-column:2;grid-row:1}
+.hec-detail-footer>.hec-more-actions[open]>div{grid-column:1/-1;border:1px solid #4a586c;border-radius:12px;overflow:hidden;padding:0;gap:0;background:#222b38}
+body.hec-v3 #modalContent .hec-more-actions>div button{display:block;min-height:46px;padding:12px 14px;text-align:left;border:0;border-bottom:1px solid #435166;border-radius:0;box-shadow:none;font-size:14px;background:transparent;color:#eef2f8;width:100%}
+body.hec-v3 #modalContent .hec-more-actions>div button:last-child{border-bottom:0}
+body.hec-v3 #modalContent .hec-more-actions>div button:hover{background:var(--hec-accent-tint,#302126)}
+body.hec-v3 #modalContent .hec-manual-view{padding:6px 0;background:transparent;color:#f1f4f8}
+.hec-manual-header{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#bec8d6;font-size:14px;font-weight:700}
+.hec-manual-header button{font-size:24px;min-width:44px;min-height:44px;padding:5px}
+.hec-manual-view h2{font-size:22px;line-height:1.3;margin:16px 0 24px;overflow-wrap:anywhere}
+.hec-manual-view #manual-open{display:block;width:100%;min-height:48px;font-size:16px;border-radius:10px}
+.hec-manual-view #manual-download{display:block;width:fit-content;margin:18px auto 5px;color:var(--hec-accent-light,#f04a52);font-size:14px;text-decoration:underline;text-underline-offset:3px}
