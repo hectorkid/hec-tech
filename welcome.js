@@ -34,6 +34,6 @@ function start(force=false){
  overlay.querySelector('button').addEventListener('click',()=>{try{localStorage.setItem(KEY,'1');sessionStorage.setItem(KEY,'1');}catch(e){console.warn('Welcome preference not persisted',e)}overlay.remove();});
  overlay.querySelector('button').focus();
 }
-window.HECPreviewWelcome=()=>start(true);
+window.__hecShowWelcome=()=>start(true);
 // Welcome is intentionally user-invoked only; never auto-open on refresh.\n// The hamburger menu calls window.HECPreviewWelcome explicitly.
 })();
