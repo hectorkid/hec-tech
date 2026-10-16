@@ -20,11 +20,11 @@ function setup(){
    status.textContent='Looking up barcode '+code+'…';button.disabled=true;
    const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),16000);
    try{
-    const response=await fetch(ENDPOINT+'?model='+encodeURIComponent(code),{signal:controller.signal});
+    const response=await fetch(ENDPOINT+'?barcode='+encodeURIComponent(code),{signal:controller.signal});
     const data=await response.json();if(!response.ok)throw Error(data.error||'Lookup failed');
     const matches=Array.isArray(data.matches)?data.matches:[];
-    if(!matches.length){status.textContent='No verified barcode listing found. You can use the store search or enter the details manually.';return}
-    status.textContent='These are possible matches, not verified barcode matches. Choose only if the product is correct.';
+    if(!matches.length){status.textContent='No product listings explicitly containing this barcode were found. Try the store search or enter details manually.';return}
+    status.textContent='Listings mention this barcode, but the product identity is not independently verified. Confirm the packaging and brand before choosing.';
     for(const product of matches){
      const choose=document.createElement('button');choose.type='button';
      choose.style.cssText='display:flex;align-items:center;gap:8px;padding:9px;text-align:left;white-space:normal;border-radius:10px';
