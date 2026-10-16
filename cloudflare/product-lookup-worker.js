@@ -14,11 +14,16 @@ export default {
   if(!env.SERPAPI_KEY)return new Response(JSON.stringify({error:'Product lookup is not configured yet'}),{status:503,headers});
   try{
    const search=new URL('https://serpapi.com/search.json');
-   search.searchParams.set('engine','google_shopping');search.searchParams.set('q',model);search.searchParams.set('api_key',env.SERPAPI_KEY);search.searchParams.set('gl','us');search.searchParams.set('hl','en');
+   search.searchParams.set('engine','google_shopping');search.searchParams.set('q',model+' original manufacturer genuine -replacement -compatible -AIRx');search.searchParams.set('api_key',env.SERPAPI_KEY);search.searchParams.set('gl','us');search.searchParams.set('hl','en');
    const response=await fetch(search.toString(),{signal:AbortSignal.timeout(12000)});
    if(!response.ok)throw Error('Product search temporarily unavailable');
    const data=await response.json();
-   const matches=(data.shopping_results||[]).filter(x=>x.title).slice(0,8).map(x=>({title:String(x.title||''),source:String(x.source||''),link:String(x.product_link||x.link||''),thumbnail:String(x.thumbnail||''),price:String(x.price||'')}));
+   const modelToken=(model.match(/[a-z]+[0-9][a-z0-9-]{3,}/i)||[model])[0].toLowerCase();
+   const matches=(data.shopping_results||[]).filter(x=>{
+    const title=String(x.title||'').toLowerCase();
+    return title.includes(modelToken)&&!/replacement|compatible|fits |by airx|by filterbuy|aftermarket/i.test(title);
+   }).slice(0,8).map(x=>({title:String(x.title||''),source:String(x.source||''),link:String(x.product_link||x.link||''),thumbnail:String(x.thumbnail||''),price:String(x.price||'')}));
+   
    return new Response(JSON.stringify({query:model,matches}),{headers});
   }catch(e){return new Response(JSON.stringify({error:'Product search unavailable. Try again shortly.'}),{status:502,headers})}
  }
