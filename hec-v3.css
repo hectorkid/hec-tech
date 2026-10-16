@@ -626,3 +626,24 @@ body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .controls.top-actio
 body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .controls.top-actions > button.home-action > span{
   color:var(--hec-accent)!important;
 }
+
+/* v136: Each theme picker is a full-color preview of its palette. */
+body.hec-v3 .hec-theme-options button[data-hec-theme]{
+  border:2px solid transparent!important;
+  font-weight:800!important;
+  text-shadow:none!important;
+  transition:filter .15s ease,transform .15s ease;
+}
+body.hec-v3 .hec-theme-options button[data-hec-theme="original"]{background:#c91f2d!important;color:#fff!important;border-color:#f66b75!important}
+body.hec-v3 .hec-theme-options button[data-hec-theme="ocean"]{background:#087f90!important;color:#fff!important;border-color:#5bd2dd!important}
+body.hec-v3 .hec-theme-options button[data-hec-theme="yellow"]{background:#ffcf19!important;color:#1b1b1b!important;border-color:#ffe58b!important}
+body.hec-v3 .hec-theme-options button[data-hec-theme="orange"]{background:#ef7827!important;color:#211307!important;border-color:#ffb474!important}
+body.hec-v3 .hec-theme-options button[data-hec-theme="lime"]{background:#b8d432!important;color:#182008!important;border-color:#e1f78a!important}
+body.hec-v3 .hec-theme-options button[data-hec-theme="forest"]{background:#55a83c!important;color:#fff!important;border-color:#9fe286!important}
+body.hec-v3 .hec-theme-options button[data-hec-theme].hec-theme-selected{
+  outline:3px solid #fff!important;
+  outline-offset:-5px!important;
+  box-shadow:0 0 0 2px #15191f!important;
+}
+body.hec-v3 .hec-theme-options button[data-hec-theme].hec-theme-selected::after{content:" ✓";font-weight:900}
+body.hec-v3 .hec-theme-options button[data-hec-theme]:active{transform:scale(.985)}
