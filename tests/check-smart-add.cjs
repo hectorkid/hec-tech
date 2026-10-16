@@ -1,0 +1,14 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const calls=[];
+const buttons=['barcode','manual','photo','close'].map(mode=>({dataset:{mode}}));
+const form={prepend(){}};
+const area={querySelectorAll:()=>buttons};
+const modal={open:false,showModal(){this.open=true},close(){this.open=false}};
+const document={readyState:'complete',getElementById:id=>({modal,modalContent:area,toolForm:form}[id]),createElement:()=>({})};
+const window={startAddItemScan(){},edit(){calls.push('form')},scanItemCode(){calls.push('scanner')}};
+vm.runInNewContext(fs.readFileSync('hec-smart-add.js','utf8'),{document,window});
+window.startAddItemScan();
+buttons[0].onclick();
+assert.deepEqual(calls,['form','scanner'],'Scan Barcode must prepare the form and immediately open the scanner');
+calls.length=0;buttons[1].onclick();assert.deepEqual(calls,['form'],'Manual entry must not open the camera');
+console.log('Smart Add barcode and manual navigation passed');
