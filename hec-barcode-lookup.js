@@ -3,13 +3,13 @@
 const ENDPOINT='https://hec-tech-lookup.hectech.workers.dev/product-lookup';
 function setup(){
  const area=document.getElementById('modalContent');if(!area)return;
- const observer=new MutationObserver(()=>{
+ function installForm(){
   const form=area.querySelector('#toolForm');
   if(!form||form.dataset.hecBarcodeSearch)return;
   form.dataset.hecBarcodeSearch='1';
   const field=form.elements.namedItem('barcode');
   if(!field)return;
-  const button=document.createElement('button');button.type='button';button.textContent='🔎 Find product using barcode';
+  const button=document.createElement('button');button.type='button';button.dataset.hecBarcodeLookup='1';button.textContent='🔎 Find product using barcode';
   button.style.cssText='padding:10px 12px;margin:8px 0;border-radius:10px';
   const status=document.createElement('div');status.setAttribute('role','status');
   let activeLookup=null;
@@ -87,8 +87,18 @@ function setup(){
    }catch(err){if(activeLookup!==controller||!form.isConnected||field.value.trim()!==code)return;status.textContent=err.name==='AbortError'?'Lookup timed out. Try again.':'Lookup unavailable: '+err.message}
    finally{clearTimeout(timeout);if(activeLookup===controller)button.disabled=false}
   };
- });
+ }
+ const observer=new MutationObserver(installForm);
  observer.observe(area,{childList:true,subtree:true});
+ window.HECLookupScannedBarcode=code=>{
+  installForm();
+  const form=area.querySelector('#toolForm');if(!form)return;
+  const field=form.elements.namedItem('barcode');if(!field)return;
+  field.value=String(code||'').trim();field.dispatchEvent(new Event('input',{bubbles:true}));
+  const button=form.querySelector('[data-hec-barcode-lookup]');
+  if(button){const pending=button.onclick();button.scrollIntoView({behavior:'smooth',block:'start'});return pending}
+ };
+ installForm();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
 })();
