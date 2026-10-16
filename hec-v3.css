@@ -556,6 +556,7 @@ body.hec-v3 #drive-backup #drive-status{
 
 /* User-selectable HEC TECH themes: cosmetic only, inventory and backups untouched. */
 body.hec-v3[data-hec-theme="original"]{--hec-accent:#d3222a;--hec-accent-light:#f04a52;--hec-accent-tint:#302126;--hec-accent-contrast:#fff;--hec-accent-glow:#421015}
+body.hec-v3[data-hec-theme="yellow"]{--hec-accent:#ffcc00;--hec-accent-light:#ffe169;--hec-accent-tint:#3b3417;--hec-accent-contrast:#181818;--hec-accent-glow:#514109}
 body.hec-v3[data-hec-theme="ocean"]{--hec-accent:#008c95;--hec-accent-light:#24b9c2;--hec-accent-tint:#16343b;--hec-accent-contrast:#fff;--hec-accent-glow:#083f46}
 body.hec-v3[data-hec-theme="forest"]{--hec-accent:#62b53e;--hec-accent-light:#8cdb68;--hec-accent-tint:#203822;--hec-accent-contrast:#101b12;--hec-accent-glow:#24451c}
 body.hec-v3[data-hec-theme="orange"]{--hec-accent:#f47721;--hec-accent-light:#ffa35b;--hec-accent-tint:#392719;--hec-accent-contrast:#19120b;--hec-accent-glow:#522a0c}
