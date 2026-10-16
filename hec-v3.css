@@ -700,3 +700,17 @@ body.hec-v3 .app-menu-panel button:focus-visible,
 body.hec-v3 .app-menu-panel summary:focus-visible{outline:3px solid var(--hec-accent-light,#f04a52);outline-offset:2px}
 body.hec-v3 .app-menu-panel [data-hec-menu-close]{border-color:var(--hec-accent,#d3222a);color:var(--hec-accent-light,#f04a52)}
 body.hec-v3 .app-menu-panel [data-hec-menu-close]:hover{background:var(--hec-accent,#d3222a);color:var(--hec-accent-contrast,#fff)}
+
+/* Loaned cards remain distinct in every selected theme. */
+body.hec-v3 #grid .tool.tool-loaned{
+ border:3px solid var(--hec-accent,#d3222a)!important;
+ box-shadow:0 0 0 2px var(--hec-accent,#d3222a),0 5px 20px var(--hec-accent-glow,#421015)!important;
+ background:var(--hec-accent-tint,#302126)!important;
+}
+body.hec-v3 #grid .tool.tool-loaned .info{background:linear-gradient(135deg,var(--hec-accent-tint,#302126),#15191f 78%)}
+body.hec-v3 #grid .tool.tool-loaned .loan-tag{
+ background:var(--hec-accent-tint,#302126)!important;color:#f5f7fb!important;
+ border-color:var(--hec-accent,#d3222a)!important;
+}
+body.hec-v3 #grid .tool.tool-loaned .loan-tag .loan-borrower{color:#f5f7fb!important;font-weight:900!important}
+body.hec-v3 #grid .tool.tool-loaned .return-card-btn{background:var(--hec-accent,#d3222a);color:var(--hec-accent-contrast,#fff);border-color:var(--hec-accent-light,#f04a52)}
