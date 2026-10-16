@@ -1,0 +1,5 @@
+name = "hec-tech-lookup"
+main = "cloudflare/product-lookup-worker.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+# SERPAPI_KEY is already configured as a secret on the Cloudflare Worker.
