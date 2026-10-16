@@ -35,5 +35,5 @@ function start(force=false){
  overlay.querySelector('button').focus();
 }
 window.HECPreviewWelcome=()=>start(true);
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+// Welcome is intentionally user-invoked only; never auto-open on refresh.\n// The hamburger menu calls window.HECPreviewWelcome explicitly.
 })();
