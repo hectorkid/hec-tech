@@ -616,3 +616,13 @@ body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-approved-heade
 /* Keep Customize near the top and its choices reachable without scrolling the page. */
 body.hec-v3 .app-menu-panel{max-height:min(76dvh,650px);overflow-y:auto;overscroll-behavior:contain}
 body.hec-v3 .hec-theme-menu{margin-top:3px}
+
+/* Theme the persistent Home button to match the selected palette. */
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .controls.top-actions > button.home-action{
+  border:3px solid var(--hec-accent)!important;
+  color:var(--hec-accent-light)!important;
+  background:#303948!important;
+}
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .controls.top-actions > button.home-action > span{
+  color:var(--hec-accent)!important;
+}
