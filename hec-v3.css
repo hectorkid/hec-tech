@@ -608,3 +608,7 @@ body.hec-v3[data-hec-theme="redhot"] #drive-backup[open],
 body.hec-v3[data-hec-theme="redhot"] section#manual-backup-panel.hec-backup-visible{border-color:#f12b37!important}
 body.hec-v3[data-hec-theme="redhot"] #drive-save,
 body.hec-v3[data-hec-theme="redhot"] #manual-backup-panel .controls button:first-child{background:#f12b37!important;border-color:#ff6771!important;color:#fff!important}
+
+/* Theme artwork: show the complete wide banner without cropping. Original remains untouched. */
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-approved-header{height:auto!important;max-height:none!important;overflow:visible!important}
+body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-approved-header img{display:block!important;width:100%!important;height:auto!important;max-height:none!important;object-fit:contain!important;object-position:center center!important}
