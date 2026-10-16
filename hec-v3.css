@@ -612,3 +612,7 @@ body.hec-v3[data-hec-theme="redhot"] #manual-backup-panel .controls button:first
 /* Theme artwork: show the complete wide banner without cropping. Original remains untouched. */
 body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-approved-header{height:auto!important;max-height:none!important;overflow:visible!important}
 body.hec-v3[data-hec-theme]:not([data-hec-theme="original"]) .hec-approved-header img{display:block!important;width:100%!important;height:auto!important;max-height:none!important;object-fit:contain!important;object-position:center center!important}
+
+/* Keep Customize near the top and its choices reachable without scrolling the page. */
+body.hec-v3 .app-menu-panel{max-height:min(76dvh,650px);overflow-y:auto;overscroll-behavior:contain}
+body.hec-v3 .hec-theme-menu{margin-top:3px}
