@@ -650,3 +650,29 @@ body.hec-v3 .hec-theme-options button[data-hec-theme]:active{transform:scale(.98
 
 /* Allow horizontal photo swipes without blocking vertical page scrolling. */
 body.hec-v3 .hec-card-gallery,body.hec-v3 .hec-card-gallery>img{touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
+
+/* Compact raised category buttons, including all color themes. */
+body.hec-v3 .hec-categories{gap:13px 12px;padding-bottom:5px}
+body.hec-v3 .hec-categories .hec-cat{
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+ min-width:0;min-height:120px;padding:13px 10px;border-radius:16px;
+ border:1px solid #656d79!important;border-top-color:#929aa5!important;
+ background:linear-gradient(155deg,#363c45 0%,#252a32 52%,#1b2027 100%)!important;
+ box-shadow:inset 0 1px 0 #ffffff20,0 5px 0 #0c1016,0 8px 12px #0006;
+ color:#f8fafc;text-align:center;touch-action:manipulation;
+ transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease;
+}
+body.hec-v3 .hec-categories .hec-cat .hec-cat-icon{width:30px;height:30px;flex:none;filter:drop-shadow(0 2px 1px #0005)}
+body.hec-v3 .hec-categories .hec-cat span:before{content:none!important;display:none}
+body.hec-v3 .hec-categories .hec-cat .hec-cat-label{font-size:14px;font-weight:800;line-height:1.2;margin:0;overflow-wrap:normal}
+body.hec-v3 .hec-categories .hec-cat small{font-size:11px;line-height:1.3;color:#c2cad6;margin:0;padding:0}
+body.hec-v3 .hec-categories .hec-cat.active{
+ border:2px solid var(--hec-accent,#d3222a)!important;padding:12px 9px;
+ background:linear-gradient(150deg,var(--hec-accent-tint,#302126),#1b2027)!important;
+ box-shadow:inset 0 1px 0 #ffffff20,0 5px 0 #0c1016,0 8px 12px #0006;
+}
+body.hec-v3 .hec-categories .hec-cat.active:after{content:'✓';position:absolute;right:7px;top:6px;color:var(--hec-accent-light,#f04a52);font-size:15px;font-weight:900}
+body.hec-v3 .hec-categories .hec-cat:active{transform:translateY(4px);box-shadow:inset 0 2px 4px #0005,0 1px 0 #0c1016,0 3px 5px #0004}
+body.hec-v3 .hec-categories .hec-cat:focus-visible{outline:3px solid var(--hec-accent-light,#f04a52);outline-offset:4px}
+@media(hover:hover){body.hec-v3 .hec-categories .hec-cat:hover{border-color:#b5bdc8!important}}
+@media(prefers-reduced-motion:reduce){body.hec-v3 .hec-categories .hec-cat{transition:none}}
