@@ -9,7 +9,10 @@ export default {
   if(!allowed)return new Response(JSON.stringify({error:'Origin not allowed'}),{status:403,headers});
   const url=new URL(request.url);
   if(url.pathname!=='/product-lookup'||request.method!=='GET')return new Response(JSON.stringify({error:'Not found'}),{status:404,headers});
-  const model=(url.searchParams.get('model')||'').trim().slice(0,100);
+  const barcode=(url.searchParams.get('barcode')||'').trim();
+  const barcodeMode=barcode.length>0;
+  if(barcodeMode&&!/^\d{8,14}$/.test(barcode))return new Response(JSON.stringify({error:'Barcode must be 8–14 digits'}),{status:400,headers});
+  const model=(barcodeMode?barcode:(url.searchParams.get('model')||'')).trim().slice(0,100);
   if(model.length<3)return new Response(JSON.stringify({error:'Enter a model number'}),{status:400,headers});
   if(!env.SERPAPI_KEY)return new Response(JSON.stringify({error:'Product lookup is not configured yet'}),{status:503,headers});
   try{
@@ -32,7 +35,9 @@ export default {
     return {title,source:String(x.source||''),link:String(x.product_link||x.link||''),thumbnail:String(x.thumbnail||''),price:String(x.price||''),exactModel,brandMatch,accessory};
    });
    const matches=ranked.filter(x=>x.exactModel&&x.brandMatch&&!x.accessory).slice(0,8).map(({exactModel,brandMatch,accessory,...x})=>x);
-      return new Response(JSON.stringify({query:model,matches}),{headers});
+   // Barcode listings are unverified search matches, never claim a confirmed UPC association.
+   const matchStatus=barcodeMode?'unverified-barcode-listing':'model-title-match';
+      return new Response(JSON.stringify({query:model,matches,matchStatus}),{headers});
   }catch(e){return new Response(JSON.stringify({error:'Product search unavailable. Try again shortly.'}),{status:502,headers})}
  }
 };
