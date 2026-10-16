@@ -677,3 +677,16 @@ body.hec-v3 .hec-categories .hec-cat:active{transform:translateY(4px);box-shadow
 body.hec-v3 .hec-categories .hec-cat:focus-visible{outline:3px solid var(--hec-accent-light,#f04a52);outline-offset:4px}
 @media(hover:hover){body.hec-v3 .hec-categories .hec-cat:hover{border-color:#b5bdc8!important}}
 @media(prefers-reduced-motion:reduce){body.hec-v3 .hec-categories .hec-cat{transition:none}}
+
+/* Keep the entire open menu reachable on short phone screens. */
+body.hec-v3 .app-menu-panel{
+ position:fixed;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));
+ bottom:max(12px,env(safe-area-inset-bottom));left:auto;
+ width:min(320px,calc(100vw - 24px));min-width:0;max-height:none;
+ overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;touch-action:pan-y;
+ -webkit-overflow-scrolling:touch;scrollbar-gutter:stable;
+}
+body.hec-v3 .app-menu-panel [data-hec-menu-close]{
+ position:sticky;top:0;z-index:1;min-height:44px;background:#171d28;
+ border:1px solid #697384;text-align:right;box-shadow:0 4px 8px #0008;
+}
