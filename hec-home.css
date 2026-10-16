@@ -29,3 +29,5 @@
 .hec-pro-notes{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.6}
 .hec-pro-status{color:#ffb5b8;font-size:14px;line-height:1.5}.hec-pro-status:empty{display:none}
 @media(max-width:350px){.hec-pro-dimensions{grid-template-columns:1fr}.hec-pro-dimensions .hec-pro-field{margin:5px 0}}
+
+#modalContent .hec-pro-shop-link{display:block;padding:16px;border:1px solid var(--hec-accent,#d3222a);border-radius:12px;background:#222c3a;color:#edf2f8;text-decoration:none;font-weight:750;min-height:44px;box-sizing:border-box}.hec-pro-shop-link:focus-visible{outline:3px solid var(--hec-accent-light,#f04a52);outline-offset:3px}

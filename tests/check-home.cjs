@@ -25,3 +25,6 @@ const board={width:4,length:8,extra:10,ceiling:false};assert.equal(api.drywallEs
 api.saveProject({...api.exportData().projects[0],drywall:board});api=load();assert.equal(api.exportData().projects[0].drywall.width,4);
 const matches=api.toolMatches('Drywall',[{name:'Cordless drill'},{name:'Old drill',archived:true},{name:'Drill',loanedTo:'Alex'},{name:'Impact driver'}]);const drills=matches.find(x=>x.name==='Drill or screw gun');assert.equal(drills.matches.length,2);assert.equal(drills.matches[1].loanedTo,'Alex');assert.equal(api.toolMatches('Other',[]).length,0);
 console.log('Drywall area estimates, backup persistence, archived exclusion and loan-aware tool matching passed');
+
+const shops=api.retailerLinks('drill & driver #1');assert.equal(shops.length,4);assert.ok(shops.every(x=>new URL(x.url).protocol==='https:'));assert.ok(shops[0].url.includes('drill%20%26%20driver%20%231'));assert.equal(api.retailerLinks('').length,0);assert.equal(api.retailerLinks('drywall',['homeDepot','lowes']).length,2);assert.equal(api.retailerLinks('test',['bad']).length,0);
+console.log('Retailer allowlist, query encoding, empty searches and store filtering passed');
