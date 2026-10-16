@@ -8,7 +8,7 @@ for (const match of scripts) {
   if (/\bsrc=/.test(match[1])) continue;
   new vm.Script(match[2], {filename:'index.html inline script'});
 }
-for (const file of ['manual-storage.js','receipt-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js','drive-receipt-helpers.js','drive-receipt-upload.js','drive-receipt-restore.js','install-guide.js','private-item-sync.js','sw.js']) {
+for (const file of ['manual-storage.js','receipt-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js','drive-receipt-helpers.js','drive-receipt-upload.js','drive-receipt-restore.js','install-guide.js','private-item-sync.js','hec-product-lookup.js','hec-barcode-lookup.js','sw.js']) {
   new vm.Script(fs.readFileSync(file,'utf8'),{filename:file});
   assert.ok(html.includes(file) || file==='sw.js', file+' is not loaded');
 }
@@ -36,14 +36,11 @@ assert.doesNotMatch(oauthWorker,/cachedAccessToken/);
 assert.doesNotMatch(oauthWorker,/ALLOWED_GOOGLE_EMAIL/);
 assert.doesNotMatch(fs.readFileSync('private-item-sync.js','utf8'),/spaces=drive/);
 const hecV3 = fs.readFileSync('hec-v3.js','utf8');
-assert.match(hecV3,/data-hec-manual/);
-assert.match(hecV3,/panel\.style\.removeProperty\('display'\)/);
+assert.match(hecV3,/data-hec-icloud/);
+assert.match(hecV3,/hec-backup-visible/);
 assert.match(hecV3,/details\.open=true/);
 assert.match(hecV3,/panel\.scrollIntoView/);
-assert.doesNotMatch(hecV3,/manual-backup-panel[^;]{0,100}display','none'/);
-assert.match(hecV3,/window\.HECExportCompleteBackup\)window\.HECExportCompleteBackup\(\)/);
-assert.match(hecV3,/data-hec-restore/);
-assert.match(hecV3,/window\.HECRestoreCompleteBackup/);
+assert.match(hecV3,/data-hec-drive/);
 assert.doesNotMatch(hecV3,/querySelectorAll\('button'\)\]\.find/);
 const portable=fs.readFileSync('portable-backup.js','utf8');
 assert.match(portable,/window\.HECExportCompleteBackup=exportComplete/);

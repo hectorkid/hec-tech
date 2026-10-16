@@ -16,7 +16,7 @@ function fillProduct(product,query){
  const set=(name,value)=>{const input=form.elements.namedItem(name);if(input)input.value=value||''};
  set('name',title.slice(0,180));
  set('brand',brand);
- if(/sander|drill|grinder|saw|impact driver|router|nailer|hammer drill/i.test(title))set('category','Power Tools');
+ if(/sander|drill|grinder|saw|impact driver|(?:woodworking )?router(?! modem| wireless| wi-fi)|nailer|hammer drill/i.test(title))set('category','Power Tools');
  else if(/refrigerator|fridge|dehumidifier|dishwasher|microwave|air conditioner|washer|dryer|freezer|range hood/i.test(title))set('category','Appliances');
  else if(/television|\btv\b|monitor|headphones|speaker|tablet|laptop|camera|router modem/i.test(title))set('category','Electronics');
  else if(/fan|light switch|thermostat|humidistat|air purifier/i.test(title))set('category','Home Devices');

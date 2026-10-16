@@ -25,20 +25,21 @@ function setup(){
     results.append(warn);
    }
    status.textContent='Looking up barcode '+code+'…';button.disabled=true;
-   const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),16000);
+   const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),22000);
    try{
     // Try a structured barcode catalog before shopping search. Catalog records
     // explicitly associate a product with its GTIN, unlike search snippets.
     for(const [catalogHost,catalogName] of [['world.openproductsfacts.org','Open Products Facts'],['world.openfoodfacts.org','Open Food Facts'],['world.openbeautyfacts.org','Open Beauty Facts']]){
      try{
      const perCatalog=new AbortController();
-     const catalogTimer=setTimeout(()=>perCatalog.abort(),3500);
-     let catalog;
+     const catalogTimer=setTimeout(()=>perCatalog.abort(),2000);
+     let catalog,record;
      try{
       catalog=await fetch('https://'+catalogHost+'/api/v2/product/'+encodeURIComponent(code)+'.json?fields=code,product_name,brands,image_front_small_url',{signal:AbortSignal.any([controller.signal,perCatalog.signal])});
+      if(catalog.ok)record=await catalog.json();
      }finally{clearTimeout(catalogTimer)}
      if(catalog.ok){
-      const record=await catalog.json(),item=record.product;
+      const item=record.product;
       if(record.status===1&&item&&item.product_name&&String(item.code||record.code||'')===code){
        const name=form.elements.namedItem('name'),brand=form.elements.namedItem('brand');
        status.textContent='Barcode found in '+catalogName+'. Confirm the packaging before using this catalog entry.';
