@@ -20,3 +20,8 @@ assert.equal(api.paintEstimate(saved,{...settings,coverage:261,coats:1,extra:0})
 assert.throws(()=>api.paintEstimate(saved,{...settings,coverage:0}));assert.throws(()=>api.paintEstimate(saved,{...settings,coats:1.5}));assert.throws(()=>api.paintEstimate(saved,{...settings,extra:-1}));
 const project=api.exportData().projects[0];api.saveProject({...project,paint:settings});api=load();assert.equal(api.exportData().projects[0].paint.coverage,350);assert.equal(api.validate(api.exportData()).projects[0].paint.coats,2);
 console.log('Paint calculations, rounding, validation and settings backup/reload passed');
+
+const board={width:4,length:8,extra:10,ceiling:false};assert.equal(api.drywallEstimate(saved,board).sheets,9);assert.equal(api.drywallEstimate(saved,{...board,ceiling:true}).sheets,12);assert.throws(()=>api.drywallEstimate(saved,{...board,width:0}));
+api.saveProject({...api.exportData().projects[0],drywall:board});api=load();assert.equal(api.exportData().projects[0].drywall.width,4);
+const matches=api.toolMatches('Drywall',[{name:'Cordless drill'},{name:'Old drill',archived:true},{name:'Drill',loanedTo:'Alex'},{name:'Impact driver'}]);const drills=matches.find(x=>x.name==='Drill or screw gun');assert.equal(drills.matches.length,2);assert.equal(drills.matches[1].loanedTo,'Alex');assert.equal(api.toolMatches('Other',[]).length,0);
+console.log('Drywall area estimates, backup persistence, archived exclusion and loan-aware tool matching passed');
