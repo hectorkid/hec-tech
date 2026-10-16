@@ -7,7 +7,9 @@ function fillProduct(product,query){
  const form=document.getElementById('toolForm');
  if(!form)return;
  const title=product.title||'';
- const model=query.trim().replace(/[.,;:!?]+$/,'').trim();
+ const cleanQuery=query.trim().replace(/[.,;:!?]+$/,'').trim();
+ const codes=cleanQuery.match(/\b(?=[a-z0-9-]*\d)[a-z0-9]+(?:-[a-z0-9]+)*\b/gi)||[];
+ const model=(codes.sort((a,b)=>b.length-a.length)[0]||cleanQuery);
  const source=product.source||'';
  const brandCandidates=['Milwaukee','Honeywell','DeWalt','Makita','Bosch','Ryobi','Craftsman','Samsung','LG','GE','Panasonic','Klein','Ridgid','Husky','Apple','Sony','Shark','Dyson','Bissell','Black+Decker','Dremel'];
  const brand=brandCandidates.find(b=>title.toLowerCase().includes(b.toLowerCase()))||'';
@@ -43,7 +45,7 @@ function fillProduct(product,query){
   };
   section.append(preview,btn,status);const photoInput=document.getElementById('photo');if(photoInput)photoInput.parentNode.insertBefore(section,photoInput);
  }
- const notice=document.createElement('p');notice.className='hec-smart-hint';notice.textContent='Review these suggested details before saving. Photos and manuals are not automatically imported.';
+ const notice=document.createElement('p');notice.className='hec-smart-hint';notice.textContent='Review the product name and model before saving. Photos are optional; manuals are not automatically imported.';
  form.prepend(notice);
 }
 function install(){
@@ -61,13 +63,14 @@ function install(){
    if(!results){results=document.createElement('div');results.id='hec-lookup-results';results.setAttribute('role','status');search.insertAdjacentElement('afterend',results)}
    results.textContent='Searching for matching products…';
    search.disabled=true;
+   const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),16000);
    try{
-    const response=await fetch(API+'?model='+encodeURIComponent(query),{method:'GET'});
+    const response=await fetch(API+'?model='+encodeURIComponent(query),{method:'GET',signal:controller.signal});
     const data=await response.json();
     if(!response.ok)throw Error(data.error||'Lookup failed');
     results.replaceChildren();
     const matches=Array.isArray(data.matches)?data.matches:[];
-    if(!matches.length){results.textContent='No products found. You can continue manually.';return}
+    if(!matches.length){results.textContent='No confident exact-model matches found. Check the brand/model spelling, or continue manually. Compatible replacements are intentionally excluded.';return}
     const heading=document.createElement('p');heading.textContent='Choose the correct product to fill your form:';results.append(heading);
     matches.forEach(product=>{
      const btn=document.createElement('button');btn.type='button';btn.className='hec-lookup-result';
@@ -76,8 +79,8 @@ function install(){
      const label=document.createElement('span');label.textContent=[product.title,product.price,product.source].filter(Boolean).join(' · ');btn.append(label);
      btn.onclick=()=>fillProduct(product,query);results.append(btn)
     });
-   }catch(err){results.textContent='Could not search: '+err.message+'. You can still continue manually.'}
-   finally{search.disabled=false}
+   }catch(err){results.textContent=err.name==='AbortError'?'Search timed out. Please try again.':'Could not search: '+err.message+'. You can still continue manually.'}
+   finally{clearTimeout(timeout);search.disabled=false}
   },true)
  });
  observer.observe(area,{childList:true,subtree:true});
