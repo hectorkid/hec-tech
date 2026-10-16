@@ -14,5 +14,5 @@ jobs:
         with:
           node-version: '22'
       - name: Check app scripts and offline assets
-        run: node tests/check-categories.cjs && node tests/check-backup-panels.cjs && node tests/check-drive-recovery.cjs && node tests/check-photo-save.cjs && node tests/check-portable-recovery.cjs && node tests/check-search.cjs && node tests/check-efficiency.cjs && node tests/check-photo-preview.cjs && node tests/check-barcode-flow.cjs && node tests/check-smart-add.cjs && node tests/check-lookup.cjs && node tests/check-app.cjs && node tests/check-drive-pdfs.cjs && node tests/check-receipts.cjs && node tests/check-service-worker.cjs
+        run: node tests/check-category-management.cjs && node tests/check-categories.cjs && node tests/check-backup-panels.cjs && node tests/check-drive-recovery.cjs && node tests/check-photo-save.cjs && node tests/check-portable-recovery.cjs && node tests/check-search.cjs && node tests/check-efficiency.cjs && node tests/check-photo-preview.cjs && node tests/check-barcode-flow.cjs && node tests/check-smart-add.cjs && node tests/check-lookup.cjs && node tests/check-app.cjs && node tests/check-drive-pdfs.cjs && node tests/check-receipts.cjs && node tests/check-service-worker.cjs
 

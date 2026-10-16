@@ -13,7 +13,7 @@ function fillProduct(product,query){
  const source=product.source||'';
  const brandCandidates=['Milwaukee','Honeywell','DeWalt','Makita','Bosch','Ryobi','Craftsman','Samsung','LG','GE','Panasonic','Klein','Ridgid','Husky','Apple','Sony','Shark','Dyson','Bissell','Black+Decker','Dremel'];
  const brand=brandCandidates.find(b=>(' '+title.toLowerCase().replace(/[^a-z0-9]+/g,' ')+' ').includes(' '+b.toLowerCase().replace(/[^a-z0-9]+/g,' ')+' '))||'';
- const set=(name,value)=>{const input=form.elements.namedItem(name);if(input)input.value=value||''};
+ const set=(name,value)=>{if(name==='category'&&window.HECCategories)value=window.HECCategories.classify({category:value,name:title});const input=form.elements.namedItem(name);if(input)input.value=value||''};
  set('name',title.slice(0,180));
  set('brand',brand);
  if(/\b(?:wi[ -]?fi|wireless|network|ethernet)\b.*\brouter\b|\brouter\b.*\b(?:modem|wi[ -]?fi|wireless|network|ethernet)\b/i.test(title))set('category','Electronics');

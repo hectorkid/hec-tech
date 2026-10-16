@@ -41,7 +41,7 @@
           receipts[String(tool.id)]=await readDataURL(receipt);
         }
       }
-      const data={format:'hec-tech-complete-v2',createdAt:new Date().toISOString(),items,manuals,receipts};
+      const data={categories:window.HECCategories?{...window.HECCategories.read(),names:window.HECCategories.names()}:undefined,format:'hec-tech-complete-v2',createdAt:new Date().toISOString(),items,manuals,receipts};
       const file=new File([JSON.stringify(data)],'hec-tech-complete-backup.json',{type:'application/json'});
       notify('Backup ready. Opening save options…');
       if(navigator.canShare&&navigator.canShare({files:[file]})){
@@ -70,6 +70,8 @@
         if(tool.manualStored&&!data.manuals[String(tool.id)])throw new Error('Missing manual for '+tool.name);
         if(tool.receiptStored&&!(data.receipts||{})[String(tool.id)])throw new Error('Missing receipt for '+tool.name);
       }
+      const categoryAPI=window.HECCategories,categoryState=data.categories&&categoryAPI?categoryAPI.validate(data.categories):null;
+      const oldCategories=categoryAPI?localStorage.getItem(categoryAPI.storageKey):null;
       const restored=[],restoredReceipts=[];
       for(const [id,encoded] of Object.entries(data.manuals)){
         if(!/^data:application\/pdf;base64,/i.test(encoded))throw new Error('Invalid PDF backup data');
@@ -91,10 +93,12 @@
         for(const [store,attachments] of [[HECManualStore,restored],[HECReceiptStore,restoredReceipts]]){
           for(const [id,blob] of attachments){const old=await store.get(id);journal.push({store,id,old});await store.put(id,blob)}
         }
+        if(categoryState)localStorage.setItem(categoryAPI.storageKey,JSON.stringify(categoryState));
         items=data.items;
         if(!save())throw new Error('Inventory storage is full.');
       }catch(error){
         items=previous;let rollbackFailed=false;
+        if(categoryState){try{if(oldCategories===null)localStorage.removeItem(categoryAPI.storageKey);else localStorage.setItem(categoryAPI.storageKey,oldCategories)}catch{rollbackFailed=true}}
         for(const {store,id,old} of journal.reverse()){
           try{if(old)await store.put(id,old);else await store.remove(id)}catch{rollbackFailed=true}
         }
