@@ -86,11 +86,21 @@
         restoredReceipts.push([id,receipt]);
       }
       if(window.HECConfirm){if(!await window.HECConfirm('Replace the current inventory with this backup? Export your current inventory first.'))return}else if(!confirm('Replace the current inventory with this backup? Export your current inventory first.'))return;
-      for(const [id,pdf] of restored)await HECManualStore.put(id,pdf);
-      for(const [id,receipt] of restoredReceipts)await HECReceiptStore.put(id,receipt);
-      const previous=items;
-      items=data.items;
-      if(!save()){items=previous;throw new Error('Inventory storage is full. Current inventory was preserved.')}
+      const previous=items,journal=[];
+      try{
+        for(const [store,attachments] of [[HECManualStore,restored],[HECReceiptStore,restoredReceipts]]){
+          for(const [id,blob] of attachments){const old=await store.get(id);journal.push({store,id,old});await store.put(id,blob)}
+        }
+        items=data.items;
+        if(!save())throw new Error('Inventory storage is full.');
+      }catch(error){
+        items=previous;let rollbackFailed=false;
+        for(const {store,id,old} of journal.reverse()){
+          try{if(old)await store.put(id,old);else await store.remove(id)}catch{rollbackFailed=true}
+        }
+        if(rollbackFailed)throw new Error(error.message+' Some attachments could not be recovered. Keep your backup file and retry restoring.');
+        throw new Error(error.message+' Current inventory and attachments were preserved.');
+      }
       filter='All';render();
       notify('Complete inventory, PDF manuals, and receipts restored on this device.');
     }catch(err){notify('Restore failed: '+err.message)}
