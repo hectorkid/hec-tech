@@ -1,4 +1,4 @@
-// HEC TECH product lookup Cloudflare Worker. Deploy separately and set SERPAPI_KEY secret.
+// HEC TECH product lookup Cloudflare Worker. Automated deployment via GitHub Actions. Deploy separately and set SERPAPI_KEY secret.
 // Never put the secret in the public GitHub Pages frontend.
 export default {
  async fetch(request, env) {
