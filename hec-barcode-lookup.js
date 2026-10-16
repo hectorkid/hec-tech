@@ -76,7 +76,7 @@ function setup(){
       const name=form.elements.namedItem('name'),brand=form.elements.namedItem('brand'),notes=form.elements.namedItem('notes');
       if(name&&!name.value.trim())name.value=product.title||'';
       const brands=['Milwaukee','DeWalt','Makita','Bosch','Ryobi','Honeywell','Samsung','Panasonic','Sony','LG'];
-      const b=brands.find(b=>(product.title||'').toLowerCase().includes(b.toLowerCase()));
+      const b=brands.find(b=>(' '+String(product.title||'').toLowerCase().replace(/[^a-z0-9]+/g,' ')+' ').includes(' '+b.toLowerCase().replace(/[^a-z0-9]+/g,' ')+' '));
       if(brand&&!brand.value.trim()&&b)brand.value=b;
       if(notes&&product.link&&!notes.value.includes(product.link))notes.value+=(notes.value?'\n':'')+'Product listing: '+product.link;
       status.textContent='Suggested details added. Check the item before saving; no changes have been saved yet.';

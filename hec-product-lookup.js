@@ -12,11 +12,12 @@ function fillProduct(product,query){
  const model=(codes.sort((a,b)=>b.length-a.length)[0]||cleanQuery);
  const source=product.source||'';
  const brandCandidates=['Milwaukee','Honeywell','DeWalt','Makita','Bosch','Ryobi','Craftsman','Samsung','LG','GE','Panasonic','Klein','Ridgid','Husky','Apple','Sony','Shark','Dyson','Bissell','Black+Decker','Dremel'];
- const brand=brandCandidates.find(b=>title.toLowerCase().includes(b.toLowerCase()))||'';
+ const brand=brandCandidates.find(b=>(' '+title.toLowerCase().replace(/[^a-z0-9]+/g,' ')+' ').includes(' '+b.toLowerCase().replace(/[^a-z0-9]+/g,' ')+' '))||'';
  const set=(name,value)=>{const input=form.elements.namedItem(name);if(input)input.value=value||''};
  set('name',title.slice(0,180));
  set('brand',brand);
- if(/sander|drill|grinder|saw|impact driver|(?:woodworking )?router(?! modem| wireless| wi-fi)|nailer|hammer drill/i.test(title))set('category','Power Tools');
+ if(/\b(?:wi[ -]?fi|wireless|network|ethernet)\b.*\brouter\b|\brouter\b.*\b(?:modem|wi[ -]?fi|wireless|network|ethernet)\b/i.test(title))set('category','Electronics');
+ else if(/sander|drill|grinder|saw|impact driver|(?:woodworking )?router(?! modem| wireless| wi-fi)|nailer|hammer drill/i.test(title))set('category','Power Tools');
  else if(/refrigerator|fridge|dehumidifier|dishwasher|microwave|air conditioner|washer|dryer|freezer|range hood/i.test(title))set('category','Appliances');
  else if(/television|\btv\b|monitor|headphones|speaker|tablet|laptop|camera|router modem/i.test(title))set('category','Electronics');
  else if(/fan|light switch|thermostat|humidistat|air purifier/i.test(title))set('category','Home Devices');

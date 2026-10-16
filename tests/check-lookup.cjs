@@ -19,3 +19,20 @@ async function check(){
  console.log('Lookup query cancellation and keyboard behavior passed');
 }
 check().catch(e=>{console.error(e);process.exitCode=1});
+
+// Exercise the actual autofill rules with ambiguous product titles.
+{
+ const source=fs.readFileSync('hec-product-lookup.js','utf8');
+ const brandRules=source.slice(source.indexOf(' const brandCandidates='),source.indexOf(' const set='));
+ const brand=title=>vm.runInNewContext(brandRules+';brand',{title});
+ assert.equal(brand('Generic battery charger'),'');
+ assert.equal(brand('GE refrigerator'),'GE');
+ assert.equal(brand('LG OLED television'),'LG');
+ assert.equal(brand('BLACK+DECKER drill'),'Black+Decker');
+ const rules=source.slice(source.indexOf(' if(/\\b(?:wi'),source.indexOf(" set('model'"));
+ const category=title=>{let result='Other';vm.runInNewContext(rules,{title,set:(key,value)=>{result=value}});return result};
+ for(const title of ['Wireless Router','Wi-Fi Router','Router Modem','Ethernet Network Router'])assert.equal(category(title),'Electronics',title);
+ assert.equal(category('Woodworking Router'),'Power Tools');
+ assert.equal(category('Milwaukee Random Orbit Sander'),'Power Tools');
+ console.log('Brand and category ambiguity checks passed');
+}
