@@ -1,0 +1,11 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const source=fs.readFileSync('hec-v3.js','utf8');const a=source.indexOf("menu.querySelector('[data-hec-drive]').onclick");const b=source.indexOf('\nfunction update()',a);
+const buttons={'[data-hec-drive]':{},'[data-hec-icloud]':{}};
+const classes=new Set();const details={open:false};const cloud={classList:{add:x=>classes.add(x),remove:x=>classes.delete(x)},querySelector:()=>details,scrollIntoView(){}};
+const drive={open:false,style:{},scrollIntoView(){}};const appMenu={open:true};
+const context={menu:{querySelector:s=>buttons[s]},document:{getElementById:id=>({'drive-backup':drive,'manual-backup-panel':cloud,'app-menu':appMenu}[id])},console};
+vm.runInNewContext(source.slice(a,b).replace(/}\s*$/,''),context);
+buttons['[data-hec-drive]'].onclick();assert.equal(drive.open,true);assert.equal(drive.style.display,'block');assert.equal(classes.has('hec-backup-visible'),false);
+buttons['[data-hec-icloud]'].onclick();assert.equal(drive.open,false);assert.equal(drive.style.display,'none');assert.equal(details.open,true);assert.equal(classes.has('hec-backup-visible'),true);
+buttons['[data-hec-drive]'].onclick();assert.equal(drive.open,true);assert.equal(details.open,false);assert.equal(classes.has('hec-backup-visible'),false);assert.equal(appMenu.open,false);
+console.log('Backup panels close each other when switching destinations');
