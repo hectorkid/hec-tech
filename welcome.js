@@ -5,8 +5,14 @@ function start(force=false){
  if(!force){try{if(localStorage.getItem(KEY)==='1'||sessionStorage.getItem(KEY)==='1')return;}catch(e){}}
  // Never interrupt an existing collection or an OAuth callback.
  if(!force&&(location.search.includes('session=')||location.hash.includes('access_token')))return;
- const saved=localStorage.getItem('tool-inventory-v1');
- if(!force&&saved){try{if(Array.isArray(JSON.parse(saved))&&JSON.parse(saved).length>0)return;}catch(e){return;}}
+ // Never auto-show for a returning inventory owner, even if their welcome flag was lost.
+ if(!force){
+   try {
+     const saved=localStorage.getItem('tool-inventory-v1');
+     if(saved!==null)return;
+   } catch(e){return;}
+   if(typeof window.items!=='undefined' && Array.isArray(window.items) && window.items.length)return;
+ }
  const style=document.createElement('style');style.textContent=`
  #hec-welcome{position:fixed;inset:0;z-index:99999;background:rgba(9,15,25,.82);display:grid;place-items:center;padding:18px;overflow:auto}
  #hec-welcome *{box-sizing:border-box}#hec-welcome .hw-card{width:min(100%,440px);background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 25px 80px #0008;font-family:system-ui,Arial,sans-serif;color:#1b2330}
