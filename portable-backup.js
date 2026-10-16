@@ -41,7 +41,7 @@
           receipts[String(tool.id)]=await readDataURL(receipt);
         }
       }
-      const data={categories:window.HECCategories?{...window.HECCategories.read(),names:window.HECCategories.names()}:undefined,format:'hec-tech-complete-v2',createdAt:new Date().toISOString(),items,manuals,receipts};
+      const data={home:window.HECHome?window.HECHome.exportData():undefined,categories:window.HECCategories?{...window.HECCategories.read(),names:window.HECCategories.names()}:undefined,format:'hec-tech-complete-v2',createdAt:new Date().toISOString(),items,manuals,receipts};
       const file=new File([JSON.stringify(data)],'hec-tech-complete-backup.json',{type:'application/json'});
       notify('Backup ready. Opening save options…');
       if(navigator.canShare&&navigator.canShare({files:[file]})){
@@ -72,6 +72,8 @@
       }
       const categoryAPI=window.HECCategories,categoryState=data.categories&&categoryAPI?categoryAPI.validate(data.categories):null;
       const oldCategories=categoryAPI?localStorage.getItem(categoryAPI.storageKey):null;
+      const homeAPI=window.HECHome,homeState=data.home&&homeAPI?homeAPI.validate(data.home):null;
+      const oldHome=homeAPI?localStorage.getItem(homeAPI.storageKey):null;
       const restored=[],restoredReceipts=[];
       for(const [id,encoded] of Object.entries(data.manuals)){
         if(!/^data:application\/pdf;base64,/i.test(encoded))throw new Error('Invalid PDF backup data');
@@ -87,17 +89,19 @@
         if(!receipt.size)throw new Error('Empty receipt in backup');
         restoredReceipts.push([id,receipt]);
       }
-      if(window.HECConfirm){if(!await window.HECConfirm('Replace the current inventory with this backup? Export your current inventory first.'))return}else if(!confirm('Replace the current inventory with this backup? Export your current inventory first.'))return;
+      if(window.HECConfirm){if(!await window.HECConfirm('Replace the current inventory'+(homeState?' and saved rooms/projects':'')+' with this backup? Export your current inventory first.'))return}else if(!confirm('Replace the current inventory'+(homeState?' and saved rooms/projects':'')+' with this backup? Export your current inventory first.'))return;
       const previous=items,journal=[];
       try{
         for(const [store,attachments] of [[HECManualStore,restored],[HECReceiptStore,restoredReceipts]]){
           for(const [id,blob] of attachments){const old=await store.get(id);journal.push({store,id,old});await store.put(id,blob)}
         }
         if(categoryState)localStorage.setItem(categoryAPI.storageKey,JSON.stringify(categoryState));
+        if(homeState)localStorage.setItem(homeAPI.storageKey,JSON.stringify(homeState));
         items=data.items;
         if(!save())throw new Error('Inventory storage is full.');
       }catch(error){
         items=previous;let rollbackFailed=false;
+        if(homeState){try{if(oldHome===null)localStorage.removeItem(homeAPI.storageKey);else localStorage.setItem(homeAPI.storageKey,oldHome)}catch{rollbackFailed=true}}
         if(categoryState){try{if(oldCategories===null)localStorage.removeItem(categoryAPI.storageKey);else localStorage.setItem(categoryAPI.storageKey,oldCategories)}catch{rollbackFailed=true}}
         for(const {store,id,old} of journal.reverse()){
           try{if(old)await store.put(id,old);else await store.remove(id)}catch{rollbackFailed=true}
@@ -106,7 +110,7 @@
         throw new Error(error.message+' Current inventory and attachments were preserved.');
       }
       filter='All';render();
-      notify('Complete inventory, PDF manuals, and receipts restored on this device.');
+      notify('Complete inventory, PDF manuals, and receipts restored on this device.'+(homeState?' Rooms and project plans were restored too.':''));
     }catch(err){notify('Restore failed: '+err.message)}
   }
   function setup(){
@@ -120,7 +124,7 @@
     title.style.cssText='font-weight:650;cursor:pointer';
     const note=document.createElement('p');
     note.style.cssText='font-size:13px;margin:10px 0';
-    note.textContent='No Google account needed. Export your items, offline PDF manuals, and receipts, then on iPhone choose Save to Files → iCloud Drive. This is a manual backup, not automatic iCloud syncing. To restore, select the saved JSON file. Restoring replaces this device’s inventory.';
+    note.textContent='No Google account needed. Export your items, saved rooms and project plans, offline PDF manuals, and receipts, then on iPhone choose Save to Files → iCloud Drive. This is a manual backup, not automatic iCloud syncing. To restore, select the saved JSON file. Restoring replaces this device’s inventory.';
     const status=document.createElement('p');
     status.id='portable-backup-status';
     status.setAttribute('role','status');

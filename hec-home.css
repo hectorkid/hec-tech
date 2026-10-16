@@ -1,0 +1,31 @@
+#modalContent .hec-pro{background:transparent;color:#edf2f8;padding:2px 0 10px}
+.hec-pro-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0;background:transparent}
+.hec-pro-header button{min-width:44px;min-height:44px;padding:8px 10px}
+.hec-pro-badge{font-size:10px;font-weight:900;letter-spacing:.07em;color:var(--hec-accent-light,#f04a52)}
+.hec-pro h2{font-size:25px;line-height:1.2;margin:18px 0}
+.hec-pro h3{font-size:18px;margin:12px 0 8px}
+.hec-pro-nav{display:flex;gap:6px;margin:0 0 18px;flex-wrap:wrap}
+.hec-pro-nav button{flex:1;min-height:42px;font-size:12px;border:1px solid var(--hec-accent,#d3222a)!important}
+.hec-pro-grid{display:grid;gap:14px;margin:16px 0}
+#modalContent .hec-pro-grid>button,.hec-pro-card{padding:18px;border:1px solid #566379;border-radius:15px;background:linear-gradient(150deg,#2c3543,#1c2431);box-shadow:0 4px 0 #0e121a;text-align:left}
+.hec-pro-grid>button{min-height:90px;font-size:18px}
+.hec-pro-card{margin:14px 0}
+.hec-pro-card p{color:#c3ccda;font-size:14px;line-height:1.5}
+.hec-pro-card button{min-height:44px;margin:5px 6px 0 0}
+.hec-pro-note{font-size:13px;line-height:1.55;color:#bdc8d9}
+.hec-pro-empty{padding:22px 14px;background:#222c3a;border-radius:12px;color:#cad3df;line-height:1.6}
+.hec-pro-measures{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:12px;padding:14px;background:#222c3a;border-radius:12px;font-size:14px}
+.hec-pro-measures dt{color:#bfcbdb}.hec-pro-measures dd{margin:0;font-weight:750;text-align:right;overflow-wrap:anywhere}
+.hec-pro-field{display:grid;gap:6px;margin:14px 0;font-size:14px}
+.hec-pro-field input,.hec-pro-field select,.hec-pro-field textarea{width:100%;min-width:0;min-height:46px;padding:10px;font-size:16px;box-sizing:border-box}
+.hec-pro-field textarea{min-height:90px;resize:vertical}
+.hec-pro-dimensions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.hec-pro-dimensions label{font-size:12px}
+.hec-pro-opening{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px;border:1px solid #526079;border-radius:12px;margin:10px 0}
+.hec-pro-opening input,.hec-pro-opening select{width:100%;min-width:0;min-height:44px;padding:8px;font-size:16px;box-sizing:border-box}
+.hec-pro-opening input[data-opening-field="count"]{grid-column:1}
+.hec-pro button{cursor:pointer}.hec-pro form>button.primary{width:100%;min-height:48px;margin-top:10px}
+.hec-pro-actions{display:grid;gap:10px;margin:18px 0}.hec-pro-actions button{min-height:46px}
+.hec-pro-notes{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.6}
+.hec-pro-status{color:#ffb5b8;font-size:14px;line-height:1.5}.hec-pro-status:empty{display:none}
+@media(max-width:350px){.hec-pro-dimensions{grid-template-columns:1fr}.hec-pro-dimensions .hec-pro-field{margin:5px 0}}

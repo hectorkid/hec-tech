@@ -458,7 +458,7 @@ hecSearchInput.addEventListener('compositionstart',()=>{hecSearchComposing=true;
 hecSearchInput.addEventListener('compositionend',()=>{hecSearchComposing=false;hecQueueSearch()});
 hecSearchInput.addEventListener('search',()=>{if(!hecSearchComposing)hecFlushSearch()});
 hecSearchInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing&&!hecSearchComposing){e.preventDefault();hecFlushSearch();e.currentTarget.blur();setTimeout(()=>document.getElementById('count').scrollIntoView({behavior:'smooth',block:'start'}),250)}});
-render();</script><script>if('serviceWorker' in navigator && location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?update=172').catch(()=>{}))}</script><script src="./drive-pdf-helpers.js"></script><script src="./drive-pdf-upload.js"></script><script src="./drive-pdf-restore.js"></script><script src="./drive-receipt-helpers.js"></script><script src="./drive-receipt-upload.js"></script><script src="./drive-receipt-restore.js"></script><script>
+render();</script><script>if('serviceWorker' in navigator && location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?update=173').catch(()=>{}))}</script><script src="./drive-pdf-helpers.js"></script><script src="./drive-pdf-upload.js"></script><script src="./drive-pdf-restore.js"></script><script src="./drive-receipt-helpers.js"></script><script src="./drive-receipt-upload.js"></script><script src="./drive-receipt-restore.js"></script><script>
 (()=>{
 window.HECConfirm=function(message,options={}){return new Promise(resolve=>{const d=document.getElementById("confirmDialog"),ok=document.getElementById("confirmOk"),cancel=document.getElementById("confirmCancel");document.getElementById("confirmTitle").textContent=options.title??"Restore from Google Drive?";ok.textContent=options.confirmLabel||"Restore";cancel.textContent=options.cancelLabel||"Cancel";document.getElementById("confirmMessage").textContent=message;const finish=value=>{d.removeEventListener("cancel",onCancel);ok.removeEventListener("click",onYes);cancel.removeEventListener("click",onNo);if(d.open)d.close();resolve(value)};const onCancel=e=>{e.preventDefault();finish(false)},onYes=()=>finish(true),onNo=()=>finish(false);d.addEventListener("cancel",onCancel);ok.addEventListener("click",onYes);cancel.addEventListener("click",onNo);d.showModal();cancel.focus()})}
 const WORKER_BASE="https://hec-tech-drive.hectech.workers.dev";
@@ -515,7 +515,7 @@ async function upload(interactive=true){
  if(autoBusy){autoPending=true;return;}autoBusy=true;
  try{status("◌ Backing up…");await ensureAuthorized(interactive,"backup");status("◌ Backing up…");
   let pdfCount=0,receiptCount=0;const linkCount=countOnlinePdfLinks();for(const tool of items){if(tool.manualStored){await window.HECPdfDriveUpload(tool,api);pdfCount++;}}for(const tool of items){if(tool.receiptStored){await window.HECReceiptDriveUpload(tool,api);receiptCount++;}}
-  const id=await findFile(),data=JSON.stringify(window.HECCategories?{format:'hec-tech-drive-v2',items,categories:{...window.HECCategories.read(),names:window.HECCategories.names()}}:items),meta={name:FILE_NAME,parents:["appDataFolder"],mimeType:"application/json"},boundary="hectech"+Date.now();
+  const id=await findFile(),data=JSON.stringify(window.HECCategories?{format:'hec-tech-drive-v2',items,home:window.HECHome?window.HECHome.exportData():undefined,categories:{...window.HECCategories.read(),names:window.HECCategories.names()}}:items),meta={name:FILE_NAME,parents:["appDataFolder"],mimeType:"application/json"},boundary="hectech"+Date.now();
   const body="--"+boundary+"\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n"+JSON.stringify(id?{name:FILE_NAME}:meta)+"\r\n--"+boundary+"\r\nContent-Type: application/json\r\n\r\n"+data+"\r\n--"+boundary+"--";
   const endpoint=id?"https://www.googleapis.com/upload/drive/v3/files/"+encodeURIComponent(id)+"?uploadType=multipart":"https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
   await api(endpoint,{method:id?"PATCH":"POST",headers:{"Content-Type":"multipart/related; boundary="+boundary},body});
@@ -529,22 +529,26 @@ async function download(){
  const data=Array.isArray(backup)?backup:backup.format==='hec-tech-drive-v2'?backup.items:null;
  const categoryAPI=window.HECCategories,categoryState=backup.categories&&categoryAPI?categoryAPI.validate(backup.categories):null;
  const oldCategories=categoryAPI?localStorage.getItem(categoryAPI.storageKey):null;
+ const homeAPI=window.HECHome,homeState=backup.home&&homeAPI?homeAPI.validate(backup.home):null;
+ const oldHome=homeAPI?localStorage.getItem(homeAPI.storageKey):null;
  if(!Array.isArray(data)||!data.every(x=>x.name&&x.id))throw Error("Backup data is invalid");
- if(!await window.HECConfirm("Replace the "+items.length+" items on this device with "+data.length+" items from Google Drive? Export a local backup first if needed.")){status("Restore canceled");return;}
+ if(!await window.HECConfirm("Replace the "+items.length+" items on this device with "+data.length+" items from Google Drive?"+(homeState?" Saved rooms and project plans will also be replaced.":"")+" Export a local backup first if needed.")){status("Restore canceled");return;}
  const previous=items,journal=[];
  try{
   for(const [store,flag,restore] of [[HECManualStore,'manualStored',window.HECPdfDriveRestore],[HECReceiptStore,'receiptStored',window.HECReceiptDriveRestore]]){
    for(const tool of data){if(tool[flag]){const old=await store.get(tool.id);journal.push({store,id:tool.id,old});await restore(tool,api)}}
   }
   if(categoryState)localStorage.setItem(categoryAPI.storageKey,JSON.stringify(categoryState));
+  if(homeState)localStorage.setItem(homeAPI.storageKey,JSON.stringify(homeState));
   items=data;if(!save())throw Error("Inventory restore could not be saved.");
  }catch(error){
   items=previous;let rollbackFailed=false;
+  if(homeState){try{if(oldHome===null)localStorage.removeItem(homeAPI.storageKey);else localStorage.setItem(homeAPI.storageKey,oldHome)}catch{rollbackFailed=true}}
   if(categoryState){try{if(oldCategories===null)localStorage.removeItem(categoryAPI.storageKey);else localStorage.setItem(categoryAPI.storageKey,oldCategories)}catch{rollbackFailed=true}}
   for(const {store,id,old} of journal.reverse()){try{if(old)await store.put(id,old);else await store.remove(id)}catch{rollbackFailed=true}}
   throw Error(error.message+(rollbackFailed?' Some attachments could not be recovered. Keep your backup and retry restoring.':' Current inventory and attachments were preserved.'));
  }
- filter="All";render();status("Restored "+items.length+" items, PDF manuals, and receipts from Google Drive.");
+ filter="All";render();status("Restored "+items.length+" items, PDF manuals, and receipts from Google Drive."+(homeState?" Rooms and project plans were restored too.":""));
 }
 function queueAutoBackup(){
  clearTimeout(autoTimer);autoTimer=setTimeout(()=>{
@@ -552,7 +556,7 @@ function queueAutoBackup(){
   upload(false).catch(e=>status("✕ Backup unsuccessful — "+(e.message||e)+". Tap Back up to Drive to retry."));
  },1800);
 }
-window.addEventListener("hec-inventory-updated",queueAutoBackup);
+window.addEventListener("hec-inventory-updated",queueAutoBackup);window.addEventListener("hec-home-updated",queueAutoBackup);
 const callbackParams=new URLSearchParams(location.hash.slice(1));
 const callbackSession=callbackParams.get("hec-drive-session"),callbackError=callbackParams.get("hec-drive-error");
 if(callbackSession){workerSession=callbackSession;driveConnected=true;localStorage.setItem(SESSION_KEY,workerSession);}
@@ -566,13 +570,13 @@ if(driveConnected){
 }
 window.HECItemSyncBridge={api,ensureAuthorized:()=>ensureAuthorized(false,"item-sync"),reauthorize:()=>beginAuthorization("item-sync"),hasSession:()=>Boolean(workerSession&&driveConnected),getItems:()=>items,save,render:()=>{filter="All";render()},backup:()=>upload(false)};
 for(const [id,fn] of [["drive-save",upload],["drive-load",download]])document.getElementById(id).addEventListener("click",async()=>{let b=document.getElementById(id);b.disabled=true;try{await fn()}catch(e){status("✕ Backup unsuccessful — "+(e.message||"Something went wrong"));alert("Google Drive: "+(e.message||"Unable to complete"));}finally{b.disabled=false}});
-})();</script><script src="./portable-backup.js?v=166"></script><script src="./install-guide.js"></script><script src="./private-item-sync.js?v=109"></script><style>
+})();</script><script src="./portable-backup.js?v=173"></script><script src="./install-guide.js"></script><script src="./private-item-sync.js?v=109"></script><style>
 body.hec-v3 .top-actions{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important}
 body.hec-v3 .top-actions>button{min-width:0!important;font-size:clamp(10px,2.6vw,15px)!important;padding:9px 3px!important}
 body.hec-v3 .hec-ai-action{background:#512b7c;color:#fff;border:1px solid #b187eb;border-radius:11px;font-weight:800}
 #hec-ai-photo-preview{max-width:180px;max-height:170px;object-fit:contain;display:none;background:#fff;border-radius:9px;margin:10px auto}
 .hec-ai-status{font-size:13px;color:#c4cbd7;min-height:22px;margin:10px 0}
-</style><script src="./hec-categories.js?v=168"></script><link rel="stylesheet" href="./hec-item-details.css?v=170-final"><script src="./hec-item-details.js?v=170"></script><script src="./hec-v3.js?v=166"></script><script>
+</style><script src="./hec-categories.js?v=168"></script><link rel="stylesheet" href="./hec-home.css?v=173"><script src="./hec-home.js?v=173"></script><link rel="stylesheet" href="./hec-item-details.css?v=170-final"><script src="./hec-item-details.js?v=170"></script><script src="./hec-v3.js?v=166"></script><script>
 /* Dismiss the home hamburger menu when interacting outside it. */
 document.addEventListener('pointerdown',function(event){
   const menu=document.querySelector('details.app-menu');
