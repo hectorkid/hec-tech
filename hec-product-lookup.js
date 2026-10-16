@@ -65,10 +65,15 @@ function fillProduct(product,query){
 }
 function install(){
  const area=document.getElementById('modalContent');if(!area)return;
+ let activeLookup=null;
  const observer=new MutationObserver(()=>{
+  if(activeLookup&&!area.querySelector('#hec-model-search')){activeLookup.abort();activeLookup=null}
   const search=area.querySelector('#hec-model-search');
   if(!search||search.dataset.hecLookupReady)return;
   search.dataset.hecLookupReady='1';
+  const queryInput=area.querySelector('#hec-model-query');
+  queryInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();search.click()}});
+  queryInput.addEventListener('input',()=>{if(activeLookup){activeLookup.abort();activeLookup=null}search.disabled=false;area.querySelector('#hec-lookup-results')?.replaceChildren()});
   search.addEventListener('click',async e=>{
    e.stopImmediatePropagation();e.preventDefault();
    const input=area.querySelector('#hec-model-query');
@@ -78,10 +83,14 @@ function install(){
    if(!results){results=document.createElement('div');results.id='hec-lookup-results';results.setAttribute('role','status');search.insertAdjacentElement('afterend',results)}
    results.textContent='Searching for matching products…';
    search.disabled=true;
-   const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),16000);
+   if(activeLookup)activeLookup.abort();
+   const controller=new AbortController();activeLookup=controller;
+   const current=()=>activeLookup===controller&&search.isConnected&&input.value.trim()===query;
+   const timeout=setTimeout(()=>controller.abort(),16000);
    try{
     const response=await fetch(API+'?model='+encodeURIComponent(query),{method:'GET',signal:controller.signal});
     const data=await response.json();
+    if(!current())return;
     if(!response.ok)throw Error(data.error||'Lookup failed');
     results.replaceChildren();
     const matches=Array.isArray(data.matches)?data.matches:[];
@@ -94,8 +103,8 @@ function install(){
      const label=document.createElement('span');label.textContent=[product.title,product.price,product.source].filter(Boolean).join(' · ');btn.append(label);
      btn.onclick=()=>fillProduct(product,query);results.append(btn)
     });
-   }catch(err){results.textContent=err.name==='AbortError'?'Search timed out. Please try again.':'Could not search: '+err.message+'. You can still continue manually.'}
-   finally{clearTimeout(timeout);search.disabled=false}
+   }catch(err){if(!current())return;results.textContent=err.name==='AbortError'?'Search timed out. Please try again.':'Could not search: '+err.message+'. You can still continue manually.'}
+   finally{clearTimeout(timeout);if(activeLookup===controller)search.disabled=false}
   },true)
  });
  observer.observe(area,{childList:true,subtree:true});
