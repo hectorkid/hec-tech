@@ -2,16 +2,18 @@
 const KEY='hec-welcome-seen-v1';
 function start(force=false){
  if(document.getElementById('hec-welcome'))return;
- if(!force){try{if(localStorage.getItem(KEY)==='1'||sessionStorage.getItem(KEY)==='1')return;}catch(e){}}
- // Never interrupt an existing collection or an OAuth callback.
- if(!force&&(location.search.includes('session=')||location.hash.includes('access_token')))return;
- // Never auto-show for a returning inventory owner, even if their welcome flag was lost.
  if(!force){
+   // Mark the welcome as seen BEFORE showing it. If storage cannot persist, fail closed.
    try {
-     const saved=localStorage.getItem('tool-inventory-v1');
-     if(saved!==null)return;
-   } catch(e){return;}
-   if(typeof window.items!=='undefined' && Array.isArray(window.items) && window.items.length)return;
+     if(localStorage.getItem(KEY)==='1')return;
+     if(localStorage.getItem('tool-inventory-v1')!==null)return;
+     if(location.search.includes('session=')||location.hash.includes('access_token'))return;
+     localStorage.setItem(KEY,'1');
+     if(localStorage.getItem(KEY)!=='1')return;
+   } catch(error) {
+     console.warn('Welcome disabled because persistent storage is unavailable',error);
+     return;
+   }
  }
  const style=document.createElement('style');style.textContent=`
  #hec-welcome{position:fixed;inset:0;z-index:99999;background:rgba(9,15,25,.82);display:grid;place-items:center;padding:18px;overflow:auto}
