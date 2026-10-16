@@ -26,7 +26,7 @@ export default {
    const ranked=(data.shopping_results||[]).filter(x=>x.title).map(x=>{
     const title=String(x.title);
     const lower=title.toLowerCase();
-    const exactModel=new RegExp('(^|[^a-z0-9])'+modelToken.replace(/[.*+?^${}()|[\]\\]/g,'\\const exactModel=lower.includes(modelToken);')+'($|[^a-z0-9])','i').test(title);
+    const exactModel=lower.split(/[^a-z0-9-]+/).includes(modelToken);
     const brandMatch=!requestedBrand||lower.includes(requestedBrand.toLowerCase());
     const accessory=excluded.test(title);
     return {title,source:String(x.source||''),link:String(x.product_link||x.link||''),thumbnail:String(x.thumbnail||''),price:String(x.price||''),exactModel,brandMatch,accessory};
