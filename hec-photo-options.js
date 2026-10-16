@@ -14,7 +14,7 @@ let previewInput=null,previewURLs=[];
 function clearPreviewURLs(){previewURLs.forEach(url=>URL.revokeObjectURL(url));previewURLs=[]}
 function installPreview(area){
  const input=area.querySelector('#photo');
- if(previewInput&&!previewInput.isConnected){clearPreviewURLs();previewInput=null}
+ if(previewInput&&!previewInput.isConnected&&!previewInput.closest?.('form')?.dataset.hecDraftParked){clearPreviewURLs();previewInput=null}
  if(!input||input.dataset.hecPhotoPreview)return;
  input.dataset.hecPhotoPreview='1';previewInput=input;
  const panel=document.createElement('section');panel.setAttribute('aria-label','Selected photos');panel.hidden=true;
