@@ -15,7 +15,7 @@
 .hec-detail-category p:empty{display:none}
 .hec-clean-detail .detail{display:grid!important;gap:10px;margin:12px 0 16px}
 .hec-clean-detail .detail>div{display:grid;grid-template-columns:minmax(90px,.9fr) minmax(0,1.4fr);gap:12px;font-size:14px;line-height:1.45;overflow-wrap:anywhere}
-.hec-clean-detail .detail b{font-weight:500;color:#657080}
+.hec-clean-detail .detail b{min-width:0;font-weight:500;color:#657080}
 .hec-clean-detail .hec-visible-loan{padding:10px;background:#fff4cb;border-radius:8px}
 .hec-extra-details,.hec-attachment-row{border:1px solid #dce1e7;border-radius:12px;margin:12px 0;background:#fff}
 .hec-extra-details>summary{padding:14px;cursor:pointer;font-size:15px}
