@@ -16,7 +16,33 @@ function fillProduct(product,query){
  set('brand',brand);
  if(/sander|drill|grinder|saw|impact driver|router|nailer|hammer drill/i.test(title))set('category','Power Tools');
  set('model',model);
- set('notes',[source?'Found via '+source:'',product.price?'Listed price: '+product.price:'',product.link?'Product listing: '+product.link:''].filter(Boolean).join('\n'));
+ set('notes',[source?'Found via '+source:'',product.link?'Product listing: '+product.link:''].filter(Boolean).join('\n'));
+ const priceLabel=document.createElement('label');priceLabel.textContent='Listed price (reference only)';
+ const priceField=document.createElement('input');priceField.type='text';priceField.readOnly=true;priceField.value=product.price||'Not listed';
+ priceField.setAttribute('aria-label','Listed price, not purchase price');
+ const notesField=form.elements.namedItem('notes');
+ if(notesField){const group=document.createElement('div');group.style.cssText='display:grid;gap:6px;margin:10px 0';group.append(priceLabel,priceField);notesField.parentNode.insertBefore(group,notesField)}
+ const photo=product.thumbnail;
+ if(photo&&/^https:\/\//i.test(photo)){
+  const section=document.createElement('div');section.style.cssText='display:grid;gap:8px;margin:12px 0';
+  const preview=document.createElement('img');preview.src=photo;preview.alt='Suggested product picture';preview.referrerPolicy='no-referrer';preview.style.cssText='max-width:160px;max-height:160px;object-fit:contain';
+  const btn=document.createElement('button');btn.type='button';btn.textContent='Use this product picture';
+  const status=document.createElement('small');status.textContent='Optional. You can still upload your own photo.';
+  btn.onclick=async()=>{
+   btn.disabled=true;status.textContent='Importing picture…';
+   try{
+    const response=await fetch(photo,{mode:'cors'});
+    if(!response.ok)throw Error('Image not available');
+    const blob=await response.blob();if(!blob.type.startsWith('image/'))throw Error('Not an image');
+    const file=new File([blob],'product-photo.'+(blob.type.includes('png')?'png':'jpg'),{type:blob.type});
+    const input=document.getElementById('photo');if(!input)throw Error('Photo input missing');
+    const dt=new DataTransfer();dt.items.add(file);input.files=dt.files;input.dispatchEvent(new Event('change',{bubbles:true}));
+    status.textContent='Picture ready. It will be saved with this item when you press Save.';
+   }catch(e){status.textContent='This store blocks photo importing. Use Choose from Photos instead.'}
+   finally{btn.disabled=false}
+  };
+  section.append(preview,btn,status);const photoInput=document.getElementById('photo');if(photoInput)photoInput.parentNode.insertBefore(section,photoInput);
+ }
  const notice=document.createElement('p');notice.className='hec-smart-hint';notice.textContent='Review these suggested details before saving. Photos and manuals are not automatically imported.';
  form.prepend(notice);
 }
