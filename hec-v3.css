@@ -690,3 +690,13 @@ body.hec-v3 .app-menu-panel [data-hec-menu-close]{
  position:sticky;top:0;z-index:1;min-height:44px;background:#171d28;
  border:1px solid #697384;text-align:right;box-shadow:0 4px 8px #0008;
 }
+
+/* Menu outlines and interaction colors follow the selected theme. */
+body.hec-v3 .app-menu-panel{border-color:var(--hec-accent,#d3222a)}
+body.hec-v3 .app-menu-panel button{border-color:var(--hec-accent,#d3222a)}
+body.hec-v3 .app-menu-panel button:hover,
+body.hec-v3 .app-menu-panel button:active{background:var(--hec-accent,#d3222a);color:var(--hec-accent-contrast,#fff)}
+body.hec-v3 .app-menu-panel button:focus-visible,
+body.hec-v3 .app-menu-panel summary:focus-visible{outline:3px solid var(--hec-accent-light,#f04a52);outline-offset:2px}
+body.hec-v3 .app-menu-panel [data-hec-menu-close]{border-color:var(--hec-accent,#d3222a);color:var(--hec-accent-light,#f04a52)}
+body.hec-v3 .app-menu-panel [data-hec-menu-close]:hover{background:var(--hec-accent,#d3222a);color:var(--hec-accent-contrast,#fff)}
