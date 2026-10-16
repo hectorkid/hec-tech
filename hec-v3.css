@@ -647,3 +647,6 @@ body.hec-v3 .hec-theme-options button[data-hec-theme].hec-theme-selected{
 }
 body.hec-v3 .hec-theme-options button[data-hec-theme].hec-theme-selected::after{content:" ✓";font-weight:900}
 body.hec-v3 .hec-theme-options button[data-hec-theme]:active{transform:scale(.985)}
+
+/* Allow horizontal photo swipes without blocking vertical page scrolling. */
+body.hec-v3 .hec-card-gallery,body.hec-v3 .hec-card-gallery>img{touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
