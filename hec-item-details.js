@@ -13,8 +13,8 @@ function arrange(id){
  for(const row of [...details.children]){const label=row.querySelector('b')?.textContent;if(!['Brand','Model','Serial / ID'].includes(label)){if(label==='Loan status'&&item.loanedTo)row.classList.add('hec-visible-loan');else content.append(row)}}
  details.after(extra);
  const footer=document.createElement('div');footer.className='hec-detail-footer';
- const more=document.createElement('details');more.className='hec-more-actions';const moreTitle=document.createElement('summary');moreTitle.textContent='More actions ⋯';const moreList=document.createElement('div');more.append(moreTitle,moreList);
- const edit=actions.querySelector('button[onclick^="edit("]');if(edit){edit.textContent='Edit item';footer.append(edit)}footer.append(more);
+ const more=document.createElement('details');more.className='hec-more-actions';const moreTitle=document.createElement('summary');moreTitle.textContent='More actions ⋯';const moreList=document.createElement('div');moreList.className='hec-action-list';moreList.hidden=true;more.append(moreTitle);more.addEventListener('toggle',()=>{moreList.hidden=!more.open});
+ const edit=actions.querySelector('button[onclick^="edit("]');if(edit){edit.textContent='Edit item';footer.append(edit)}footer.append(more,moreList);
  const receiptPanel=area.querySelector('.receipt-panel');
  if(receiptPanel){
   const receipt=document.createElement('details');receipt.className='hec-receipt-options hec-attachment-row';const receiptSummary=document.createElement('summary');

@@ -60,12 +60,11 @@ body.hec-v3 #modalContent button:not(.primary){background:#2a3545;color:#eef2f8;
 body.hec-v3 #modalContent button.primary{background:var(--hec-accent,#d3222a)!important;color:var(--hec-accent-contrast,#fff)!important;border:1px solid var(--hec-accent-light,#f04a52)}
 body.hec-v3 #modalContent .hec-visible-loan{background:var(--hec-accent-tint,#302126);color:#f1f4f8;border:1px solid var(--hec-accent,#d3222a)}
 body.hec-v3 #modalContent .hec-more-actions>summary{background:#222b38;color:var(--hec-accent-light,#f04a52);border-color:var(--hec-accent,#d3222a)}
-.hec-detail-footer>.hec-more-actions[open]{display:contents}
-.hec-detail-footer>.hec-more-actions[open]>summary{grid-column:2;grid-row:1}
-.hec-detail-footer>.hec-more-actions[open]>div{grid-column:1/-1;border:1px solid #4a586c;border-radius:12px;overflow:hidden;padding:0;gap:0;background:#222b38}
-body.hec-v3 #modalContent .hec-more-actions>div button{display:block;min-height:46px;padding:12px 14px;text-align:left;border:0;border-bottom:1px solid #435166;border-radius:0;box-shadow:none;font-size:14px;background:transparent;color:#eef2f8;width:100%}
-body.hec-v3 #modalContent .hec-more-actions>div button:last-child{border-bottom:0}
-body.hec-v3 #modalContent .hec-more-actions>div button:hover{background:var(--hec-accent-tint,#302126)}
+body.hec-v3 #modalContent .hec-action-list{display:grid;grid-column:1/-1;gap:0;padding:0;border:1px solid #4a586c;border-radius:12px;overflow:hidden;background:#222b38}
+body.hec-v3 #modalContent .hec-action-list[hidden]{display:none}
+body.hec-v3 #modalContent .hec-action-list button{display:block;min-height:46px;padding:12px 14px;text-align:left;border:0;border-bottom:1px solid #435166;border-radius:0;box-shadow:none;font-size:14px;background:transparent;color:#eef2f8;width:100%;margin:0}
+body.hec-v3 #modalContent .hec-action-list button:last-child{border-bottom:0}
+body.hec-v3 #modalContent .hec-action-list button:hover{background:var(--hec-accent-tint,#302126)}
 body.hec-v3 #modalContent .hec-manual-view{padding:6px 0;background:transparent;color:#f1f4f8}
 .hec-manual-header{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#bec8d6;font-size:14px;font-weight:700}
 .hec-manual-header button{font-size:24px;min-width:44px;min-height:44px;padding:5px}
