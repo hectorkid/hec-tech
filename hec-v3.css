@@ -555,6 +555,7 @@ body.hec-v3 #drive-backup #drive-status{
 }
 
 /* User-selectable HEC TECH themes: cosmetic only, inventory and backups untouched. */
+body.hec-v3[data-hec-theme="redhot"]{--hec-accent:#f12b37;--hec-accent-light:#ff6771;--hec-accent-tint:#3b1b23;--hec-accent-contrast:#fff;--hec-accent-glow:#551018}
 body.hec-v3[data-hec-theme="original"]{--hec-accent:#d3222a;--hec-accent-light:#f04a52;--hec-accent-tint:#302126;--hec-accent-contrast:#fff;--hec-accent-glow:#421015}
 body.hec-v3[data-hec-theme="yellow"]{--hec-accent:#ffcc00;--hec-accent-light:#ffe169;--hec-accent-tint:#3b3417;--hec-accent-contrast:#181818;--hec-accent-glow:#514109}
 body.hec-v3[data-hec-theme="ocean"]{--hec-accent:#008c95;--hec-accent-light:#24b9c2;--hec-accent-tint:#16343b;--hec-accent-contrast:#fff;--hec-accent-glow:#083f46}
@@ -589,3 +590,21 @@ body.hec-v3 .hec-theme-menu>summary{cursor:pointer;font-weight:800;padding:9px 7
 body.hec-v3 .hec-theme-options{display:grid;gap:4px;padding:4px}
 body.hec-v3 .hec-theme-options button{background:#202833;color:#fff;border:1px solid #495365;border-radius:10px;text-align:left;padding:10px 12px;min-height:42px}
 body.hec-v3 .hec-theme-options button.hec-theme-selected{border:2px solid var(--hec-accent,#d3222a);background:var(--hec-accent-tint,#302126);font-weight:800}
+
+/* Red Hot is a distinct brighter red variant; Original retains the classic skin. */
+body.hec-v3[data-hec-theme="redhot"] .hec-cat,
+body.hec-v3[data-hec-theme="redhot"] .hec-stat,
+body.hec-v3[data-hec-theme="redhot"] .tool{border-color:#74303b!important}
+body.hec-v3[data-hec-theme="redhot"] .hec-cat{border-left:4px solid #f12b37!important}
+body.hec-v3[data-hec-theme="redhot"] .hec-cat.active{background:#3b1b23!important;border-color:#f12b37!important}
+body.hec-v3[data-hec-theme="redhot"] .hec-safe-header,
+body.hec-v3[data-hec-theme="redhot"] .hec-v3-header{border-bottom-color:#f12b37!important}
+body.hec-v3[data-hec-theme="redhot"] .hec-safe-title b,
+body.hec-v3[data-hec-theme="redhot"] .hec-v3-title b{color:#ff6771!important}
+body.hec-v3[data-hec-theme="redhot"] .hec-safe-rule,
+body.hec-v3[data-hec-theme="redhot"] .hec-v3-stripe{background:#f12b37!important}
+body.hec-v3[data-hec-theme="redhot"] .app-menu>summary,
+body.hec-v3[data-hec-theme="redhot"] #drive-backup[open],
+body.hec-v3[data-hec-theme="redhot"] section#manual-backup-panel.hec-backup-visible{border-color:#f12b37!important}
+body.hec-v3[data-hec-theme="redhot"] #drive-save,
+body.hec-v3[data-hec-theme="redhot"] #manual-backup-panel .controls button:first-child{background:#f12b37!important;border-color:#ff6771!important;color:#fff!important}
