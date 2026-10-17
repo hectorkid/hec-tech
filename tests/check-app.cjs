@@ -8,7 +8,7 @@ for (const match of scripts) {
   if (/\bsrc=/.test(match[1])) continue;
   new vm.Script(match[2], {filename:'index.html inline script'});
 }
-for (const file of ['manual-storage.js','receipt-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js','drive-receipt-helpers.js','drive-receipt-upload.js','drive-receipt-restore.js','install-guide.js','private-item-sync.js','hec-product-lookup.js','hec-barcode-lookup.js','hec-categories.js','hec-item-details.js','hec-home.js','sw.js']) {
+for (const file of ['hec-units.js','hec-quantity.js','manual-storage.js','receipt-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js','drive-receipt-helpers.js','drive-receipt-upload.js','drive-receipt-restore.js','install-guide.js','private-item-sync.js','hec-product-lookup.js','hec-barcode-lookup.js','hec-categories.js','hec-item-details.js','hec-home.js','sw.js']) {
   new vm.Script(fs.readFileSync(file,'utf8'),{filename:file});
   assert.ok(html.includes(file) || file==='sw.js', file+' is not loaded');
 }
