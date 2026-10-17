@@ -13,7 +13,7 @@ for (const file of ['hec-units.js','hec-quantity.js','manual-storage.js','receip
   assert.ok(html.includes(file) || file==='sw.js', file+' is not loaded');
 }
 const worker = fs.readFileSync('sw.js','utf8');
-for (const file of ['manual-storage.js','receipt-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js','drive-receipt-helpers.js','drive-receipt-upload.js','drive-receipt-restore.js','install-guide.js','private-item-sync.js?v=196']) {
+for (const file of ['manual-storage.js','receipt-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js','drive-receipt-helpers.js','drive-receipt-upload.js','drive-receipt-restore.js','install-guide.js','private-item-sync.js?v=198']) {
   assert.ok(worker.includes(file), file+' is missing from offline cache');
 }
 assert.match(html,/Back up your inventory, attached PDF manuals, and receipts/);
@@ -70,6 +70,11 @@ assert.equal(sync.applyRemoteUpdates(inventory,packageManifest),true);
 assert.equal(inventory.at(-1).quantity,1);
 assert.equal(inventory.at(-1).packageInfo.perPackage,10);
 assert.equal(sync.applyRemoteUpdates(inventory,packageManifest),false);
+const preservedInventory=[{id:22,name:'Packaged item',model:'PK10',syncKey:'package-item',syncUpdatedAt:'2026-10-17T04:00:00Z',packageInfo:{unit:'pack',perPackage:10,contents:'outlets',remaining:null,amountMode:'approx',fractionLeft:0.5}}];
+const packagePlaceholder={format:sync.FORMAT,updates:[{id:'package-item',updatedAt:'2026-10-17T05:00:00Z',item:{name:'Packaged item',model:'PK10',quantity:1,packageInfo:{unit:'pack',perPackage:10,contents:'outlets',remaining:null,amountMode:'approx',fractionLeft:null}}}]};
+assert.equal(sync.applyRemoteUpdates(preservedInventory,packagePlaceholder),true);
+assert.equal(preservedInventory[0].packageInfo.fractionLeft,0.5);
+assert.equal(preservedInventory[0].packageInfo.amountMode,'approx');
 assert.throws(()=>sync.applyRemoteUpdates(inventory,{format:'wrong',updates:[]}));
 
 const cutterManifest={format:sync.FORMAT,updates:[{id:"anvil-59487-vinyl-cutter",updatedAt:"2026-10-17T02:30:00Z",item:{name:"Anvil Vinyl Cutter",model:"59487",category:"Hand Tools",manual:"https://example.com/manual.pdf",manualName:"Anvil manual.pdf",manualStored:true}}]};

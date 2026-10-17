@@ -21,6 +21,10 @@ function applyRemoteUpdates(items,manifest){
   if(item){
    for(const [key,value] of Object.entries(incoming)){
     if((value===''||value==null)&&item[key])continue;
+    if(key==='packageInfo'&&value&&typeof value==='object'&&item.packageInfo&&typeof item.packageInfo==='object'){
+     item.packageInfo={...value,...item.packageInfo};
+     continue;
+    }
     item[key]=value;
    }
    item.syncKey=update.id;
