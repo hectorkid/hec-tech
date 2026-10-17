@@ -1,0 +1,8 @@
+{
+  "appId": "com.hectech.inventory.preview",
+  "appName": "HEC TECH Preview",
+  "webDir": "www",
+  "server": {
+    "cleartext": false
+  }
+}
