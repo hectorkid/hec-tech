@@ -6,3 +6,7 @@ assert.equal(q.label({...opened,packageInfo:{...opened.packageInfo,remaining:0}}
 for(const values of [{quantity:'0'},{quantity:'1.5'},{quantity:'bad'},{quantity:'2',packaged:'on',packageUnit:'box',perPackage:'0'},{quantity:'2',packaged:'on',packageUnit:'box',perPackage:'100',packageRemaining:'201'}])assert.throws(()=>q.readForm(form(values)));
 assert.equal(q.readForm(form({quantity:'2'})).packageInfo,null);assert.equal(q.label(JSON.parse(JSON.stringify(opened))),q.label(opened));assert.ok(!q.badge({quantity:1,packageInfo:{unit:'box',perPackage:1,contents:'<img>'}}).includes('<img>'));
 console.log('Quantity: singles, packages, opened/empty totals, validation, backup serialization and escaping passed');
+
+for(const [f,text] of [[1,'1 box'],[.75,'¾ box left'],[.5,'½ box left'],[.25,'¼ box left'],[0,'Empty box']]){const x=q.readForm(form({quantity:'1',packaged:'on',packageUnit:'box',perPackage:'1190',amountMode:'approx',fractionLeft:String(f)}));assert.equal(q.label(x),text);assert.equal(q.label(JSON.parse(JSON.stringify(x))),text);}
+assert.equal(q.label({quantity:3,packageInfo:{unit:'box',perPackage:100,amountMode:'approx',fractionLeft:.5}}),'2 full boxes + ½ box');
+assert.throws(()=>q.readForm(form({quantity:'1',packaged:'on',packageUnit:'box',perPackage:'100',amountMode:'approx',fractionLeft:'.3'})));

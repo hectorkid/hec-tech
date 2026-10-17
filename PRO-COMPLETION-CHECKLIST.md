@@ -1,6 +1,6 @@
 # HEC TECH Pro completion checklist
 
-Updated: October 16, 2026 · Version 194
+Updated: October 16, 2026 · Version 195
 
 This is the master checklist. Update this same file after every completed change. Checked means implemented and automatically checked unless a device test is explicitly named. It does not mean Hector has tested or approved it. Unchecked items remain required before the Pro testing handoff. Store publication follows Hector's testing and approval.
 
@@ -117,3 +117,5 @@ Store developer accounts, billing products, signing and production credentials m
 - v187: Archive/restore preserves plans and backup data. Duplicate creates an active Planned copy and resets purchased checkmarks; material settings and tool decisions are retained.
 - v186: Created this master checklist; added persistent project tool decisions and summary inclusion. Automated validation covers reload, backup round-trip, invalid choices and summary output.
 - v185: Outdoor spaces and simplified indoor/outdoor forms deployed; live 12 × 10 ft deck saved and footprint verified.
+
+- [x] Version 195: Approximate package amounts (full, ¾, ½, ¼, empty), including mixed full and opened packages; optional exact piece counts retained. Added jar and tub package types. Quantity and individual-unit checks passed.
