@@ -88,8 +88,10 @@ jobs:
           set -euo pipefail
           if [ -n "${CATALOG_WRITE_TOKEN:-}" ]; then
             printf '%s' "$CATALOG_WRITE_TOKEN" | npx --yes wrangler@4 secret put CATALOG_WRITE_TOKEN --config wrangler.lookup.toml
+            echo "Catalog writes: enabled (Worker secret configured)." >> "$GITHUB_STEP_SUMMARY"
           else
             echo "CATALOG_WRITE_TOKEN is not set; public catalog lookup will deploy, catalog writes will stay disabled."
+            echo "Catalog writes: disabled (no CATALOG_WRITE_TOKEN repository secret)." >> "$GITHUB_STEP_SUMMARY"
           fi
       - name: Validate Worker JavaScript syntax
         run: node --check cloudflare/product-lookup-worker.js
