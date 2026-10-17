@@ -1,6 +1,6 @@
 # HEC TECH Pro completion checklist
 
-Updated: October 16, 2026 · Version 191
+Updated: October 16, 2026 · Version 192
 
 This is the master checklist. Update this same file after every completed change. Checked means implemented and automatically checked unless a device test is explicitly named. It does not mean Hector has tested or approved it. Unchecked items remain required before the Pro testing handoff. Store publication follows Hector's testing and approval.
 
@@ -106,6 +106,7 @@ Store developer accounts, billing products, signing and production credentials m
 - [ ] Automatic account-based multi-device data sync (separate future scope).
 
 ## Change log
+- v192: Verified live individual loan totals and corrected the Manage returns shortcut to open the unit dialog from a closed card.
 - v191: Optional individual-unit tracking for matching items. Per-unit name, serial, condition, notes and loan dates; available/loaned card totals; archive/restore units; counts and loans included in backup records. Existing cards are never merged automatically.
 - v189: Added quantity owned to item add/edit and dark card details, including category views. Existing items default to one; backup records retain quantity. Optional boxes/packs record pieces per package and a remaining-total override for opened packages.
 - v188: Corrected archive-room, archive-project and shopping-removal confirmation titles/actions caught during the live duplicate/archive test.
