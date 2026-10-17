@@ -10,3 +10,9 @@ console.log('Quantity: singles, packages, opened/empty totals, validation, backu
 for(const [f,text] of [[1,'1 box'],[.75,'¾ box left'],[.5,'½ box left'],[.25,'¼ box left'],[0,'Empty box']]){const x=q.readForm(form({quantity:'1',packaged:'on',packageUnit:'box',perPackage:'1190',amountMode:'approx',fractionLeft:String(f)}));assert.equal(q.label(x),text);assert.equal(q.label(JSON.parse(JSON.stringify(x))),text);}
 assert.equal(q.label({quantity:3,packageInfo:{unit:'box',perPackage:100,amountMode:'approx',fractionLeft:.5}}),'2 full boxes + ½ box');
 assert.throws(()=>q.readForm(form({quantity:'1',packaged:'on',packageUnit:'box',perPackage:'100',amountMode:'approx',fractionLeft:'.3'})));
+
+const approxNoCount=q.readForm(form({quantity:'1',packaged:'on',packageUnit:'box',perPackage:'',packageContents:'screws',amountMode:'approx',fractionLeft:'0.5'}));assert.equal(approxNoCount.packageInfo.perPackage,null);assert.equal(q.label(approxNoCount),'½ box left');
+const amountUnknown=q.readForm(form({quantity:'1',packaged:'on',packageUnit:'container',perPackage:'',packageContents:'screws',amountMode:'approx',fractionLeft:''}));assert.equal(q.label(amountUnknown),'1 container · amount not set');
+const twoUnknown={quantity:2,packageInfo:{unit:'tub',perPackage:null,contents:'screws',amountMode:'approx',fractionLeft:null}};assert.equal(q.label(twoUnknown),'2 tubs · last package amount not set');
+assert.throws(()=>q.readForm(form({quantity:'1',packaged:'on',packageUnit:'box',perPackage:'',amountMode:'exact'})));
+assert.equal(q.label({quantity:1,packageInfo:{unit:'box',perPackage:null,amountMode:'exact',remaining:null}}),'1 box · amount not set');
