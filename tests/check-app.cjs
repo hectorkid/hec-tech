@@ -13,7 +13,7 @@ for (const file of ['hec-units.js','hec-quantity.js','manual-storage.js','receip
   assert.ok(html.includes(file) || file==='sw.js', file+' is not loaded');
 }
 const worker = fs.readFileSync('sw.js','utf8');
-for (const file of ['manual-storage.js','receipt-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js','drive-receipt-helpers.js','drive-receipt-upload.js','drive-receipt-restore.js','install-guide.js','private-item-sync.js?v=194']) {
+for (const file of ['manual-storage.js','receipt-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js','drive-receipt-helpers.js','drive-receipt-upload.js','drive-receipt-restore.js','install-guide.js','private-item-sync.js?v=196']) {
   assert.ok(worker.includes(file), file+' is missing from offline cache');
 }
 assert.match(html,/Back up your inventory, attached PDF manuals, and receipts/);
