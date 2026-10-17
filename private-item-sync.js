@@ -3,7 +3,7 @@
 const FORMAT='hec-tech-item-updates-v1';
 const FILE_NAME='HEC TECH private item updates.json';
 const FILE_ID_KEY='hec-tech-private-item-sync-file-v1';
-const ALLOWED_FIELDS=new Set(['name','brand','category','model','serial','location','purchaseDate','notes','image','favorite','manual','manualName']);
+const ALLOWED_FIELDS=new Set(['name','brand','category','model','serial','location','purchaseDate','notes','image','favorite','manual','manualName','quantity','packageInfo']);
 function normalize(value){return String(value||'').trim().toLowerCase().replace(/\s+/g,' ')}
 function applyRemoteUpdates(items,manifest){
  if(!Array.isArray(items))throw new Error('Inventory is not available.');

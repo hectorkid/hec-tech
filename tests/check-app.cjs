@@ -65,6 +65,11 @@ const patch={format:sync.FORMAT,updates:[{id:'cs08-dehumidifier',updatedAt:'2026
 assert.equal(sync.applyRemoteUpdates(inventory,patch),true);
 assert.equal(inventory[1].notes,'Best Buy');
 assert.equal(inventory[1].image,'new-image');
+const packageManifest={format:sync.FORMAT,updates:[{id:'package-item',updatedAt:'2026-10-17T04:00:00Z',item:{name:'Packaged item',model:'PK10',quantity:1,packageInfo:{unit:'pack',perPackage:10,contents:'outlets',remaining:null,amountMode:'approx',fractionLeft:1}}}]};
+assert.equal(sync.applyRemoteUpdates(inventory,packageManifest),true);
+assert.equal(inventory.at(-1).quantity,1);
+assert.equal(inventory.at(-1).packageInfo.perPackage,10);
+assert.equal(sync.applyRemoteUpdates(inventory,packageManifest),false);
 assert.throws(()=>sync.applyRemoteUpdates(inventory,{format:'wrong',updates:[]}));
 
 const cutterManifest={format:sync.FORMAT,updates:[{id:"anvil-59487-vinyl-cutter",updatedAt:"2026-10-17T02:30:00Z",item:{name:"Anvil Vinyl Cutter",model:"59487",category:"Hand Tools",manual:"https://example.com/manual.pdf",manualName:"Anvil manual.pdf",manualStored:true}}]};

@@ -1,6 +1,6 @@
 # HEC TECH Pro completion checklist
 
-Updated: October 16, 2026 · Version 195
+Updated: October 17, 2026 · Version 196
 
 This is the master checklist. Update this same file after every completed change. Checked means implemented and automatically checked unless a device test is explicitly named. It does not mean Hector has tested or approved it. Unchecked items remain required before the Pro testing handoff. Store publication follows Hector's testing and approval.
 
@@ -119,3 +119,5 @@ Store developer accounts, billing products, signing and production credentials m
 - v185: Outdoor spaces and simplified indoor/outdoor forms deployed; live 12 × 10 ft deck saved and footprint verified.
 
 - [x] Version 195: Approximate package amounts (full, ¾, ½, ¼, empty), including mixed full and opened packages; optional exact piece counts retained. Added jar and tub package types. Quantity and individual-unit checks passed.
+
+- [x] Version 196: Private item sync preserves packaged quantity fields, so synced boxes and packs show their contents and quantity badge. Integration check covers applying package data and idempotent repeat sync.
