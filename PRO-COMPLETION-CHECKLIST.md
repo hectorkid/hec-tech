@@ -1,6 +1,6 @@
 # HEC TECH Pro completion checklist
 
-Updated: October 16, 2026 · Version 186
+Updated: October 16, 2026 · Version 187
 
 This is the master checklist. Update this same file after every completed change. Checked means implemented and automatically checked unless a device test is explicitly named. It does not mean Hector has tested or approved it. Unchecked items remain required before the Pro testing handoff. Store publication follows Hector's testing and approval.
 
@@ -24,7 +24,7 @@ This is the master checklist. Update this same file after every completed change
 - [x] Link projects to rooms/spaces; save name, job, notes and status.
 - [x] Reuse saved measurements in project estimates.
 - [ ] Support multiple tasks within one renovation (for example drywall, tile and paint).
-- [ ] Add project archive/restore and duplicate-plan actions.
+- [x] Add project archive/restore and duplicate-plan actions (v187).
 - [ ] Show a project readiness overview of missing inputs, unreviewed tools and shopping needs.
 
 ## 4. Material quantities
@@ -106,5 +106,6 @@ Store developer accounts, billing products, signing and production credentials m
 - [ ] Automatic account-based multi-device data sync (separate future scope).
 
 ## Change log
+- v187: Archive/restore preserves plans and backup data. Duplicate creates an active Planned copy and resets purchased checkmarks; material settings and tool decisions are retained.
 - v186: Created this master checklist; added persistent project tool decisions and summary inclusion. Automated validation covers reload, backup round-trip, invalid choices and summary output.
 - v185: Outdoor spaces and simplified indoor/outdoor forms deployed; live 12 × 10 ft deck saved and footprint verified.
