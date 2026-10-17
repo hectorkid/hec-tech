@@ -42,3 +42,16 @@ const guidedId=api.saveProject({roomId:room,name:'Tile test',job:'Tile',status:'
 let conversionProject=api.exportData().projects.find(x=>x.id===shopProject.id);api.saveProject({...conversionProject,paint:settings,drywall:board,flooring,shopping:conversionProject.shopping});let conversionRoom=api.exportData().rooms.find(x=>x.id===room);api.saveRoom({...conversionRoom,unit:'m',length:2.4384,width:3.048,height:2.4384,openings:[]});conversionProject=api.exportData().projects.find(x=>x.id===shopProject.id);assert.equal(conversionProject.paint,null);assert.equal(conversionProject.drywall,null);assert.equal(conversionProject.flooring.coverage,20);assert.equal(conversionProject.shopping.length,1);assert.equal(api.exportData().projects.find(x=>x.id===guidedId).planner.values.area,100);console.log('Room unit changes reset dependent paint/drywall assumptions while preserving shopping, flooring and explicit guided measurements');
 
 const outdoorId=api.saveRoom({name:'Back deck',kind:'Outdoor',unit:'ft',length:12,width:10,openings:[]});api=load();const outdoor=api.exportData().rooms.find(x=>x.id===outdoorId);assert.equal(outdoor.height,0);assert.equal(api.areas(outdoor).floor,120);assert.equal(api.areas(outdoor).ceiling,0);assert.equal(api.areas(outdoor).grossWalls,0);assert.throws(()=>api.paintEstimate(outdoor,settings));assert.throws(()=>api.saveRoom({...outdoor,openings:[{type:'Door',width:3,height:7,count:1}]}));const deckPlan=api.saveProject({roomId:outdoorId,name:'Deck surface',job:'Deck',status:'Planned'});assert.ok(api.summaryText(api.exportData().projects.find(x=>x.id===deckPlan),outdoor).includes('Outdoor space'));assert.throws(()=>api.saveRoom({...outdoor,kind:'bad'}));console.log('Outdoor spaces persist without ceilings, reject wall openings, and support deck projects');
+
+// Explicit decisions persist through edits, reload and backup validation.
+const decisionId=api.saveProject({roomId:api.exportData().rooms[0].id,name:'Tool decisions test',job:'Painting',status:'Planned'});const decisionProject=api.exportData().projects.find(x=>x.id===decisionId);
+const suggested=api.toolMatches('Painting',[])[0].name;
+api.setToolDecision(decisionProject.id,suggested,'Borrow');api=load();
+assert.equal(api.exportData().projects.find(x=>x.id===decisionProject.id).toolDecisions[suggested],'Borrow');
+const decisionSaved=api.exportData().projects.find(x=>x.id===decisionProject.id);
+assert.match(api.summaryText(decisionSaved,api.exportData().rooms.find(x=>x.id===decisionSaved.roomId)),/Borrow/);
+assert.equal(api.validate(api.exportData()).projects.find(x=>x.id===decisionProject.id).toolDecisions[suggested],'Borrow');
+assert.throws(()=>api.setToolDecision(decisionProject.id,suggested,'Maybe'));
+assert.throws(()=>api.setToolDecision(decisionProject.id,'Unknown tool','Have it'));
+api.setToolDecision(decisionProject.id,suggested,'');assert.equal(api.exportData().projects.find(x=>x.id===decisionProject.id).toolDecisions[suggested],undefined);
+console.log('Tool decisions: confirmation, reload, backup, summaries and invalid choices passed');
