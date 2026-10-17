@@ -13,7 +13,7 @@ for (const file of ['hec-units.js','hec-quantity.js','manual-storage.js','receip
   assert.ok(html.includes(file) || file==='sw.js', file+' is not loaded');
 }
 const worker = fs.readFileSync('sw.js','utf8');
-for (const file of ['manual-storage.js','receipt-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js','drive-receipt-helpers.js','drive-receipt-upload.js','drive-receipt-restore.js','install-guide.js','private-item-sync.js?v=109']) {
+for (const file of ['manual-storage.js','receipt-storage.js','portable-backup.js','drive-pdf-helpers.js','drive-pdf-upload.js','drive-pdf-restore.js','drive-receipt-helpers.js','drive-receipt-upload.js','drive-receipt-restore.js','install-guide.js','private-item-sync.js?v=194']) {
   assert.ok(worker.includes(file), file+' is missing from offline cache');
 }
 assert.match(html,/Back up your inventory, attached PDF manuals, and receipts/);
@@ -66,3 +66,6 @@ assert.equal(sync.applyRemoteUpdates(inventory,patch),true);
 assert.equal(inventory[1].notes,'Best Buy');
 assert.equal(inventory[1].image,'new-image');
 assert.throws(()=>sync.applyRemoteUpdates(inventory,{format:'wrong',updates:[]}));
+
+const cutterManifest={format:sync.FORMAT,updates:[{id:"anvil-59487-vinyl-cutter",updatedAt:"2026-10-17T02:30:00Z",item:{name:"Anvil Vinyl Cutter",model:"59487",category:"Hand Tools",manual:"https://example.com/manual.pdf",manualName:"Anvil manual.pdf",manualStored:true}}]};
+assert.equal(sync.applyRemoteUpdates(inventory,cutterManifest),true);assert.equal(inventory.at(-1).manual,"https://example.com/manual.pdf");assert.equal(inventory.at(-1).manualStored,false);assert.equal(sync.applyRemoteUpdates(inventory,cutterManifest),false);assert.throws(()=>sync.applyRemoteUpdates([],{format:sync.FORMAT,updates:[{id:"bad",item:{name:"Bad",manual:"javascript:alert(1)"}}]}));

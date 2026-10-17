@@ -1,6 +1,6 @@
 # HEC TECH Pro completion checklist
 
-Updated: October 16, 2026 · Version 193
+Updated: October 16, 2026 · Version 194
 
 This is the master checklist. Update this same file after every completed change. Checked means implemented and automatically checked unless a device test is explicitly named. It does not mean Hector has tested or approved it. Unchecked items remain required before the Pro testing handoff. Store publication follows Hector's testing and approval.
 
@@ -108,6 +108,7 @@ Store developer accounts, billing products, signing and production credentials m
 - [ ] Automatic account-based multi-device data sync (separate future scope).
 
 ## Change log
+- v194: Private item sync now accepts HTTPS PDF manual links with new item updates, while leaving offline manual attachments protected.
 - v193: Live visual check corrected dark-screen text contrast and applied the selected theme accent to quantity/unit borders.
 - v192: Verified live individual loan totals and corrected the Manage returns shortcut to open the unit dialog from a closed card.
 - v191: Optional individual-unit tracking for matching items. Per-unit name, serial, condition, notes and loan dates; available/loaned card totals; archive/restore units; counts and loans included in backup records. Existing cards are never merged automatically.

@@ -3,7 +3,7 @@
 const FORMAT='hec-tech-item-updates-v1';
 const FILE_NAME='HEC TECH private item updates.json';
 const FILE_ID_KEY='hec-tech-private-item-sync-file-v1';
-const ALLOWED_FIELDS=new Set(['name','brand','category','model','serial','location','purchaseDate','notes','image','favorite']);
+const ALLOWED_FIELDS=new Set(['name','brand','category','model','serial','location','purchaseDate','notes','image','favorite','manual','manualName']);
 function normalize(value){return String(value||'').trim().toLowerCase().replace(/\s+/g,' ')}
 function applyRemoteUpdates(items,manifest){
  if(!Array.isArray(items))throw new Error('Inventory is not available.');
@@ -16,6 +16,7 @@ function applyRemoteUpdates(items,manifest){
   let item=items.find(x=>x&&x.syncKey===update.id);
   if(!item&&model)item=items.find(x=>x&&normalize(x.model)===model);
   if(item&&item.syncKey===update.id&&String(item.syncUpdatedAt||'')>=updatedAt)continue;
+  if(update.item.manual&&!/^https:\/\//i.test(String(update.item.manual)))throw new Error('Manual links must use HTTPS.');
   const incoming=Object.fromEntries(Object.entries(update.item).filter(([key])=>ALLOWED_FIELDS.has(key)));
   if(item){
    for(const [key,value] of Object.entries(incoming)){
