@@ -714,3 +714,8 @@ body.hec-v3 #grid .tool.tool-loaned .loan-tag{
 }
 body.hec-v3 #grid .tool.tool-loaned .loan-tag .loan-borrower{color:#f5f7fb!important;font-weight:900!important}
 body.hec-v3 #grid .tool.tool-loaned .return-card-btn{background:var(--hec-accent,#d3222a);color:var(--hec-accent-contrast,#fff);border-color:var(--hec-accent-light,#f04a52)}
+
+/* Owned count stays on the dark details side, clear of the photo. */
+.tool .info .hec-quantity-badge{display:inline-flex;align-self:flex-start;width:fit-content;max-width:100%;padding:4px 9px;margin:5px 0;border:1px solid var(--accent,#b6d326);border-radius:8px;background:rgba(255,255,255,.08);color:inherit;font-size:13px;font-weight:800;line-height:1.3}
+
+.hec-package-fields{margin:14px 0;padding:12px;border:1px solid currentColor;border-radius:12px}.hec-package-fields summary{font-weight:700;cursor:pointer}.hec-package-fields p{font-size:14px;line-height:1.4}.tool .info .hec-quantity-badge{white-space:normal;overflow-wrap:anywhere}
