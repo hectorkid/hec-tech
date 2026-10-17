@@ -2,4 +2,10 @@ name = "hec-tech-lookup"
 main = "cloudflare/product-lookup-worker.js"
 compatibility_date = "2026-10-01"
 workers_dev = true
-# SERPAPI_KEY is already configured as a secret on the Cloudflare Worker.
+# Create the D1 database and fill in database_id before deploying. Protect catalog
+# writes with a Worker secret named CATALOG_WRITE_TOKEN; never expose it in the app.
+[[d1_databases]]
+binding = "PRODUCT_CATALOG"
+database_name = "hec-tech-product-catalog"
+database_id = "REPLACE_WITH_CLOUDFLARE_D1_DATABASE_ID"
+migrations_dir = "cloudflare/migrations"
