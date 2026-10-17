@@ -5,6 +5,8 @@ Updated: October 16, 2026 · Version 192
 This is the master checklist. Update this same file after every completed change. Checked means implemented and automatically checked unless a device test is explicitly named. It does not mean Hector has tested or approved it. Unchecked items remain required before the Pro testing handoff. Store publication follows Hector's testing and approval.
 
 ## 1. Shared app foundation
+- [x] Track quantity owned, box/pack contents and remaining stock on item cards (v190).
+- [x] Track individual batteries/units within a quantity card, including serials, condition and partial loans (v192).
 - [x] Keep inventory, photos, manuals, receipts, categories, favorites and loans in the same app.
 - [x] Add Pro workspace navigation alongside the regular inventory.
 - [x] Match Pro screens to selected theme colors.
