@@ -716,8 +716,10 @@ body.hec-v3 #grid .tool.tool-loaned .loan-tag .loan-borrower{color:#f5f7fb!impor
 body.hec-v3 #grid .tool.tool-loaned .return-card-btn{background:var(--hec-accent,#d3222a);color:var(--hec-accent-contrast,#fff);border-color:var(--hec-accent-light,#f04a52)}
 
 /* Owned count stays on the dark details side, clear of the photo. */
-.tool .info .hec-quantity-badge{display:inline-flex;align-self:flex-start;width:fit-content;max-width:100%;padding:4px 9px;margin:5px 0;border:1px solid var(--accent,#b6d326);border-radius:8px;background:rgba(255,255,255,.08);color:inherit;font-size:13px;font-weight:800;line-height:1.3}
+.tool .info .hec-quantity-badge{display:inline-flex;align-self:flex-start;width:fit-content;max-width:100%;padding:4px 9px;margin:5px 0;border:1px solid var(--hec-accent,#d3222a);border-radius:8px;background:rgba(255,255,255,.08);color:inherit;font-size:13px;font-weight:800;line-height:1.3}
 
 .hec-package-fields{margin:14px 0;padding:12px;border:1px solid currentColor;border-radius:12px}.hec-package-fields summary{font-weight:700;cursor:pointer}.hec-package-fields p{font-size:14px;line-height:1.4}.tool .info .hec-quantity-badge{white-space:normal;overflow-wrap:anywhere}
 
-.hec-unit-manager{color:var(--text,#1c252c)}.hec-unit-manager label{display:grid;gap:6px;margin:12px 0}.hec-unit-manager input,.hec-unit-manager select,.hec-unit-manager textarea{width:100%;box-sizing:border-box}.hec-unit-manager button{margin:5px 7px 5px 0}.hec-unit-card{border:1px solid var(--accent,#b6d326);border-radius:12px;padding:14px;margin:14px 0}.hec-unit-card p{overflow-wrap:anywhere}
+.hec-unit-manager{color:#f1f4f8}.hec-unit-manager label{display:grid;gap:6px;margin:12px 0}.hec-unit-manager input,.hec-unit-manager select,.hec-unit-manager textarea{width:100%;box-sizing:border-box}.hec-unit-manager button{margin:5px 7px 5px 0}.hec-unit-card{border:1px solid var(--hec-accent,#d3222a);border-radius:12px;padding:14px;margin:14px 0}.hec-unit-card p{overflow-wrap:anywhere}
+
+#modalContent .hec-unit-manager p,#modalContent .hec-unit-manager label,#modalContent .hec-unit-manager summary{color:#e0e6ef}#modalContent .hec-unit-manager input,#modalContent .hec-unit-manager textarea,#modalContent .hec-unit-manager select{background:#222b38;color:#f5f7fa;border:1px solid var(--hec-accent,#d3222a);padding:10px;border-radius:9px;font-size:16px}
