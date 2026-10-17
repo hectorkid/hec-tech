@@ -1,6 +1,6 @@
 # HEC TECH Pro completion checklist
 
-Updated: October 16, 2026 · Version 189
+Updated: October 16, 2026 · Version 190
 
 This is the master checklist. Update this same file after every completed change. Checked means implemented and automatically checked unless a device test is explicitly named. It does not mean Hector has tested or approved it. Unchecked items remain required before the Pro testing handoff. Store publication follows Hector's testing and approval.
 
