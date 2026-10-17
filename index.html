@@ -162,27 +162,26 @@ function hecStoreSearchUrl(store,code){
  return 'https://www.google.com/search?q='+encodeURIComponent(custom+' '+code);
 }
 async function hecAutoFillBarcode(code){
- // Open Food Facts is a public product catalog, not a retailer website.
- // Retailer sites generally block direct browser scraping.
- if(!/^\\d{8,14}$/.test(code))return false;
+ // Search only the shared HEC TECH catalog. Product details are public catalog
+ // facts; personal inventory fields stay in the device and the user's backup.
+ if(!/^\d{8,14}$/.test(code))return false;
  const status=document.getElementById('hec-scan-code-status');
- if(status)status.textContent='Looking up product information…';
+ if(status)status.textContent='Looking up the shared product catalog…';
  try{
    const controller=new AbortController();
    const timeout=setTimeout(()=>controller.abort(),6500);
    let response;
-   try{response=await fetch('https://world.openfoodfacts.org/api/v2/product/'+encodeURIComponent(code)+'.json?fields=product_name,brands,categories_tags,image_front_url',{signal:controller.signal})}
+   try{response=await fetch('https://hec-tech-lookup.hectech.workers.dev/product-lookup?barcode='+encodeURIComponent(code),{signal:controller.signal})}
    finally{clearTimeout(timeout)}
    if(!response.ok)return false;
-   const data=await response.json(),p=data&&data.product;
-   if(data.status!==1||!p||!p.product_name)return false;
+   const data=await response.json(),product=data&&Array.isArray(data.matches)&&data.matches[0];
+   if(!product||!product.name)return false;
    const form=document.getElementById('toolForm');
    if(!form)return false;
-   const name=form.elements.namedItem('name'),brand=form.elements.namedItem('brand'),category=form.elements.namedItem('category');
-   if(name&&!name.value.trim())name.value=p.product_name;
-   if(brand&&!brand.value.trim()&&p.brands)brand.value=p.brands.split(',')[0].trim();
-   if(category&&(!category.value.trim()||category.value==='Other'))category.value='Groceries';
-   if(status)status.textContent='Product found. Review the details before saving.';
+   for(const [key,value] of Object.entries({name:product.name,brand:product.brand,model:product.model,barcode:product.barcode,category:product.category})){
+    const field=form.elements.namedItem(key);if(field&&(!field.value.trim()||field.value==='Other')&&value)field.value=value;
+   }
+   if(status)status.textContent='Catalog match found. Review the details before saving.';
    return true;
  }catch(e){return false}
 }
@@ -629,4 +628,4 @@ document.addEventListener('keydown',function(event){
     else launch();
   }
 })();
-</script><style>.hec-multi-gallery{text-align:center;margin:0 0 14px}.hec-gallery-image{width:100%;max-height:340px;object-fit:contain;border-radius:12px;background:#f7f7f7}.hec-gallery-controls{display:flex;justify-content:center;align-items:center;gap:18px;margin:8px 0}.hec-gallery-controls button{min-width:48px;min-height:42px}.hec-remove-photo{font-size:12px;margin:4px 0 10px}.hec-photo-tip{font-size:12px;color:#657080}.hec-card-gallery{position:relative;width:100%;overflow:hidden}.hec-card-gallery>img{display:block;width:100%;object-fit:contain}.hec-card-gallery-controls{position:absolute;left:6px;right:6px;bottom:7px;display:flex;align-items:center;justify-content:space-between;pointer-events:none}.hec-card-gallery-controls button{pointer-events:auto;min-width:32px;min-height:32px;border-radius:50%;background:#141a22df!important;color:#fff!important;border:1px solid #fff9!important;padding:3px!important;font-size:15px!important}.hec-card-gallery-count{background:#141a22d9;color:#fff;border-radius:20px;padding:3px 9px;font-size:12px;font-weight:700}</style><script src="./hec-multi-photos.js?v=162"></script><style>.hec-smart-add{text-align:center;padding:8px}.hec-smart-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}.hec-smart-grid button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:130px;border-radius:15px;background:#202a39;color:white;border:1px solid #586579;font-size:25px}.hec-smart-grid strong{font-size:15px}.hec-smart-grid small{font-size:11px;color:#c5d0dd}.hec-smart-model{display:grid;gap:12px;padding:12px}.hec-smart-model input{padding:12px;font-size:16px}.hec-smart-hint{padding:9px;background:#f0f5fc}</style><script src="./hec-smart-add.js?v=155"></script><script src="./hec-photo-options.js?v=168"></script><script src="./hec-product-lookup.js?v=166"></script><script src="./hec-barcode-lookup.js?v=158"></script></body></html>
+</script><style>.hec-multi-gallery{text-align:center;margin:0 0 14px}.hec-gallery-image{width:100%;max-height:340px;object-fit:contain;border-radius:12px;background:#f7f7f7}.hec-gallery-controls{display:flex;justify-content:center;align-items:center;gap:18px;margin:8px 0}.hec-gallery-controls button{min-width:48px;min-height:42px}.hec-remove-photo{font-size:12px;margin:4px 0 10px}.hec-photo-tip{font-size:12px;color:#657080}.hec-card-gallery{position:relative;width:100%;overflow:hidden}.hec-card-gallery>img{display:block;width:100%;object-fit:contain}.hec-card-gallery-controls{position:absolute;left:6px;right:6px;bottom:7px;display:flex;align-items:center;justify-content:space-between;pointer-events:none}.hec-card-gallery-controls button{pointer-events:auto;min-width:32px;min-height:32px;border-radius:50%;background:#141a22df!important;color:#fff!important;border:1px solid #fff9!important;padding:3px!important;font-size:15px!important}.hec-card-gallery-count{background:#141a22d9;color:#fff;border-radius:20px;padding:3px 9px;font-size:12px;font-weight:700}</style><script src="./hec-multi-photos.js?v=162"></script><style>.hec-smart-add{text-align:center;padding:8px}.hec-smart-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}.hec-smart-grid button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:130px;border-radius:15px;background:#202a39;color:white;border:1px solid #586579;font-size:25px}.hec-smart-grid strong{font-size:15px}.hec-smart-grid small{font-size:11px;color:#c5d0dd}.hec-smart-model{display:grid;gap:12px;padding:12px}.hec-smart-model input{padding:12px;font-size:16px}.hec-smart-hint{padding:9px;background:#f0f5fc}</style><script src="./hec-smart-add.js?v=155"></script><script src="./hec-photo-options.js?v=168"></script><script src="./hec-product-lookup.js?v=167"></script><script src="./hec-barcode-lookup.js?v=159"></script></body></html>

@@ -13,9 +13,9 @@ function setup(){
   button.style.cssText='padding:10px 12px;margin:8px 0;border-radius:10px';
   const status=document.createElement('div');status.setAttribute('role','status');
   let activeLookup=null;
-  field.addEventListener('input',()=>{if(activeLookup)activeLookup.abort();results.replaceChildren();status.textContent='';button.disabled=false});
   const results=document.createElement('div');results.style.cssText='display:grid;gap:8px;margin:10px 0';
   field.insertAdjacentElement('afterend',button);button.insertAdjacentElement('afterend',status);status.insertAdjacentElement('afterend',results);
+  field.addEventListener('input',()=>{if(activeLookup)activeLookup.abort();results.replaceChildren();status.textContent='';button.disabled=false});
   button.onclick=async()=>{
    if(activeLookup)activeLookup.abort();
    const code=field.value.replace(/[\s-]/g,'');field.value=code;results.replaceChildren();
@@ -28,63 +28,36 @@ function setup(){
     warn.textContent='Possible duplicate: '+String(existing.name||'An existing item')+' already uses this barcode. Check before adding another.';
     warnings.append(warn);
    }
-   status.textContent='Looking up barcode '+code+'…';button.disabled=true;
+   status.textContent='Searching the shared HEC TECH product catalog…';button.disabled=true;
    const controller=new AbortController();activeLookup=controller;
    const current=()=>activeLookup===controller&&!controller.signal.aborted&&form.isConnected&&field.value.trim()===code;
-   const timeout=setTimeout(()=>controller.abort(),22000);
+   const timeout=setTimeout(()=>controller.abort(),12000);
    try{
-    // Try a structured barcode catalog before shopping search. Catalog records
-    // explicitly associate a product with its GTIN, unlike search snippets.
-    for(const [catalogHost,catalogName] of [['world.openproductsfacts.org','Open Products Facts'],['world.openfoodfacts.org','Open Food Facts'],['world.openbeautyfacts.org','Open Beauty Facts']]){
-     try{
-     const perCatalog=new AbortController();
-     const catalogTimer=setTimeout(()=>perCatalog.abort(),2000);
-     let catalog,record;
-     try{
-      catalog=await fetch('https://'+catalogHost+'/api/v2/product/'+encodeURIComponent(code)+'.json?fields=code,product_name,brands,image_front_small_url',{signal:AbortSignal.any([controller.signal,perCatalog.signal])});
-      if(catalog.ok)record=await catalog.json();
-     }finally{clearTimeout(catalogTimer)}
-     if(catalog.ok){
-      if(!current())return;
-      const item=record.product;
-      if(record.status===1&&item&&item.product_name&&String(item.code||record.code||'')===code){
-       const name=form.elements.namedItem('name'),brand=form.elements.namedItem('brand');
-       status.textContent='Barcode found in '+catalogName+'. Confirm the packaging before using this catalog entry.';
-       const choose=document.createElement('button');choose.type='button';
-       choose.style.cssText='display:flex;align-items:center;gap:8px;padding:10px;text-align:left;white-space:normal;border-radius:10px';
-       if(item.image_front_small_url&&/^https:\/\//.test(item.image_front_small_url)){const img=document.createElement('img');img.src=item.image_front_small_url;img.alt='';img.style.cssText='width:55px;height:55px;object-fit:contain';choose.append(img)}
-       const label=document.createElement('span');label.textContent=item.product_name+' · '+catalogName+' catalog';choose.append(label);
-       choose.onclick=()=>{if(!current())return;if(name&&!name.value.trim())name.value=item.product_name;if(brand&&!brand.value.trim())brand.value=(item.brands||'').split(',')[0].trim();status.textContent='Catalog details added. Review before saving.';results.replaceChildren(warnings)};
-       results.append(choose);return;
-      }
-     }
-     }catch(catalogError){if(controller.signal.aborted)throw catalogError}
-    }
     const response=await fetch(ENDPOINT+'?barcode='+encodeURIComponent(code),{signal:controller.signal});
     const data=await response.json();if(!current())return;
-    if(!response.ok)throw Error(data.error||'Lookup failed');
+    if(!response.ok)throw Error(data.error||'Catalog lookup failed');
     const matches=Array.isArray(data.matches)?data.matches:[];
-    if(!matches.length){status.textContent='No product listings explicitly containing this barcode were found. Try the store search or enter details manually.';return}
-    status.textContent='Listings mention this barcode, but the product identity is not independently verified. Confirm the packaging and brand before choosing.';
-    for(const product of matches){
+    if(!matches.length){status.textContent='This barcode is not in the shared catalog yet. You can still enter the product details manually.';return}
+    status.textContent='Found in the shared HEC TECH catalog. Confirm the packaging before using these details.';
+    for(const item of matches){
      const choose=document.createElement('button');choose.type='button';
-     choose.style.cssText='display:flex;align-items:center;gap:8px;padding:9px;text-align:left;white-space:normal;border-radius:10px';
-     if(product.thumbnail){const img=document.createElement('img');img.src=product.thumbnail;img.alt='';img.style.cssText='width:50px;height:50px;object-fit:contain';choose.append(img)}
-     const label=document.createElement('span');label.textContent=[product.title,product.source].filter(Boolean).join(' · ');choose.append(label);
+     choose.style.cssText='display:flex;align-items:center;gap:8px;padding:10px;text-align:left;white-space:normal;border-radius:10px';
+     if(item.photoUrl){const img=document.createElement('img');img.src=item.photoUrl;img.alt='';img.referrerPolicy='no-referrer';img.style.cssText='width:55px;height:55px;object-fit:contain';choose.append(img)}
+     const label=document.createElement('span');label.textContent=[item.name,item.brand,item.model].filter(Boolean).join(' · ');choose.append(label);
      choose.onclick=()=>{
       if(!current())return;
-      const name=form.elements.namedItem('name'),brand=form.elements.namedItem('brand'),notes=form.elements.namedItem('notes');
-      if(name&&!name.value.trim())name.value=product.title||'';
-      const brands=['Milwaukee','DeWalt','Makita','Bosch','Ryobi','Honeywell','Samsung','Panasonic','Sony','LG'];
-      const b=brands.find(b=>(' '+String(product.title||'').toLowerCase().replace(/[^a-z0-9]+/g,' ')+' ').includes(' '+b.toLowerCase().replace(/[^a-z0-9]+/g,' ')+' '));
-      if(brand&&!brand.value.trim()&&b)brand.value=b;
-      if(notes&&product.link&&!notes.value.includes(product.link))notes.value+=(notes.value?'\n':'')+'Product listing: '+product.link;
-      status.textContent='Suggested details added. Check the item before saving; no changes have been saved yet.';
+      for(const [fieldName,value] of Object.entries({name:item.name,brand:item.brand,model:item.model,barcode:item.barcode,category:item.category})){
+       const input=form.elements.namedItem(fieldName);if(input&&!input.value.trim()&&value)input.value=value;
+      }
+      status.textContent='Catalog details added to the form. Review before saving. Your personal item photos, notes and other inventory details stay private.';
       results.replaceChildren(warnings);
      };
      results.append(choose);
+     for(const [url,text] of [[item.productUrl,'Product details'],[item.manualUrl,'Manual link']]){
+      if(!url)continue;const link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=text;results.append(link)
+     }
     }
-   }catch(err){if(activeLookup!==controller||!form.isConnected||field.value.trim()!==code)return;status.textContent=err.name==='AbortError'?'Lookup timed out. Try again.':'Lookup unavailable: '+err.message}
+   }catch(err){if(activeLookup!==controller||!form.isConnected||field.value.trim()!==code)return;status.textContent=err.name==='AbortError'?'Catalog lookup timed out. Try again.':'Catalog lookup unavailable: '+err.message}
    finally{clearTimeout(timeout);if(activeLookup===controller)button.disabled=false}
   };
  }

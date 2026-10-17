@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'cloudflare/product-lookup-worker.js'
+      - 'cloudflare/migrations/**'
       - 'wrangler.lookup.toml'
       - '.github/workflows/deploy-lookup.yml'
 jobs:
@@ -14,13 +15,89 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+      - name: Validate Cloudflare deployment secrets
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID; do
+            if [ -z "${!name:-}" ]; then
+              echo "Missing GitHub Actions secret: ${name}" >&2
+              exit 1
+            fi
+          done
+      - name: Find or create the shared D1 catalog
+        id: catalog
+        env:
+          CLOUDFLARE_D1_API_TOKEN: ${{ secrets.CLOUDFLARE_D1_API_TOKEN || secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          api="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/d1/database"
+          response="$(curl --silent --show-error "$api?name=hec-tech-product-catalog&per_page=100" \
+            -H "Authorization: Bearer ${CLOUDFLARE_D1_API_TOKEN}")"
+          if ! jq -e '.success == true' >/dev/null <<< "$response"; then
+            echo "Cloudflare could not list D1 databases. Check that CLOUDFLARE_D1_API_TOKEN has D1 Read and D1 Write permissions." >&2
+            exit 1
+          fi
+          database_id="$(jq -r '.result[]? | select(.name == "hec-tech-product-catalog") | .uuid // empty' <<< "$response" | head -n 1)"
+          if [ -z "$database_id" ]; then
+            created="$(curl --silent --show-error -X POST "$api" \
+              -H "Authorization: Bearer ${CLOUDFLARE_D1_API_TOKEN}" \
+              -H "Content-Type: application/json" \
+              --data '{"name":"hec-tech-product-catalog"}')"
+            if ! jq -e '.success == true' >/dev/null <<< "$created"; then
+              echo "Cloudflare could not create the D1 catalog. Check that CLOUDFLARE_D1_API_TOKEN has D1 Write permission." >&2
+              exit 1
+            fi
+            database_id="$(jq -r '.result.uuid // empty' <<< "$created")"
+          fi
+          if [ -z "$database_id" ]; then
+            echo "Cloudflare did not return the shared catalog database ID." >&2
+            exit 1
+          fi
+          echo "id=$database_id" >> "$GITHUB_OUTPUT"
+      - name: Configure D1 binding for this deployment
+        env:
+          D1_DATABASE_ID: ${{ steps.catalog.outputs.id }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          path = Path("wrangler.lookup.toml")
+          config = path.read_text()
+          marker = "REPLACE_WITH_CLOUDFLARE_D1_DATABASE_ID"
+          if marker not in config:
+              raise SystemExit("D1 database ID marker was not found in wrangler.lookup.toml")
+          path.write_text(config.replace(marker, os.environ["D1_DATABASE_ID"]))
+          PY
+      - name: Apply D1 catalog migrations
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_D1_API_TOKEN || secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: d1 migrations apply hec-tech-product-catalog --config wrangler.lookup.toml --remote
+      - name: Set optional catalog write secret
+        env:
+          CATALOG_WRITE_TOKEN: ${{ secrets.CATALOG_WRITE_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          if [ -n "${CATALOG_WRITE_TOKEN:-}" ]; then
+            printf '%s' "$CATALOG_WRITE_TOKEN" | npx --yes wrangler@4 secret put CATALOG_WRITE_TOKEN --config wrangler.lookup.toml
+          else
+            echo "CATALOG_WRITE_TOKEN is not set; public catalog lookup will deploy, catalog writes will stay disabled."
+          fi
+      - name: Validate Worker JavaScript syntax
+        run: node --check cloudflare/product-lookup-worker.js
       - name: Deploy product lookup Worker
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --config wrangler.lookup.toml
-      - name: Validate Worker JavaScript syntax
-        run: node --check cloudflare/product-lookup-worker.js
       # GitHub-hosted runners can be blocked by Cloudflare security (error 1010).
       # Do not treat a runner-origin 403 as an application failure.
